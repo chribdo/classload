@@ -4,6 +4,7 @@ venv/
 daten/
 config.json
 logdatei.log
+jamfscripts/logdatei.log
 # PDF-Dateien ignorieren
 *.pdf
 
