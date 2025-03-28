@@ -1,0 +1,13 @@
+# Virtuelle Umgebung ignorieren
+.venv/
+venv/
+daten/
+config.json
+logdatei.log
+# PDF-Dateien ignorieren
+*.pdf
+
+# (optional) macOS- und VS Code-Sachen ignorieren
+.DS_Store
+.vscode/
+.idea/
