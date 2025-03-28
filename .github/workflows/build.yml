@@ -25,7 +25,7 @@ jobs:
 
       - name: Build EXE
         run: |
-          pyinstaller --onefile --windowed k42mod.py
+          pyinstaller --onefile --windowed tk_main_menue.py
 
       - name: Upload Windows EXE
         uses: actions/upload-artifact@v4
@@ -52,7 +52,7 @@ jobs:
 
       - name: Build macOS APP
         run: |
-          pyinstaller --onefile --windowed k42mod.py
+          pyinstaller --onefile --windowed tk_main_menue.py
 
       - name: Upload macOS App
         uses: actions/upload-artifact@v4
@@ -79,8 +79,7 @@ jobs:
 
       - name: Build Linux Executable
         run: |
-          pyinstaller --onefile --windowed k42mod.py
-
+          pyinstaller --onefile --windowed tk_main_menue.py
       - name: Upload Linux Binary
         uses: actions/upload-artifact@v4
         with:
