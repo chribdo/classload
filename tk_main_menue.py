@@ -1,6 +1,8 @@
 import tkinter as tk
 
 from tkinter import messagebox, Toplevel, scrolledtext, simpledialog, filedialog
+from tkinter.messagebox import askokcancel
+
 from jamfscripts import *
 import os, sys, getpass
 import threading
@@ -77,11 +79,13 @@ class KlassenUploaderApp:
         self.btn_konfiguration = tk.Button(root, text="Konfiguration", command=self.konfigurieren)
         self.btn_upload = tk.Button(root, text="Klassen-Upload", command=self.klassen_upload)
         self.btn_loeschen = tk.Button(root, text="Klassen löschen", command=self.klassen_loeschen)
+        self.btn_del_users = tk.Button(root, text="Benutzer ohne Mobilgerät löschen", command=self.delete_users_wo_md)
 
         # Buttons platzieren
         self.btn_konfiguration.pack(pady=5)
         self.btn_upload.pack(pady=5)
         self.btn_loeschen.pack(pady=5)
+        self.btn_del_users.pack(pady=5)
 
         # Textfeld für Log-Ausgabe
         self.text_log = scrolledtext.ScrolledText(root, height=20, width=80, state=tk.DISABLED, wrap=tk.WORD)
@@ -206,6 +210,14 @@ class KlassenUploaderApp:
             threading.Thread(target=self.klassen_loeschen_ausfuehren, args=(del_praefix,), daemon=True).start()
 
         tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
+
+    def delete_users_wo_md(self):
+        ok_del=askokcancel("Bestätigen", "Alle Benutzer ohne Mobilgerät werden gelöscht (Lehrkräfte ausgenommen).")
+        if ok_del:
+            threading.Thread(target=delete_users_without_devices, args=(JAMF_URL,TOKEN), daemon=True).start()
+        else:
+            return
+
 
     def klassen_loeschen_ausfuehren(self, del_praefix):
 

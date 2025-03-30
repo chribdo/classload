@@ -1,4 +1,4 @@
-# benutzer_von_csv_liste_loeschen.py
+# benutzer_loeschen.py
 import requests, json, logging
 from requests import Response
 
@@ -108,6 +108,7 @@ def get_username_set(JAMF_URL,token):
     return usernames
 
 def delete_users_without_devices(JAMF_URL, token):
+   LOGGER.info("Benutzer, die kein Mobilgerät haben werden gelöscht (Lehrkräfte ausgenommen). Vorgang gestartet... ")
    usernames=get_username_set(JAMF_URL, token)
    users=get_users(JAMF_URL,token)
    tgn = get_config_value("TEACHER_GROUP_NAME")
@@ -142,7 +143,7 @@ def delete_users_without_devices(JAMF_URL, token):
             LOGGER.info(id_list[i])
             LOGGER.info("Benutzer erfolgreich gelöscht!")
        else:
-            LOGGER.error(f"Fehler beim Löschen: {response.text}")
+            LOGGER.error(f"Fehler beim Löschen. Benutzer {id_list[i]} falsch zugeordnet.")
 
 
 def loesche_benutzer_von_csv(JAMF_URL, TOKEN, INPUT_DELETE_FILENAME):
