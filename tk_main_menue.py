@@ -78,12 +78,14 @@ class KlassenUploaderApp:
         # Buttons
         self.btn_konfiguration = tk.Button(root, text="Konfiguration", command=self.konfigurieren)
         self.btn_upload = tk.Button(root, text="Klassen-Upload", command=self.klassen_upload)
+        self.btn_group_upload = tk.Button(root, text="Upload Static Groups", command=self.group_upload)
         self.btn_loeschen = tk.Button(root, text="Klassen löschen", command=self.klassen_loeschen)
         self.btn_del_users = tk.Button(root, text="Benutzer ohne Mobilgerät löschen", command=self.delete_users_wo_md)
 
         # Buttons platzieren
         self.btn_konfiguration.pack(pady=5)
         self.btn_upload.pack(pady=5)
+        self.btn_group_upload.pack(pady=5)
         self.btn_loeschen.pack(pady=5)
         self.btn_del_users.pack(pady=5)
 
@@ -191,6 +193,44 @@ class KlassenUploaderApp:
             teachergroup=get_config_value("TEACHER_GROUP_NAME")
             threading.Thread(target=self.klassenupload_ausfuehren, args=(dateipfad, praefix, teachergroup), daemon=True).start()
 
+    def group_upload(self):
+        """Wählt eine Datei aus und gibt ein Präfix ein, bevor eine Funktion ausgeführt wird."""
+        # Präfix eingeben
+        popup = tk.Toplevel(self.root)
+        popup.title("Upload-Einstellungen")
+        popup.geometry("600x300")
+        tk.Label(popup, text="Präfix für neue Statische Benutzergruppen:").pack(pady=5)
+        prefix_entry = tk.Entry(popup)
+        prefix_entry.pack(pady=5)
+        tk.Label(popup, text="Name der statischen JAMF-Lehrer-Benutzergruppe:").pack(pady=5)
+        teachergroup_entry = tk.Entry(popup)
+        teachergroup_entry.insert(0, get_config_value("TEACHER_GROUP_NAME"))
+        teachergroup_entry.pack(pady=5)
+        praefix=""
+        teachergroup=""
+        def on_submit():
+            praefix = prefix_entry.get()
+            teachergroup = teachergroup_entry.get()
+            set_config_value("TEACHER_GROUP_NAME", teachergroup)
+            if not praefix or not teachergroup:
+                messagebox.showerror("Fehler", "Die Werte dürfen nicht leer sein!")
+                return
+            popup.destroy()
+
+        tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
+        popup.wait_window()
+        # Datei auswählen
+        dateipfad = config.get_config_value("INPUT_FILENAME")
+        dateipfad = filedialog.askopenfilename(initialdir=dateipfad, title="Bitte iServ-Schüler-csv auswählen",
+                                               filetypes=(("CSV-Dateien", "*.csv"), ("Alle Dateien", "*.*")))
+        if not dateipfad:
+            LOGGER.error("❌ Kein Dateipfad ausgewählt!")
+            return
+        else:
+            set_config_value("INPUT_FILE_NAME", dateipfad)
+            teachergroup=get_config_value("TEACHER_GROUP_NAME")
+            threading.Thread(target=self.gruppen_upload_ausfuehren, args=(dateipfad, praefix, teachergroup), daemon=True).start()
+
     def klassen_loeschen(self):
         # Präfix eingeben
         popup = tk.Toplevel(self.root)
@@ -235,6 +275,16 @@ class KlassenUploaderApp:
         OUTPUT_FILE_STUDENTS = get_config_value("OUTPUT_FILE_STUDENTS")
         POSTFIX = get_config_value("POSTFIX")
         big_merge(JAMF_URL, TOKEN, dateipfad, SITE_ID, teachergroupname, praefix, OUTPUT_FILE_STUDENTS,
+                  OUTPUT_FILE_CLASSES, POSTFIX)
+
+    def gruppen_upload_ausfuehren(self, dateipfad, praefix, teachergroupname):
+        """Simuliert eine Datei-Verarbeitung mit Konsolenausgaben."""
+        print(teachergroupname)
+        SITE_ID = get_config_value("SITE_ID")
+        OUTPUT_FILE_CLASSES = get_config_value("OUTPUT_FILE_CLASSES")
+        OUTPUT_FILE_STUDENTS = get_config_value("OUTPUT_FILE_STUDENTS")
+        POSTFIX = get_config_value("POSTFIX")
+        create_user_groups(JAMF_URL, TOKEN, dateipfad, SITE_ID, teachergroupname, praefix, OUTPUT_FILE_STUDENTS,
                   OUTPUT_FILE_CLASSES, POSTFIX)
 
 
