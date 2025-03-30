@@ -5,7 +5,7 @@ from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 
 import jamfscripts.big_class_merge
-from jamfscripts.logging_config import LOGGER
+from logging_config import LOGGER
 from jamfscripts import config,big_class_merge
 
 """Funktion  zur Verschlüsselung"""
@@ -50,6 +50,25 @@ def get_auth_token(JAMF_URL, USERNAME, PASSWORD):
         LOGGER.error("Token nicht erhalten. Zugangsdaten prüfen.")
         return ""
         #raise Exception(f"Fehler beim Abrufen des Tokens: {response.text}")
+
+def refresh_token(JAMF_URL, token):
+    """Holt ein Bearer-Token von der Jamf Pro API."""
+    url = f"{JAMF_URL}/api/v1/auth/keep-alive"
+    headers = {
+        "Accept": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+    response = requests.post(url, headers=headers)
+    if response.status_code == 200:
+
+        LOGGER.info("Token erfolgreich erneuert.")
+        return response.json().get("token")
+    else:
+        LOGGER.error("Token nicht erhalten.")
+        return ""
+        #raise Exception(f"Fehler beim Abrufen des Tokens: {response.text}")
+
+
 
 def initialisiere(JAMF_URL, TOKEN):
     fetched_id = big_class_merge.get_site_id(JAMF_URL, TOKEN)

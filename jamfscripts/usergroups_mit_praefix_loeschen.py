@@ -1,6 +1,7 @@
 # klassen_mit_praefix_loeschen.py
 import requests, json, os
-from jamfscripts.logging_config import LOGGER
+from logging_config import LOGGER
+from authentifizierung import refresh_token
 
 def get_usergroups(JAMF_URL, token):
     url = f"{JAMF_URL}/JSSResource/usergroups"
@@ -34,8 +35,11 @@ def filter_and_delete_usergroups(JAMF_URL, token, PREFIX, json_data):
           filtered_usergroups.append(c)
           id_list.append(class_id)  # Füge die ID zur Liste hinzu
     #print(id_list)
-
+    count = 0
     for i in range(len(id_list)):
+        if count == 10:
+            count = 0
+            token = refresh_token(JAMF_URL, token)
         url = f"{JAMF_URL}/JSSResource/usergroups/id/{id_list[i]}"
         headers = {
             "Content-Type": "application/xml",
@@ -44,6 +48,7 @@ def filter_and_delete_usergroups(JAMF_URL, token, PREFIX, json_data):
         }
         response = requests.delete(url, headers=headers)
         if response.status_code in (200,201):
+            count+=1
             print(id_list[i])
             print("Usergroup erfolgreich gelöscht!")
         else:

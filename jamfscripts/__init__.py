@@ -1,4 +1,4 @@
-from .authentifizierung import get_auth_token, get_cipher, initialisiere
+from .authentifizierung import get_auth_token, get_cipher, initialisiere, refresh_token
 from .klassen_mit_praefix_loeschen import loesche_klassen_mit_prefix
 from .benutzer_von_csv_liste_loeschen import loesche_benutzer_von_csv
 from .big_class_merge import get_site_id, get_site_name, big_merge, get_teachers, extract_courses, csv_to_json

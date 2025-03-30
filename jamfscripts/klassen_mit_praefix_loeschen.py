@@ -1,6 +1,8 @@
 # klassen_mit_praefix_loeschen.py
 import requests, json, os
-from jamfscripts.logging_config import LOGGER
+
+from jamfscripts import refresh_token
+from logging_config import LOGGER
 
 
 
@@ -26,7 +28,7 @@ def get_classes(JAMF_URL, token):
     #print(json_data)
     return json_data
 
-def filter_and_delete_classes(JAMF_URL, PREFIX, json_data):
+def filter_and_delete_classes(JAMF_URL, token, PREFIX, json_data):
 
     filtered_classes = []
     id_list = []
@@ -37,8 +39,12 @@ def filter_and_delete_classes(JAMF_URL, PREFIX, json_data):
           filtered_classes.append(c)
           id_list.append(class_id)  # Füge die ID zur Liste hinzu
     #print(id_list)
-
+    count = 0
     for i in range(len(id_list)):
+        if count == 10:
+            count = 0
+            token = refresh_token(JAMF_URL, token)
+
         url = f"{JAMF_URL}/JSSResource/classes/id/{id_list[i]}"
         headers = {
             "Content-Type": "application/xml",
@@ -47,6 +53,7 @@ def filter_and_delete_classes(JAMF_URL, PREFIX, json_data):
         }
         response = requests.delete(url, headers=headers)
         if response.status_code in (200,201):
+            count+=1
             print(id_list[i])
             print("Klasse erfolgreich gelöscht!")
         else:

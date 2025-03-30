@@ -1,6 +1,6 @@
 # benutzer_von_csv_liste_loeschen.py
 import requests, json, logging
-from jamfscripts.logging_config import LOGGER
+from logging_config import LOGGER
 
 # 🔹 die csv-Datei (z.B. deleteUsers.csv) muss die Namen der Benutzer enthalten, die gelöscht werden sollen.
 #  so eine Liste kann man direkt aus Jamf exportieren um z.B. Benutzer ohne Mobile Devices zu löschen.
@@ -41,7 +41,7 @@ def csv_to_json(csv_file):
                 data[name] = {"name": name}  # Speichert nur den Namen
     return data
 
-def merge_json(JAMF_URL, csv_file, json_data):
+def merge_json(JAMF_URL, token, csv_file, json_data):
     
     # Lade die CSV-Daten
     csv_data = csv_to_json(csv_file)
@@ -77,4 +77,4 @@ def merge_json(JAMF_URL, csv_file, json_data):
 def loesche_benutzer_von_csv(JAMF_URL, TOKEN, INPUT_DELETE_FILENAME):
     token = TOKEN
     users = getUsers(JAMF_URL,token)
-    merge_json(JAMF_URL,INPUT_DELETE_FILENAME, users)
+    merge_json(JAMF_URL, token, INPUT_DELETE_FILENAME, users)

@@ -1,7 +1,7 @@
 # big_class_merge.py
 import requests, json, csv, logging, os
 import xml.etree.ElementTree as ET
-from jamfscripts.logging_config import LOGGER
+from logging_config import LOGGER
 
 # Datei laden
 def load_json(file_path):

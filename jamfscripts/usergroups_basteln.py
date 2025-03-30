@@ -1,6 +1,9 @@
 import json
 import xml.etree.ElementTree as ET
 from big_class_merge import *
+from authentifizierung import refresh_token
+
+
 def group_merge(JAMF_URL, TOKEN, INPUT_FILENAME, OUTPUT_FILE_STUDENTS, CLASS_PREFIX,  postfix):
 
     csv_data = csv_to_json(INPUT_FILENAME)
@@ -58,6 +61,7 @@ def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_N
         csv_data = csv_to_json(INPUT_FILENAME)
         token = TOKEN
         # get_site_id(JAMF_URL, token)
+        LOGGER.info("Der Vorgang kann sehr lange dauern.")
         users = get_users(JAMF_URL, token)
         schueler = merge_students(csv_data, users, OUTPUT_FILE_STUDENTS, postfix)
         courses, student_classes = extract_courses(schueler)
@@ -65,13 +69,15 @@ def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_N
         create_class_structure(courses, SITE_ID, CLASS_PREFIX, teachers, student_classes, OUTPUT_FILE_CLASSES)
         class_data = load_json(OUTPUT_FILE_CLASSES)
 
-        url = f"{JAMF_URL}/JSSResource/usergroups/id/0"
-        headers = {
-            "Content-Type": "application/xml",
-            "Accept": "application/xml",
-            "Authorization": f"Bearer {token}"
-        }
+
         for class_entry in class_data:
+            token = refresh_token(JAMF_URL, token)
+            url = f"{JAMF_URL}/JSSResource/usergroups/id/0"
+            headers = {
+                "Content-Type": "application/xml",
+                "Accept": "application/xml",
+                "Authorization": f"Bearer {token}"
+            }
             xml_string = create_group_xml_from_class(class_entry)
             # print(create_group_xml_from_class(class_entry))
             LOGGER.info(class_entry["class"]["name"])

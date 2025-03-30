@@ -1,7 +1,7 @@
 # beautify.py
 import json
-from jamfscripts.logging_config import LOGGER
-from jamfscripts.big_class_merge import extract_courses
+from logging_config import LOGGER
+from big_class_merge import extract_courses
 
 def read_json_file():
     file_path = "../daten/merged_schueler.json"  # Ersetze diesen Pfad mit dem tatsächlichen Pfad
