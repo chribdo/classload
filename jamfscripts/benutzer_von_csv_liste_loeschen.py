@@ -2,10 +2,10 @@
 import requests, json, logging
 from requests import Response
 
-from big_class_merge import fetch_teachers
+from jamfscripts.big_class_merge import fetch_teachers
 from jamfscripts import refresh_token
-from logging_config import LOGGER
-from config import get_config_value
+from jamfscripts.logging_config import LOGGER
+from jamfscripts.config import get_config_value
 
 # 🔹 die csv-Datei (z.B. deleteUsers.csv) muss die Namen der Benutzer enthalten, die gelöscht werden sollen.
 #  so eine Liste kann man direkt aus Jamf exportieren um z.B. Benutzer ohne Mobile Devices zu löschen.

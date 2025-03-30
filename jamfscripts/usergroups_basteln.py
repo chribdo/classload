@@ -1,7 +1,7 @@
 import json
 import xml.etree.ElementTree as ET
-from big_class_merge import *
-from authentifizierung import refresh_token
+from jamfscripts.big_class_merge import *
+from jamfscripts.authentifizierung import refresh_token
 
 
 def group_merge(JAMF_URL, TOKEN, INPUT_FILENAME, OUTPUT_FILE_STUDENTS, CLASS_PREFIX,  postfix):

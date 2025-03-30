@@ -1,7 +1,7 @@
 # klassen_mit_praefix_loeschen.py
 import requests, json, os
-from logging_config import LOGGER
-from authentifizierung import refresh_token
+from jamfscripts.logging_config import LOGGER
+from jamfscripts.authentifizierung import refresh_token
 
 def get_usergroups(JAMF_URL, token):
     url = f"{JAMF_URL}/JSSResource/usergroups"

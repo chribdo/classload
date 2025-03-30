@@ -2,7 +2,7 @@
 import requests, json, os
 
 from jamfscripts import refresh_token
-from logging_config import LOGGER
+from jamfscripts.logging_config import LOGGER
 
 
 

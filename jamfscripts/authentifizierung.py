@@ -5,7 +5,7 @@ from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 
 import jamfscripts.big_class_merge
-from logging_config import LOGGER
+from jamfscripts.logging_config import LOGGER
 from jamfscripts import config,big_class_merge
 
 """Funktion  zur Verschlüsselung"""
