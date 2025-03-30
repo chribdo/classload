@@ -316,9 +316,9 @@ def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME,SITE_ID, TEACHER_GROUP_NAME, CLASS
         
         response = requests.post(url, headers=headers, data=xml_string)
         if response.status_code in (200,201):
-          logger.info("Klasse erfolgreich erstellt!")
+          LOGGER.info("Klasse erfolgreich erstellt!")
         else:
-          logger.error(f"Fehler beim Erstellen der Klasse: {response.text}")
+          LOGGER.error(f"Fehler beim Erstellen der Klasse: {response.text}")
          """
     LOGGER.info("Upload abgeschlossen.")
 
