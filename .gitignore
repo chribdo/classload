@@ -5,6 +5,7 @@ daten/
 logdatei.log
 config.json
 jamfscripts/logdatei.log
+jamfscripts/ausprobieren.py
 # PDF-Dateien ignorieren
 *.pdf
 
