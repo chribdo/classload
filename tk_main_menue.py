@@ -79,7 +79,9 @@ class KlassenUploaderApp:
         self.btn_konfiguration = tk.Button(root, text="Konfiguration", command=self.konfigurieren)
         self.btn_upload = tk.Button(root, text="Klassen-Upload", command=self.klassen_upload)
         self.btn_group_upload = tk.Button(root, text="Upload Static Groups", command=self.group_upload)
+        self.btn_gruppen_loeschen = tk.Button(root, text="Gruppen löschen", command=self.gruppen_loeschen)
         self.btn_loeschen = tk.Button(root, text="Klassen löschen", command=self.klassen_loeschen)
+
         self.btn_del_users = tk.Button(root, text="Benutzer ohne Mobilgerät löschen", command=self.delete_users_wo_md)
 
         # Buttons platzieren
@@ -87,6 +89,8 @@ class KlassenUploaderApp:
         self.btn_upload.pack(pady=5)
         self.btn_group_upload.pack(pady=5)
         self.btn_loeschen.pack(pady=5)
+        self.btn_gruppen_loeschen.pack(pady=5)
+
         self.btn_del_users.pack(pady=5)
 
         # Textfeld für Log-Ausgabe
@@ -251,6 +255,27 @@ class KlassenUploaderApp:
 
         tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
 
+    def gruppen_loeschen(self):
+        # Präfix eingeben
+        popup = tk.Toplevel(self.root)
+        popup.title("Gruppen-Präfix")
+        popup.geometry("600x300")
+        tk.Label(popup, text="Bitte das Gruppen-Präfix, der Benutzergruppen eingeben, die gelöscht werden sollen: ").pack(
+            pady=5)
+        prefix_entry = tk.Entry(popup)
+        prefix_entry.pack(pady=5)
+
+        def on_submit():
+            del_praefix = prefix_entry.get()
+            print(del_praefix);
+            if not del_praefix:
+                messagebox.showerror("Fehler", "Präfix darf nicht leer sein!")
+                return
+            popup.destroy()
+            threading.Thread(target=self.gruppen_loeschen_ausfuehren, args=(del_praefix,), daemon=True).start()
+
+        tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
+
     def delete_users_wo_md(self):
         ok_del=askokcancel("Bestätigen", "Alle Benutzer ohne Mobilgerät werden gelöscht (Lehrkräfte ausgenommen).")
         if ok_del:
@@ -264,6 +289,13 @@ class KlassenUploaderApp:
         antwort = messagebox.askokcancel("Klassen löschen nach Präfix", f"Alle Klassen in JAMF mit dem Präfix {del_praefix} werden gelöscht.")
         if antwort:
             loesche_klassen_mit_prefix(JAMF_URL, TOKEN, del_praefix)
+        else:
+            return
+    def gruppen_loeschen_ausfuehren(self, del_praefix):
+
+        antwort = messagebox.askokcancel("Gruppen löschen nach Präfix", f"Alle Benutzergruppen in JAMF mit dem Präfix {del_praefix} werden gelöscht.")
+        if antwort:
+            loesche_usergroups_mit_prefix(JAMF_URL, TOKEN, del_praefix)
         else:
             return
 

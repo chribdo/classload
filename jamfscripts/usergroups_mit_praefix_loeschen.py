@@ -22,7 +22,7 @@ def get_usergroups(JAMF_URL, token):
     else:
         LOGGER.error(f"Fehler: HTTP-Statuscode {response.status_code}")
         json_data = None
-    print(json_data)
+    # print(json_data)
     return json_data
 
 def filter_and_delete_usergroups(JAMF_URL, token, PREFIX, json_data):
