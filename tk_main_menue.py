@@ -78,7 +78,8 @@ class KlassenUploaderApp:
         # Buttons
         self.btn_konfiguration = tk.Button(root, text="Konfiguration", command=self.konfigurieren)
         self.btn_upload = tk.Button(root, text="Klassen-Upload", command=self.klassen_upload)
-        self.btn_group_upload = tk.Button(root, text="Upload Static Groups", command=self.group_upload)
+        self.btn_single_group_upload = tk.Button(root, text="Benutzergruppe zu existierender Klasse erzeugen", command=self.single_group_upload)
+        self.btn_group_upload = tk.Button(root, text="Zu jeder Klasse eine Benutzergruppe erzeugen", command=self.group_upload)
         self.btn_gruppen_loeschen = tk.Button(root, text="Gruppen löschen", command=self.gruppen_loeschen)
         self.btn_loeschen = tk.Button(root, text="Klassen löschen", command=self.klassen_loeschen)
 
@@ -87,6 +88,7 @@ class KlassenUploaderApp:
         # Buttons platzieren
         self.btn_konfiguration.pack(pady=5)
         self.btn_upload.pack(pady=5)
+        self.btn_single_group_upload.pack(pady=5)
         self.btn_group_upload.pack(pady=5)
         self.btn_loeschen.pack(pady=5)
         self.btn_gruppen_loeschen.pack(pady=5)
@@ -252,6 +254,25 @@ class KlassenUploaderApp:
                 return
             popup.destroy()
             threading.Thread(target=self.klassen_loeschen_ausfuehren, args=(del_praefix,), daemon=True).start()
+
+        tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
+
+    def single_group_upload(self):
+        popup = tk.Toplevel(self.root)
+        popup.title("Klassen-Namen eingeben")
+        popup.geometry("800x200")
+        tk.Label(popup, text="Bitte den Namen, der Klassen eingeben, zu der eine statische Benutzergruppe angelegt werden soll: ").pack(pady=5)
+        class_entry = tk.Entry(popup)
+        class_entry.pack(pady=5)
+
+        def on_submit():
+            classname = class_entry.get()
+            print(classname);
+            if not classname:
+                messagebox.showerror("Fehler", "Bitte alles ausfüllen!")
+                return
+            popup.destroy()
+            threading.Thread(target=create_single_user_group, args=(JAMF_URL, TOKEN, classname), daemon=True).start()
 
         tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
 

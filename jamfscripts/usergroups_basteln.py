@@ -103,13 +103,14 @@ def create_single_user_group(jamf_url, token,  my_classname):
     student_ids = myclass["class"]["student_ids"]
     # print(student_ids)
     xml_string = create_group_xml(my_classname, student_ids)
-    print(xml_string)
+    #print(xml_string)
     url = f"{jamf_url}/JSSResource/usergroups/id/0"
     headers = {"Content-Type": "application/xml",
                "Accept": "application/xml",
                "Authorization": f"Bearer {token}"
                }
     # print(xml_string)
+    LOGGER.info("Gruppe wird erstellt. Das kann etwas dauern..")
     response = requests.post(url, headers=headers, data=xml_string)
     if response.status_code in (200, 201):
         LOGGER.info("Gruppe erfolgreich erstellt!")
