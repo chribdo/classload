@@ -76,7 +76,7 @@ def create_group_xml_from_class(class_data):
         student_id_element.text = str(student["id"])
     return ET.tostring(group_element, encoding="utf-8").decode("utf-8")
 
-def create_group_xml(name, liste):   #### Hier WEITERMACHEN!!!!!!!!!!!!!! Upload einzelner Gruppe
+def create_group_xml(name, liste):
     group_element = ET.Element("user_group")
 
     name_element = ET.SubElement(group_element, "name")
