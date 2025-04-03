@@ -6,6 +6,12 @@ from jamfscripts import get_config_value, refresh_token
 from jamfscripts.logging_config import LOGGER
 import csv
 
+def create_asset_xml(asset_tag):
+    top_element = ET.Element("mobile_device")
+    general_element = ET.SubElement(top_element, "general")
+    it_n_element = ET.SubElement(general_element, "asset_tag")
+    it_n_element.text = asset_tag
+    return ET.tostring(top_element, encoding="utf-8").decode("utf-8")
 
 def create_mobile_device_xml(geraetename, benutzername, asset_tag=None, phone=None ):   #### Hier WEITERMACHEN!!!!!!!!!!!!!! Upload einzelner Gruppe
     top_element = ET.Element("mobile_device")
@@ -53,8 +59,8 @@ def upload_device_information_(jamf_url, token, serial, geraetename, benutzernam
                "Accept": "application/xml",
                "Authorization": f"Bearer {token}"
                }
-    print(xml_string)
-    #LOGGER.info("Gruppe wird erstellt. Das kann etwas dauern..")
+    #print(xml_string)
+    #LOGGER.info("Gerät wird aktualisiert. Das kann etwas dauern..")
     response = requests.put(url, headers=headers, data=xml_string)
     #response = requests.get(url, headers=headers)
     if response.status_code in (200, 201):
@@ -64,10 +70,51 @@ def upload_device_information_(jamf_url, token, serial, geraetename, benutzernam
         LOGGER.info(response.status_code)
         LOGGER.error(f"Fehler beim Put: {response.text}")
 
+def upload_asset_information(jamf_url, token, serial, asset_tag):
+        xml_string = create_asset_xml( asset_tag)
+        url = f"{jamf_url}/JSSResource/mobiledevices/serialnumber/{serial}"
+        headers = {"Content-Type": "application/xml",
+                   "Accept": "application/xml",
+                   "Authorization": f"Bearer {token}"
+                   }
+        # print(xml_string)
+        #LOGGER.info("Gerät wird aktualisiert. Das kann etwas dauern..")
+        response = requests.put(url, headers=headers, data=xml_string)
+        # response = requests.get(url, headers=headers)
+        if response.status_code in (200, 201):
+            print(response.text)
+            LOGGER.info("Upload erfolgreich!")
+        else:
+            LOGGER.info(response.status_code)
+            LOGGER.error(f"Fehler beim Put: {response.text}")
+
+def it_nummern_hochladen(jamf_url, token, pfad_zur_csv):
+    with open(pfad_zur_csv, 'r', encoding='utf-8-sig', newline='') as f:
+        # BOM wird durch utf-8-sig automatisch entfernt
+        sample = f.read(1024)
+        f.seek(0)
+
+        # Trennzeichen automatisch erkennen
+        sniffer = csv.Sniffer()
+        dialect = sniffer.sniff(sample)
+
+        reader = csv.reader(f, dialect)
+        i = 4
+        LOGGER.info("Die Geräte werden aktualisiert...")
+        for zeile in reader:
+            i+=1
+            if (i % 5==0):
+                token=refresh_token(jamf_url, token)
+            if len(zeile) < 2:
+                continue  # Zeile überspringen, wenn nicht genug Spalten
+            it_nummer = zeile[0].strip()
+            seriennummer = zeile[1].strip()
+            if seriennummer.startswith("S"):
+                seriennummer = seriennummer[1:]
+            upload_asset_information(jamf_url, token, seriennummer, it_nummer)
 
 
-def doit(name, seriennummer):
-    print(f"doit(name='{name}', seriennummer='{seriennummer}')")
+
 
 def schueler_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
     with open(pfad_zur_csv, 'r', encoding='utf-8-sig', newline='') as f:
@@ -80,7 +127,8 @@ def schueler_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
         dialect = sniffer.sniff(sample)
 
         reader = csv.reader(f, dialect)
-        i = 4
+        LOGGER.info("Die Geräte werden aktualisiert...")
+        i = 1
         for zeile in reader:
             i+=1
             if (i % 5==0):
