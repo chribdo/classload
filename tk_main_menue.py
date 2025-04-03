@@ -77,6 +77,7 @@ class KlassenUploaderApp:
 
         # Buttons
         self.btn_konfiguration = tk.Button(root, text="Konfiguration", command=self.konfigurieren)
+        self.btn_sus_ipads_zuordnen = tk.Button(root, text="Schüler_innen-iPads zuordnen", command=self.schueler_ipads_zuordnen)
         self.btn_upload = tk.Button(root, text="Klassen-Upload", command=self.klassen_upload)
         self.btn_single_group_upload = tk.Button(root, text="Benutzergruppe zu existierender Klasse erzeugen", command=self.single_group_upload)
         self.btn_group_upload = tk.Button(root, text="Zu jeder Klasse eine Benutzergruppe erzeugen", command=self.group_upload)
@@ -87,6 +88,7 @@ class KlassenUploaderApp:
 
         # Buttons platzieren
         self.btn_konfiguration.pack(pady=5)
+        self.btn_sus_ipads_zuordnen.pack(pady=5)
         self.btn_upload.pack(pady=5)
         self.btn_single_group_upload.pack(pady=5)
         self.btn_group_upload.pack(pady=5)
@@ -199,6 +201,23 @@ class KlassenUploaderApp:
             teachergroup=get_config_value("TEACHER_GROUP_NAME")
             threading.Thread(target=self.klassenupload_ausfuehren, args=(dateipfad, praefix, teachergroup), daemon=True).start()
 
+    def schueler_ipads_zuordnen(self):
+        """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
+        antwort = askokcancel("Datei auswählen","Bitte csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer", )
+        #popup = tk.Toplevel(self.root)
+        #popup.title("Upload-Einstellungen")
+        #popup.geometry("600x300")
+        #popup.wait_window()
+        # Datei auswählen
+        if (antwort):
+          dateipfad = filedialog.askopenfilename(title="csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer",
+                                               filetypes=(("CSV-Dateien", "*.csv"), ("Alle Dateien", "*.*")))
+          if not dateipfad:
+            LOGGER.error("❌ Kein Dateipfad ausgewählt!")
+            return
+          else:
+            threading.Thread(target=schueler_ipads_aktualisieren, args=(JAMF_URL, TOKEN, dateipfad), daemon=True).start()
+
     def group_upload(self):
         """Wählt eine Datei aus und gibt ein Präfix ein, bevor eine Funktion ausgeführt wird."""
         # Präfix eingeben
@@ -236,6 +255,8 @@ class KlassenUploaderApp:
             set_config_value("INPUT_FILE_NAME", dateipfad)
             teachergroup=get_config_value("TEACHER_GROUP_NAME")
             threading.Thread(target=self.gruppen_upload_ausfuehren, args=(dateipfad, praefix, teachergroup), daemon=True).start()
+
+
 
     def klassen_loeschen(self):
         # Präfix eingeben
