@@ -214,3 +214,34 @@ def schueler_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
 
             upload_device_information_(jamf_url, token, seriennummer, geraetename, name)
 
+def lehrer_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
+    with open(pfad_zur_csv, 'r', encoding='utf-8-sig', newline='') as f:
+        # BOM wird durch utf-8-sig automatisch entfernt
+        sample = f.read(1024)
+        f.seek(0)
+
+        # Trennzeichen automatisch erkennen
+        sniffer = csv.Sniffer()
+        dialect = sniffer.sniff(sample)
+
+        reader = csv.reader(f, dialect)
+        LOGGER.info("Die Geräte werden aktualisiert...")
+        i = 1
+        for zeile in reader:
+            i+=1
+            if (i % 5==0):
+                token=refresh_token(jamf_url, token)
+            if len(zeile) < 3:
+                continue  # Zeile überspringen, wenn nicht genug Spalten
+
+            vorname = zeile[0].strip()
+            nachname = zeile[1].strip()
+            kuerzel = zeile[2].strip()
+            seriennummer = zeile[3].strip()
+
+            if seriennummer.startswith("S"):
+                seriennummer = seriennummer[1:]
+
+            name = f"{vorname} {nachname}"
+            upload_teacher_device_information_(jamf_url, token, seriennummer, name, kuerzel)
+
