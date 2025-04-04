@@ -128,8 +128,8 @@ def upload_teacher_device_information_(jamf_url, token, serial, lehrer_name, kue
         teacher_group_name=get_config_value("TEACHER_GROUP_NAME")
         jamfscripts.update_teacher_group(jamf_url, token, teacher_group_name, lehrername_postfix)
         if response.status_code in (200, 201):
-            print(response.text)
-            LOGGER.info("Lehrkraft erfolgreich der Lehrergruppe hinzugefügt")
+            #print(response.text)
+            LOGGER.info("OK")
         else:
             LOGGER.info(response.status_code)
             LOGGER.error(f"Lehrkraft konnte der Lehrergruppe nicht hinzugefügt werden: {response.text}")

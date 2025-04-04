@@ -78,6 +78,7 @@ class KlassenUploaderApp:
         # Buttons
         self.btn_konfiguration = tk.Button(root, text="Konfiguration", command=self.konfigurieren)
         self.btn_sus_ipads_zuordnen = tk.Button(root, text="Schüler_innen-iPads zuordnen", command=self.schueler_ipads_zuordnen)
+        self.btn_lehrer_ipads_zuordnen = tk.Button(root, text="Lehrkräfte-iPads zuordnen", command=self.lehrer_ipads_zuordnen)
         self.btn_it_nummern_hochladen = tk.Button(root, text="IT-Nummern/Asset-Tags hochladen", command=self.it_nummern_hochladen)
         self.btn_upload = tk.Button(root, text="Klassen-Upload", command=self.klassen_upload)
         self.btn_single_group_upload = tk.Button(root, text="Benutzergruppe zu existierender Klasse erzeugen", command=self.single_group_upload)
@@ -90,6 +91,7 @@ class KlassenUploaderApp:
         # Buttons platzieren
         self.btn_konfiguration.pack(pady=5)
         self.btn_sus_ipads_zuordnen.pack(pady=5)
+        self.btn_lehrer_ipads_zuordnen.pack(pady=5)
         self.btn_it_nummern_hochladen.pack(pady=5)
         self.btn_upload.pack(pady=5)
         self.btn_single_group_upload.pack(pady=5)
@@ -222,6 +224,20 @@ class KlassenUploaderApp:
             return
         else:
             threading.Thread(target=schueler_ipads_aktualisieren, args=(JAMF_URL, TOKEN, dateipfad), daemon=True).start()
+
+    def lehrer_ipads_zuordnen(self):
+        """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
+        messagebox.showinfo("Datei auswählen", "Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer")
+        # Datei auswählen
+        dateipfad = filedialog.askopenfilename(title="CSV-Auswahl",
+                                               filetypes=(("CSV-Dateien", "*.csv"), ("Alle Dateien", "*.*")))
+        if not dateipfad:
+            LOGGER.error("❌ Kein Dateipfad ausgewählt!")
+            return
+        else:
+            threading.Thread(target=lehrer_ipads_aktualisieren, args=(JAMF_URL, TOKEN, dateipfad),
+                             daemon=True).start()
+
     def it_nummern_hochladen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
         messagebox.showinfo("Datei auswählen", "Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer), Seriennummer")
