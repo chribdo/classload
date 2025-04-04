@@ -71,15 +71,25 @@ def refresh_token(JAMF_URL, token):
 
 
 def initialisiere(JAMF_URL, TOKEN):
+    LOGGER.info("Initialisiere...")
     fetched_id = big_class_merge.get_site_id(JAMF_URL, TOKEN)
     fetched_name = big_class_merge.get_site_name(JAMF_URL, TOKEN)
     sid = config.get_config_value("SITE_ID")
+    tpost = config.get_config_value("TEACHER_POSTFIX")
+    #LOGGER.info(tpost)
     fehlermeldung = "Nicht importierbar"
     if (sid == "" or sid == fehlermeldung) :
         sid = fetched_id
         if (sid == None):
             sid = fehlermeldung
         config.set_config_value("SITE_ID", sid)
+
+    if (tpost == "Nicht festgelegt" or tpost == fehlermeldung) :
+        if (tpost!=""):
+          tpost = " "+fetched_name+"L"
+        if (tpost == None):
+            tpost = fehlermeldung
+        config.set_config_value("TEACHER_POSTFIX", tpost)
 
     name = config.get_config_value("SITE_NAME")
     fehlermeldung = "Nicht importierbar"

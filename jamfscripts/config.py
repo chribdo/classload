@@ -2,7 +2,7 @@
 import json
 import os
 
-CONFIG_FILE = "config.json"
+CONFIG_FILE = "../config.json"
 
 # Standardwerte für die Konfigurationsdatei
 DEFAULT_CONFIG = {
@@ -13,6 +13,7 @@ DEFAULT_CONFIG = {
     "OUTPUT_FILE_CLASSES": "./alle_klassen.json",
     "OUTPUT_FILE_STUDENTS": "./merged_schueler.json",
     "INPUT_DELETE_FILENAME": "./daten/deleteUsers.csv",
+    "TEACHER_POSTFIX": "Nicht festgelegt"
 }
 
 def load_config():

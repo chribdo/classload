@@ -97,6 +97,31 @@ def create_group_xml(name, liste):
         student_id_element.text = str(student)
     return ET.tostring(group_element, encoding="utf-8").decode("utf-8")
 
+def create_user_addition_xml(user_name):
+    group_element = ET.Element("user_group")
+    # name_element = ET.SubElement(group_element, "name")
+    # name_element.text = group_name
+    useradd_element = ET.SubElement(group_element, "user_additions")
+    user_element = ET.SubElement(useradd_element, "user")
+    user_name_element = ET.SubElement(user_element, "username")
+    user_name_element.text = user_name
+    return ET.tostring(group_element, encoding="utf-8").decode("utf-8")
+
+def update_teacher_group(jamf_url, token, teacher_group_name, teacher_name):
+    xml_string=create_user_addition_xml(teacher_name)
+    url = f"{jamf_url}/JSSResource/usergroups/name/{teacher_group_name}"
+    headers = {"Content-Type": "application/xml",
+               "Accept": "application/xml",
+               "Authorization": f"Bearer {token}"
+               }
+    # print(xml_string)
+    LOGGER.info("Benutzer wird hinzugefügt. Das kann etwas dauern..")
+    response = requests.put(url, headers=headers, data=xml_string)
+    if response.status_code in (200, 201):
+        LOGGER.info("Lehrkraft erfolgreich der Lehrergruppe hinzugefügt!")
+    else:
+        LOGGER.info(response.status_code)
+        LOGGER.error(f"Fehler beim Hinzufügen zur Gruppe: {response.text}")
 
 def create_single_user_group(jamf_url, token,  my_classname):
     myclass = get_class(jamf_url, token, my_classname)
