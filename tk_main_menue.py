@@ -117,6 +117,7 @@ class KlassenUploaderApp:
             set_config_value("OUTPUT_FILE_CLASSES", entry_output_classes.get())
             set_config_value("OUTPUT_FILE_STUDENTS", entry_output_sus.get())
             set_config_value("POSTFIX", entry_postfix.get())
+            set_config_value("TEACHER_POSTFIX", entry_lehrkraefte_postfix.get())
             messagebox.showinfo("Eingaben gespeichert", "Eingaben gespeichert")
             popup.destroy()
 
@@ -161,6 +162,12 @@ class KlassenUploaderApp:
         pf = get_config_value("POSTFIX")
         entry_postfix.insert(0, pf)
         entry_postfix.grid(row=4, column=1, padx=5, pady=2)
+
+        tk.Label(popup, text="Lehrkräfte-POSTFIX:").grid(row=5, column=0, sticky='e', padx=5, pady=2)
+        entry_lehrkraefte_postfix = tk.Entry(popup)
+        pf = get_config_value("TEACHER_POSTFIX")
+        entry_lehrkraefte_postfix.insert(0, pf)
+        entry_lehrkraefte_postfix.grid(row=5, column=1, padx=5, pady=2)
 
         # Speichern-Button
         tk.Button(popup, text="Speichern", command=speichern).grid(row=6, column=0, columnspan=2, pady=10)
