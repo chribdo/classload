@@ -1,7 +1,7 @@
 from setuptools import setup
 
 APP = ['tk_main_menue.py']
-DATA_FILES = [('icon.icns', ['icon.icns'])]  # Icon muss im Projektverzeichnis liegen
+DATA_FILES = []  # Icon muss im Projektverzeichnis liegen
 OPTIONS = {
     'argv_emulation': False,  # Debug: Terminalfenster beim Doppelklick sichtbar
     'iconfile': 'icon.icns',
