@@ -2,17 +2,18 @@
 import json
 import os
 
-CONFIG_FILE = "../config.json"
+CONFIG_FILE = os.path.join(os.getcwd(), "config.json")
+#CONFIG_FILE = "../config.json"
 
 # Standardwerte für die Konfigurationsdatei
 DEFAULT_CONFIG = {
     "SITE_ID": "",
     "POSTFIX": "",
-    "INPUT_FILENAME": "./daten/iserv_schueler.csv",
+    "INPUT_FILENAME": os.path.join(os.getcwd(), "daten/iserv_schueler.json"),
     "TEACHER_GROUP_NAME": "",
-    "OUTPUT_FILE_CLASSES": "./alle_klassen.json",
-    "OUTPUT_FILE_STUDENTS": "./merged_schueler.json",
-    "INPUT_DELETE_FILENAME": "./daten/deleteUsers.csv",
+    "OUTPUT_FILE_CLASSES": os.path.join(os.getcwd(), "daten/alle_klassen.json"),
+    "OUTPUT_FILE_STUDENTS": os.path.join(os.getcwd(), "daten/merged_schueler.json"),
+    "INPUT_DELETE_FILENAME": os.path.join(os.getcwd(), "daten/delete_users.json"),
     "TEACHER_POSTFIX": "Nicht festgelegt"
 }
 
