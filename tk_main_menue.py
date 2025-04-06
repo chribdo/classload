@@ -1,7 +1,8 @@
 import ttkbootstrap as ttk
 import tkinter as tk
-from tkinter import messagebox, filedialog, simpledialog, scrolledtext
+from tkinter import Menu, messagebox, filedialog, simpledialog, scrolledtext
 from tkinter.messagebox import askokcancel
+import platform
 
 from jamfscripts import *
 import os, sys, getpass
@@ -10,6 +11,15 @@ import time
 
 JAMF_URL=""
 TOKEN=""
+
+def zeige_hilfe():
+    messagebox.showinfo("Hilfe", "Hier steht eine Hilfebeschreibung zum JAMF-Tool.")
+
+def zeige_info():
+    messagebox.showinfo("Über", "JAMF Tool\nVersion 1.0\n(c) 2025")
+
+def beenden():
+    root.quit()
 
 class JamfLogin:
     def __init__(self, root):
@@ -433,6 +443,26 @@ root = ttk.Window(themename='cosmo')
 root.withdraw()
 app = JamfLogin(root)
 
+menubar = Menu(root)
+# Datei-Menü
+datei_menu = Menu(menubar, tearoff=0)
+datei_menu.add_command(label="Beenden", command=beenden)
+menubar.add_cascade(label="Datei", menu=datei_menu)
+
+# Hilfe-Menü
+hilfe_menu = Menu(menubar, tearoff=0)
+hilfe_menu.add_command(label="Hilfe anzeigen", command=zeige_hilfe)
+hilfe_menu.add_separator()
+hilfe_menu.add_command(label="Über", command=zeige_info)
+menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
+
+# Menü dem Fenster zuweisen
+root.config(menu=menubar)
+
+# 🍏 Spezielle macOS-Integration
+if platform.system() == "Darwin":
+    root.createcommand('tk::mac::ShowHelp', zeige_hilfe)
+    root.createcommand('tk::mac::ShowAbout', zeige_info)
 
 root.mainloop()
 
