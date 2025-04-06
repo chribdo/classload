@@ -1,10 +1,10 @@
 from setuptools import setup
 
 APP = ['tk_main_menue_v060425.py']
-DATA_FILES = [('assets', ['assets/icon1.icns'])]  # optional: Bilder etc.
+DATA_FILES = [('assets', ['assets/icon.icns'])]  # optional: Bilder etc.
 OPTIONS = {
     'argv_emulation': True,
-    'iconfile': 'assets/icon1.icns',
+    'iconfile': 'assets/icon.icns',
     'packages': ['tkinter'],
     'plist': {
         'CFBundleName': 'Classload',
