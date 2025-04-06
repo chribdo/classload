@@ -14,7 +14,7 @@ TOKEN=""
 class JamfLogin:
     def __init__(self, root):
         self.root = root
-        self.root.withdraw()  # Hauptfenster verbergen
+        # self.root.withdraw()  # Hauptfenster verbergen
 
         self.login_window = tk.Toplevel(root)
         self.login_window.title("JAMF Login")
@@ -427,16 +427,13 @@ class KlassenUploaderApp:
         self.root.after(1000, self.update_log)
 
 
-
-# Hauptfenster erstellen
-root = tk.Tk()
-root.withdraw()
-app = JamfLogin(root)
-
-
-root.mainloop()
-
-root.deiconify()
+if __name__ == "__main__":
+    # Hauptfenster erstellen
+    root = tk.Tk()
+    # root.withdraw()
+    app = JamfLogin(root)
+    root.mainloop()
+    #root.deiconify()
 
 
 
