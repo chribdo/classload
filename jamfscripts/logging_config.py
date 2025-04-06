@@ -11,7 +11,7 @@ def setup_logger():
     console_handler = RichHandler()
 
     # FileHandler für die Logdatei
-    file_handler = logging.FileHandler(LOG_FILE)
+    file_handler = logging.FileHandler(LOG_FILE, encoding='utf-8')
     file_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     file_handler.setFormatter(file_formatter)
     if os.path.isfile(LOG_FILE) and os.path.getsize(LOG_FILE) > 0:

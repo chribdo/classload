@@ -9,6 +9,7 @@ from jamfscripts.logging_config import LOGGER
 from jamfscripts import config,big_class_merge
 
 """Funktion  zur Verschlüsselung"""
+
 def get_cipher():
   load_dotenv()
   env_file = ".env"
