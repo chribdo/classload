@@ -14,7 +14,7 @@ TOKEN=""
 class JamfLogin:
     def __init__(self, root):
         self.root = root
-        self.root.withdraw()  # Hauptfenster verbergen
+        # self.root.withdraw()  # Hauptfenster verbergen
 
         self.login_window = tk.Toplevel(root)
         self.login_window.title("JAMF Login")
@@ -435,19 +435,6 @@ if __name__ == "__main__":
     root.mainloop()
     #root.deiconify()
 
-def main():
-    root = tk.Tk()
-    root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
 
-    login = JamfLogin(root)
 
-    root.mainloop()
 
-if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        import traceback
-        with open("/tmp/classload_error.log", "w") as f:
-            f.write(traceback.format_exc())
-        raise

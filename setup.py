@@ -1,6 +1,6 @@
 from setuptools import setup
 
-APP = ['tk_main_menue.py']
+APP = ['tk_main_menue_v060425.py']
 DATA_FILES = [('assets', ['assets/icon.icns'])]  # Icon-Datei (optional)
 OPTIONS = {
     'argv_emulation': False,  # Debug-Modus: Terminal öffnet sich bei Doppelklick
