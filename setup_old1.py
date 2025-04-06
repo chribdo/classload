@@ -6,13 +6,13 @@ OPTIONS = {
     'argv_emulation': False,  # Debug: Terminalfenster beim Doppelklick sichtbar
     'iconfile': 'icon.icns',
     'includes': [
-        'requests',
-        'charset_normalizer',
-        '_cffi_backend',
-        'certifi',
-        'dotenv',
-        'ttkbootstrap',
-    ],
+    'requests',
+    'charset_normalizer',
+    '_cffi_backend',
+    'certifi',
+    'python_dotenv',
+    'ttkbootstrap',
+     ],
     'packages': ['cryptography', 'cffi'],
     'plist': {
         'CFBundleName': 'Classload',
