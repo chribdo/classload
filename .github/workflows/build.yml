@@ -58,6 +58,10 @@ jobs:
         run: |
           python setup.py py2app
 
+      - name: Verify Resources
+        run: |
+          ls -l dist/Classload.app/Contents/Resources
+
       - name: Zip App Bundle
         run: |
           cd dist
