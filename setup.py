@@ -1,11 +1,11 @@
 from setuptools import setup
 
 APP = ['tk_main_menue.py']
-DATA_FILES = [('assets', ['assets/icon.icns'])]  # Icon-Datei (optional)
+DATA_FILES = [('icon.icns', ['icon.icns'])]  # Icon muss im Projektverzeichnis liegen
 OPTIONS = {
-    'argv_emulation': False,  # Debug-Modus: Terminal öffnet sich bei Doppelklick
+    'argv_emulation': False,  # Debug: Terminalfenster beim Doppelklick sichtbar
     'iconfile': 'icon.icns',
-    'packages': ['tkinter', 'requests'],
+    'includes': ['requests'],
     'plist': {
         'CFBundleName': 'Classload',
         'CFBundleDisplayName': 'Classload',
@@ -13,7 +13,9 @@ OPTIONS = {
         'CFBundleVersion': '1.0',
         'CFBundleShortVersionString': '1.0',
         'NSHighResolutionCapable': True,
+        'CFBundleIconFile': 'icon',  # Wichtig: ohne .icns-Endung
     },
+    'verbose': 1,
 }
 
 setup(
