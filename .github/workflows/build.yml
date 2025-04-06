@@ -25,7 +25,7 @@ jobs:
 
       - name: Build EXE
         run: |
-          pyinstaller --onefile --windowed --name "Class Connection" --icon=./assets/icon.ico tk_main_menue.py
+          pyinstaller --onefile --windowed --name "Classload" --icon=./assets/icon.ico tk_main_menue.py
 
       - name: Upload Windows EXE
         uses: actions/upload-artifact@v4
@@ -52,7 +52,7 @@ jobs:
 
       - name: Build macOS APP
         run: |
-          pyinstaller --onefile --windowed --name "Class Connection" --icon=./assets/icon.icns tk_main_menue.py
+          pyinstaller --windowed --name "Classload" --icon=./assets/icon.icns tk_main_menue.py
 
       - name: Upload macOS App
         uses: actions/upload-artifact@v4
@@ -79,7 +79,7 @@ jobs:
 
       - name: Build Linux Executable
         run: |
-          pyinstaller --onefile --windowed --name "Class Connection" tk_main_menue.py
+          pyinstaller --onefile --windowed --name "Classload" tk_main_menue.py
       - name: Upload Linux Binary
         uses: actions/upload-artifact@v4
         with:

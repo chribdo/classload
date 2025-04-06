@@ -1,0 +1,38 @@
+NUTZUNGSLIZENZ – NICHT KOMMERZIELLE SCHULNUTZUNG
+
+1. Zweck der Lizenz
+
+Diese Software wird unter der folgenden Lizenz bereitgestellt. Ziel ist es, Privatpersonen sowie allgemeinbildenden Schulen eine kostenlose Nutzung zu ermöglichen, während die kommerzielle oder institutionelle Nutzung durch Dritte untersagt wird, sofern keine ausdrückliche Genehmigung vorliegt.
+
+2. Erlaubte Nutzung
+
+Die Nutzung der Software ist ausschließlich gestattet für:
+– Privatpersonen zur rein privaten, nicht-kommerziellen Verwendung,
+– Lehrkräfte zur Nutzung im schulischen Kontext,
+– allgemeinbildende Schulen (z.B. Grundschulen, Mittelschulen, Realschulen, Gesamtschulen, Gymnasien).
+
+3. Eingeschränkte Testnutzung für Dritte
+
+Die nachfolgend ausgeschlossenen Gruppen dürfen die Software zu Evaluierungs- oder Testzwecken für einen Zeitraum von maximal sieben (7) Kalendertagen nutzen. Die Nutzung in Produktivsystemen oder im Rahmen von Dienstleistungen ist in diesem Zeitraum nicht gestattet.
+
+4. Untersagte Nutzung
+
+Untersagt ist die Nutzung der Software durch:
+– IT-Dienstleister, Systemhäuser oder andere Unternehmen, die die Software im Rahmen von Dienstleistungen, Systemintegration, Support oder Hosting einsetzen – auch im Auftrag Dritter,
+– Hochschulen, Universitäten, Forschungseinrichtungen oder sonstige nicht allgemeinbildende Bildungseinrichtungen,
+– Organisationen, die die Software oder Teile davon in kommerzielle oder institutionelle Produkte oder Leistungen integrieren,
+– jede Form des Weiterverkaufs, der Vermietung oder Lizenzvergabe an Dritte ohne schriftliche Zustimmung.
+
+5. Quellcode
+
+Der auf GitHub veröffentlichte Quellcode dient ausschließlich der Transparenz und der nicht-kommerziellen Nutzung im Sinne dieser Lizenz. Er darf ohne ausdrückliche schriftliche Genehmigung weder kopiert, verändert, noch in andere Projekte integriert werden, sofern diese nicht unter Punkt 2 fallende Zwecke verfolgen.
+
+6. Haftungsausschluss
+
+Diese Software wird „wie sie ist“ bereitgestellt, ohne jegliche Garantie oder Zusicherung. Der Entwickler übernimmt keine Haftung für direkte oder indirekte Schäden, Datenverlust oder sonstige Folgen, die durch die Nutzung dieser Software entstehen.
+
+7. Kontakt für Sonderlizenz
+
+Für jegliche Nutzung außerhalb der in Punkt 2 und 3 genannten Zwecke ist eine schriftliche Lizenzvereinbarung erforderlich. Bitte wenden Sie sich hierfür an den Entwickler unter: [E-Mail-Adresse einfügen]
+
+© CHRIBDO, 2025

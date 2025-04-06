@@ -71,7 +71,7 @@ class JamfLogin:
 class KlassenUploaderApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("JAMF Schulverwaltung")
+        self.root.title("Classload")
         self.root.geometry("1200x400")
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
         button_frame = tk.Frame(root)
