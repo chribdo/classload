@@ -58,10 +58,6 @@ jobs:
         run: |
           python setup.py py2app
 
-      - name: Optional test launch
-        run: |
-          ./dist/Classload.app/Contents/MacOS/Classload || true
-
       - name: Zip App Bundle
         run: |
           cd dist
