@@ -1,8 +1,7 @@
-import ttkbootstrap as ttk
 import tkinter as tk
-from tkinter import Menu, messagebox, filedialog, simpledialog, scrolledtext
+
+from tkinter import messagebox, Toplevel, scrolledtext, simpledialog, filedialog
 from tkinter.messagebox import askokcancel
-import platform
 
 from jamfscripts import *
 import os, sys, getpass
@@ -12,40 +11,31 @@ import time
 JAMF_URL=""
 TOKEN=""
 
-def zeige_hilfe():
-    messagebox.showinfo("Hilfe", "Hier steht eine Hilfebeschreibung zum JAMF-Tool.")
-
-def zeige_info():
-    messagebox.showinfo("Über", "JAMF Tool\nVersion 1.0\n(c) 2025")
-
-def beenden():
-    root.quit()
-
 class JamfLogin:
     def __init__(self, root):
         self.root = root
         self.root.withdraw()  # Hauptfenster verbergen
 
-        self.login_window = ttk.Toplevel(root)
+        self.login_window = tk.Toplevel(root)
         self.login_window.title("JAMF Login")
         self.login_window.geometry("600x300")
         self.login_window.resizable(False, False)
         self.login_window.protocol("WM_DELETE_WINDOW", self.on_close)
 
-        ttk.Label(self.login_window, text="JAMF-URL:").pack(pady=5)
-        self.url_entry = ttk.Entry(self.login_window, width=40)
+        tk.Label(self.login_window, text="JAMF-URL:").pack(pady=5)
+        self.url_entry = tk.Entry(self.login_window, width=40)
         self.url_entry.insert(0, "https://dosys.jamfcloud.com")
         self.url_entry.pack()
 
-        ttk.Label(self.login_window, text="Benutzername:").pack(pady=5)
-        self.username_entry = ttk.Entry(self.login_window, width=40)
+        tk.Label(self.login_window, text="Benutzername:").pack(pady=5)
+        self.username_entry = tk.Entry(self.login_window, width=40)
         self.username_entry.pack()
 
-        ttk.Label(self.login_window, text="Passwort:").pack(pady=5)
-        self.password_entry = ttk.Entry(self.login_window, width=40, show="*")
+        tk.Label(self.login_window, text="Passwort:").pack(pady=5)
+        self.password_entry = tk.Entry(self.login_window, width=40, show="*")
         self.password_entry.pack()
 
-        self.login_button = ttk.Button(self.login_window, text="Login", command=self.validate_login)
+        self.login_button = tk.Button(self.login_window, text="Login", command=self.validate_login)
         self.login_button.pack(pady=10)
 
     def on_close(self):
@@ -81,24 +71,24 @@ class JamfLogin:
 class KlassenUploaderApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Class Connection")
-        self.root.geometry("1000x400")
+        self.root.title("JAMF Schulverwaltung")
+        self.root.geometry("1200x400")
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
-        button_frame = ttk.Frame(root)
+        button_frame = tk.Frame(root)
         button_frame.pack(padx=10, pady=10)
 
         # Buttons
-        self.btn_konfiguration = ttk.Button(button_frame, text="Konfiguration", command=self.konfigurieren)
-        self.btn_sus_ipads_zuordnen = ttk.Button(button_frame, text="Schüler_innen-iPads zuordnen", command=self.schueler_ipads_zuordnen)
-        self.btn_lehrer_ipads_zuordnen = ttk.Button(button_frame, text="Lehrkräfte-iPads zuordnen", command=self.lehrer_ipads_zuordnen)
-        self.btn_it_nummern_hochladen = ttk.Button(button_frame, text="IT-Nummern/Asset-Tags hochladen", command=self.it_nummern_hochladen)
-        self.btn_upload = ttk.Button(button_frame, text="Klassen-Upload", command=self.klassen_upload)
-        self.btn_single_group_upload = ttk.Button(button_frame, text="Benutzergruppe zu existierender Klasse erzeugen", command=self.single_group_upload)
-        self.btn_group_upload = ttk.Button(button_frame, text="Zu jeder Klasse eine Benutzergruppe erzeugen", command=self.group_upload)
-        self.btn_gruppen_loeschen = ttk.Button(button_frame, text="Gruppen löschen", command=self.gruppen_loeschen)
-        self.btn_loeschen = ttk.Button(button_frame, text="Klassen löschen", command=self.klassen_loeschen)
+        self.btn_konfiguration = tk.Button(button_frame, text="Konfiguration", command=self.konfigurieren)
+        self.btn_sus_ipads_zuordnen = tk.Button(button_frame, text="Schüler_innen-iPads zuordnen", command=self.schueler_ipads_zuordnen)
+        self.btn_lehrer_ipads_zuordnen = tk.Button(button_frame, text="Lehrkräfte-iPads zuordnen", command=self.lehrer_ipads_zuordnen)
+        self.btn_it_nummern_hochladen = tk.Button(button_frame, text="IT-Nummern/Asset-Tags hochladen", command=self.it_nummern_hochladen)
+        self.btn_upload = tk.Button(button_frame, text="Klassen-Upload", command=self.klassen_upload)
+        self.btn_single_group_upload = tk.Button(button_frame, text="Benutzergruppe zu existierender Klasse erzeugen", command=self.single_group_upload)
+        self.btn_group_upload = tk.Button(button_frame, text="Zu jeder Klasse eine Benutzergruppe erzeugen", command=self.group_upload)
+        self.btn_gruppen_loeschen = tk.Button(button_frame, text="Gruppen löschen", command=self.gruppen_loeschen)
+        self.btn_loeschen = tk.Button(button_frame, text="Klassen löschen", command=self.klassen_loeschen)
 
-        self.btn_del_users = ttk.Button(button_frame, text="Benutzer ohne Mobilgerät löschen", command=self.delete_users_wo_md)
+        self.btn_del_users = tk.Button(button_frame, text="Benutzer ohne Mobilgerät löschen", command=self.delete_users_wo_md)
 
         self.btn_konfiguration.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.btn_sus_ipads_zuordnen.grid(row=1, column=0, padx=5, pady=5, sticky="ew")
@@ -151,65 +141,65 @@ class KlassenUploaderApp:
 
 
         # Hauptfenster
-        root = ttk.Window(themename='flatly')
+        root = tk.Tk()
         root.withdraw()  # Hauptfenster ausblenden
 
         # Popup-Fenster
-        popup = ttk.Toplevel()
+        popup = tk.Toplevel()
         popup.title("Formular")
         popup.geometry("700x250")
 
         # Labels und Eingabefelder
-        ttk.Label(popup, text="Statische Benutzergruppe aller Lehrkräfte in JAMF:").grid(row=0, column=0, sticky='e', padx=5, pady=2)
-        entry_teachergroup = ttk.Entry(popup)
+        tk.Label(popup, text="Statische Benutzergruppe aller Lehrkräfte in JAMF:").grid(row=0, column=0, sticky='e', padx=5, pady=2)
+        entry_teachergroup = tk.Entry(popup)
         tg=config.get_config_value("TEACHER_GROUP_NAME")
         entry_teachergroup.insert(0, tg)
         entry_teachergroup.grid(row=0, column=1, padx=5, pady=2)
 
-        ttk.Label(popup, text="SITE-ID:").grid(row=1, column=0, sticky='e', padx=5, pady=2)
-        entry_site_id = ttk.Entry(popup)
+        tk.Label(popup, text="SITE-ID:").grid(row=1, column=0, sticky='e', padx=5, pady=2)
+        entry_site_id = tk.Entry(popup)
         sid = get_config_value("SITE_ID")
         entry_site_id.insert(0, sid)
         entry_site_id.grid(row=1, column=1, padx=5, pady=2)
 
-        ttk.Label(popup,  text="Pfad zur Ausgabe aktualisierter Schüler:").grid(row=2, column=0, sticky='e', padx=5, pady=2)
-        entry_output_sus = ttk.Entry(popup)
+        tk.Label(popup,  text="Pfad zur Ausgabe aktualisierter Schüler:").grid(row=2, column=0, sticky='e', padx=5, pady=2)
+        entry_output_sus = tk.Entry(popup)
         ofs = get_config_value("OUTPUT_FILE_STUDENTS")
         entry_output_sus.insert(0, ofs)
         entry_output_sus.grid(row=2, column=1, padx=5, pady=2)
 
-        ttk.Label(popup, text="Pfad zur Ausgabe der Classroom-Klassen-Daten:").grid(row=3, column=0, sticky='e', padx=5, pady=2)
-        entry_output_classes = ttk.Entry(popup)
+        tk.Label(popup, text="Pfad zur Ausgabe der Classroom-Klassen-Daten:").grid(row=3, column=0, sticky='e', padx=5, pady=2)
+        entry_output_classes = tk.Entry(popup)
         ofc = get_config_value("OUTPUT_FILE_CLASSES")
         entry_output_classes.insert(0, ofc)
         entry_output_classes.grid(row=3, column=1, padx=5, pady=2)
 
-        ttk.Label(popup, text="Mögliches Postfix für JAMF-Schüler-Benutzer ggf. mit Leerzeichen:").grid(row=4, column=0, sticky='e', padx=5, pady=2)
-        entry_postfix = ttk.Entry(popup)
+        tk.Label(popup, text="Mögliches Postfix für JAMF-Schüler-Benutzer ggf. mit Leerzeichen:").grid(row=4, column=0, sticky='e', padx=5, pady=2)
+        entry_postfix = tk.Entry(popup)
         pf = get_config_value("POSTFIX")
         entry_postfix.insert(0, pf)
         entry_postfix.grid(row=4, column=1, padx=5, pady=2)
 
-        ttk.Label(popup, text="Lehrkräfte-POSTFIX:").grid(row=5, column=0, sticky='e', padx=5, pady=2)
-        entry_lehrkraefte_postfix = ttk.Entry(popup)
+        tk.Label(popup, text="Lehrkräfte-POSTFIX:").grid(row=5, column=0, sticky='e', padx=5, pady=2)
+        entry_lehrkraefte_postfix = tk.Entry(popup)
         pf = get_config_value("TEACHER_POSTFIX")
         entry_lehrkraefte_postfix.insert(0, pf)
         entry_lehrkraefte_postfix.grid(row=5, column=1, padx=5, pady=2)
 
         # Speichern-Button
-        ttk.Button(popup, text="Speichern", command=speichern).grid(row=6, column=0, columnspan=2, pady=10)
+        tk.Button(popup, text="Speichern", command=speichern).grid(row=6, column=0, columnspan=2, pady=10)
 
     def klassen_upload(self):
         """Wählt eine Datei aus und gibt ein Präfix ein, bevor eine Funktion ausgeführt wird."""
         # Präfix eingeben
-        popup = ttk.Toplevel(self.root)
+        popup = tk.Toplevel(self.root)
         popup.title("Upload-Einstellungen")
         popup.geometry("600x300")
-        ttk.Label(popup, text="Präfix für neue Klassen:").pack(pady=5)
-        prefix_entry = ttk.Entry(popup)
+        tk.Label(popup, text="Präfix für neue Klassen:").pack(pady=5)
+        prefix_entry = tk.Entry(popup)
         prefix_entry.pack(pady=5)
-        ttk.Label(popup, text="Name der statischen JAMF-Lehrer-Benutzergruppe:").pack(pady=5)
-        teachergroup_entry = ttk.Entry(popup)
+        tk.Label(popup, text="Name der statischen JAMF-Lehrer-Benutzergruppe:").pack(pady=5)
+        teachergroup_entry = tk.Entry(popup)
         teachergroup_entry.insert(0, get_config_value("TEACHER_GROUP_NAME"))
         teachergroup_entry.pack(pady=5)
         praefix=""
@@ -223,7 +213,7 @@ class KlassenUploaderApp:
                 return
             popup.destroy()
 
-        ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
+        tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
         popup.wait_window()
         # Datei auswählen
         dateipfad = config.get_config_value("INPUT_FILENAME")
@@ -280,14 +270,14 @@ class KlassenUploaderApp:
     def group_upload(self):
         """Wählt eine Datei aus und gibt ein Präfix ein, bevor eine Funktion ausgeführt wird."""
         # Präfix eingeben
-        popup = ttk.Toplevel(self.root)
+        popup = tk.Toplevel(self.root)
         popup.title("Upload-Einstellungen")
         popup.geometry("600x300")
-        ttk.Label(popup, text="Präfix für neue Statische Benutzergruppen:").pack(pady=5)
-        prefix_entry = ttk.Entry(popup)
+        tk.Label(popup, text="Präfix für neue Statische Benutzergruppen:").pack(pady=5)
+        prefix_entry = tk.Entry(popup)
         prefix_entry.pack(pady=5)
-        ttk.Label(popup, text="Name der statischen JAMF-Lehrer-Benutzergruppe:").pack(pady=5)
-        teachergroup_entry = ttk.Entry(popup)
+        tk.Label(popup, text="Name der statischen JAMF-Lehrer-Benutzergruppe:").pack(pady=5)
+        teachergroup_entry = tk.Entry(popup)
         teachergroup_entry.insert(0, get_config_value("TEACHER_GROUP_NAME"))
         teachergroup_entry.pack(pady=5)
         praefix=""
@@ -301,7 +291,7 @@ class KlassenUploaderApp:
                 return
             popup.destroy()
 
-        ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
+        tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
         popup.wait_window()
         # Datei auswählen
         dateipfad = config.get_config_value("INPUT_FILENAME")
@@ -319,11 +309,11 @@ class KlassenUploaderApp:
 
     def klassen_loeschen(self):
         # Präfix eingeben
-        popup = ttk.Toplevel(self.root)
+        popup = tk.Toplevel(self.root)
         popup.title("Klassen-Präfix")
         popup.geometry("600x300")
-        ttk.Label(popup, text="Bitte das Klassen-Präfix, der Klassen eingeben, die gelöscht werden sollen: ").pack(pady=5)
-        prefix_entry = ttk.Entry(popup)
+        tk.Label(popup, text="Bitte das Klassen-Präfix, der Klassen eingeben, die gelöscht werden sollen: ").pack(pady=5)
+        prefix_entry = tk.Entry(popup)
         prefix_entry.pack(pady=5)
 
         def on_submit():
@@ -335,14 +325,14 @@ class KlassenUploaderApp:
             popup.destroy()
             threading.Thread(target=self.klassen_loeschen_ausfuehren, args=(del_praefix,), daemon=True).start()
 
-        ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
+        tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
 
     def single_group_upload(self):
-        popup = ttk.Toplevel(self.root)
+        popup = tk.Toplevel(self.root)
         popup.title("Klassen-Namen eingeben")
         popup.geometry("800x200")
-        ttk.Label(popup, text="Bitte den Namen, der Klassen eingeben, zu der eine statische Benutzergruppe angelegt werden soll: ").pack(pady=5)
-        class_entry = ttk.Entry(popup)
+        tk.Label(popup, text="Bitte den Namen, der Klassen eingeben, zu der eine statische Benutzergruppe angelegt werden soll: ").pack(pady=5)
+        class_entry = tk.Entry(popup)
         class_entry.pack(pady=5)
 
         def on_submit():
@@ -354,16 +344,16 @@ class KlassenUploaderApp:
             popup.destroy()
             threading.Thread(target=create_single_user_group, args=(JAMF_URL, TOKEN, classname), daemon=True).start()
 
-        ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
+        tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
 
     def gruppen_loeschen(self):
         # Präfix eingeben
-        popup = ttk.Toplevel(self.root)
+        popup = tk.Toplevel(self.root)
         popup.title("Gruppen-Präfix")
         popup.geometry("600x300")
-        ttk.Label(popup, text="Bitte das Gruppen-Präfix, der Benutzergruppen eingeben, die gelöscht werden sollen: ").pack(
+        tk.Label(popup, text="Bitte das Gruppen-Präfix, der Benutzergruppen eingeben, die gelöscht werden sollen: ").pack(
             pady=5)
-        prefix_entry = ttk.Entry(popup)
+        prefix_entry = tk.Entry(popup)
         prefix_entry.pack(pady=5)
 
         def on_submit():
@@ -375,7 +365,7 @@ class KlassenUploaderApp:
             popup.destroy()
             threading.Thread(target=self.gruppen_loeschen_ausfuehren, args=(del_praefix,), daemon=True).start()
 
-        ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
+        tk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
 
     def delete_users_wo_md(self):
         ok_del=askokcancel("Bestätigen", "Alle Benutzer ohne Mobilgerät werden gelöscht (Lehrkräfte ausgenommen).")
@@ -439,30 +429,10 @@ class KlassenUploaderApp:
 
 
 # Hauptfenster erstellen
-root = ttk.Window(themename='cosmo')
+root = tk.Tk()
 root.withdraw()
 app = JamfLogin(root)
 
-menubar = Menu(root)
-# Datei-Menü
-datei_menu = Menu(menubar, tearoff=0)
-datei_menu.add_command(label="Beenden", command=beenden)
-menubar.add_cascade(label="Datei", menu=datei_menu)
-
-# Hilfe-Menü
-hilfe_menu = Menu(menubar, tearoff=0)
-hilfe_menu.add_command(label="Hilfe anzeigen", command=zeige_hilfe)
-hilfe_menu.add_separator()
-hilfe_menu.add_command(label="Über", command=zeige_info)
-menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
-
-# Menü dem Fenster zuweisen
-root.config(menu=menubar)
-
-# 🍏 Spezielle macOS-Integration
-if platform.system() == "Darwin":
-    root.createcommand('tk::mac::ShowHelp', zeige_hilfe)
-    root.createcommand('tk::mac::ShowAbout', zeige_info)
 
 root.mainloop()
 
