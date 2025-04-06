@@ -2,7 +2,8 @@
 import logging, os
 from rich.logging import RichHandler
 
-LOG_FILE="../logdatei.log"
+#LOG_FILE="../logdatei.log"
+LOG_FILE = os.path.join(os.getcwd(), "logdatei.log")
 def setup_logger():
     logger = logging.getLogger("rich_logger")
     logger.setLevel(logging.DEBUG)  # Setze Log-Level auf DEBUG
