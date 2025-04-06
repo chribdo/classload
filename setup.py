@@ -5,7 +5,15 @@ DATA_FILES = []  # Icon muss im Projektverzeichnis liegen
 OPTIONS = {
     'argv_emulation': False,  # Debug: Terminalfenster beim Doppelklick sichtbar
     'iconfile': 'icon.icns',
-    'includes': ['requests'],
+    'includes': [
+    'requests',
+    'charset_normalizer',
+    '_cffi_backend',
+    'certifi',
+    'python_dotenv',
+    'ttkbootstrap',
+     ],
+    'packages': ['cryptography', 'cffi'],
     'plist': {
         'CFBundleName': 'Classload',
         'CFBundleDisplayName': 'Classload',
