@@ -50,9 +50,17 @@ jobs:
           pip install -r requirements.txt
           pip install py2app
 
+      - name: Optional sanity check
+        run: |
+          python -c "import requests, cryptography, cffi, charset_normalizer, dotenv, ttkbootstrap; print('All modules OK')"
+
       - name: Build macOS App with py2app
         run: |
           python setup.py py2app
+
+      - name: Optional test launch
+        run: |
+          ./dist/Classload.app/Contents/MacOS/Classload || true
 
       - name: Zip App Bundle
         run: |
