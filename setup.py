@@ -4,7 +4,7 @@ APP = ['tk_main_menue.py']
 DATA_FILES = [('assets', ['assets/icon.icns'])]  # Icon-Datei (optional)
 OPTIONS = {
     'argv_emulation': False,  # Debug-Modus: Terminal öffnet sich bei Doppelklick
-    'iconfile': 'assets/icon.icns',
+    'iconfile': 'icon.icns',
     'packages': ['tkinter', 'requests'],
     'plist': {
         'CFBundleName': 'Classload',
