@@ -1,6 +1,6 @@
 # config.py
 import json
-import os
+import os, sys
 
 CONFIG_FILE = os.path.join(os.getcwd(), "config.json")
 #CONFIG_FILE = "../config.json"
@@ -39,3 +39,11 @@ def set_config_value(key, value):
 def get_config_value(key):
     """Holt einen Konfigurationswert oder gibt None zurück, falls nicht vorhanden."""
     return load_config().get(key, None)
+
+def get_resource_path(filename):
+    """Ermittelt den Pfad zur Ressourcendatei – im Build oder beim Entwickeln."""
+    # Fall: läuft als py2app .app
+    if hasattr(sys, 'frozen') and 'RESOURCEPATH' in os.environ:
+        return os.path.join(os.environ['RESOURCEPATH'], filename)
+    # Fall: Entwicklung im lokalen Verzeichnis
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)

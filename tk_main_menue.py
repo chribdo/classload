@@ -20,7 +20,11 @@ JAMF_URL=""
 TOKEN=""
 ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
 NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
-LIZENZ = os.path.join(os.getcwd(), "LICENSE.txt")
+
+
+
+
+LIZENZ = get_resource_path("LICENSE.txt")
 
 
 
