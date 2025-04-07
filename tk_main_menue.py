@@ -17,6 +17,7 @@ from jamfscripts import *
 import os, sys, markdown, getpass
 import threading
 import platform
+from pathlib import Path
 import time
 JAMF_URL=""
 TOKEN=""
@@ -25,9 +26,20 @@ NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
 
 
 
+def get_resource_path(filename):
+    """
+    Gibt den Pfad zur Datei zurück – funktioniert mit PyInstaller, py2app und lokal.
+    """
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, filename)
+    elif hasattr(sys, 'frozen') and 'RESOURCEPATH' in os.environ:
+        return os.path.join(os.environ['RESOURCEPATH'], filename)
+    else:
+        # Lokaler Entwicklungsmodus – Bezug relativ zur Python-Datei
+        base_path = Path(__file__).resolve().parent
+        return str(base_path / filename)
 
 LIZENZ = get_resource_path("LICENSE.txt")
-
 
 
 
