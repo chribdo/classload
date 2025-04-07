@@ -20,7 +20,7 @@ JAMF_URL=""
 TOKEN=""
 ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
 NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
-
+LIZENZ = os.path.join(os.getcwd(), "LICENSE.txt")
 
 
 
@@ -60,14 +60,14 @@ def pruefe_nutzungsart():
             Messagebox.ok(title="Testversion", message=f"Testversion aktiv. Noch {verbleibend.days + 1} Tage verfügbar.", alert=False)
 
 def zeige_lizenz():
-    if not os.path.exists("LICENSE.txt"):
+    if not os.path.exists(LIZENZ):
         Messagebox.ok(title="Lizenz", message="LICENSE.txt nicht gefunden.", alert=False)
         return
     lizfenster = tk.Toplevel()
     lizfenster.title("Lizenz")
     lizfenster.geometry("600x500")
     textfeld = scrolledtext.ScrolledText(lizfenster, wrap="word")
-    with open("LICENSE.txt", "r", encoding="utf-8") as f:
+    with open(LIZENZ, "r", encoding="utf-8") as f:
         textfeld.insert("1.0", f.read())
     textfeld.config(state="disabled")
     textfeld.pack(fill="both", expand=True)
@@ -660,7 +660,7 @@ def speichere_zustimmung():
 def show_license_dialog(root):
         license_text = ""
         try:
-            with open("LICENSE.txt", "r", encoding="utf-8") as f:
+            with open(LIZENZ, "r", encoding="utf-8") as f:
                 license_text = f.read()
         except FileNotFoundError:
             Messagebox.show_error("LICENSE.txt nicht gefunden.", "Fehler", parent=root)
