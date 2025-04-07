@@ -14,6 +14,7 @@ import time
 JAMF_URL=""
 TOKEN=""
 
+
 class JamfLogin:
     def __init__(self, root):
         self.root = root
@@ -54,7 +55,13 @@ class JamfLogin:
         #password = self.password_entry.get()
 
         if not JAMF_URL or not username or not self.password_entry.get():
-            messagebox.showwarning("Fehler", "Alle Felder müssen ausgefüllt werden!")
+            #messagebox.showwarning("Fehler", "Alle Felder müssen ausgefüllt werden!")
+            Messagebox.ok(
+                title="Alles ausgefüllt?",
+                message="Alle Felder müssen ausgefüllt werden!.",
+                alert=True,
+            )
+
             return
 
         encrypted_password = get_cipher().encrypt(self.password_entry.get().encode())
@@ -62,9 +69,18 @@ class JamfLogin:
 
 
         if TOKEN == "":
-            messagebox.showerror("Login fehlgeschlagen", "Bitte überprüfen Sie die Zugangsdaten.")
+            # messagebox.showerror("Login fehlgeschlagen", "Bitte überprüfen Sie die Zugangsdaten.")
+            Messagebox.ok(
+                title="Login fehlgeschlagen",
+                message="Bitte überprüfen Sie die Zugangsdaten.",
+                alert=True
+            )
         else:
             # messagebox.showinfo("Erfolg", "Login erfolgreich!")
+            Messagebox.ok(
+                title="Erfolg",
+                message="Login erfolgreich.",
+            )
             initialisiere(JAMF_URL, TOKEN)
             self.login_window.destroy()
             app1 = KlassenUploaderApp(self.login_window.master)
@@ -142,7 +158,11 @@ class KlassenUploaderApp:
             set_config_value("OUTPUT_FILE_STUDENTS", entry_output_sus.get())
             set_config_value("POSTFIX", entry_postfix.get())
             set_config_value("TEACHER_POSTFIX", entry_lehrkraefte_postfix.get())
-            messagebox.showinfo("Eingaben gespeichert", "Eingaben gespeichert")
+            #messagebox.showinfo("Eingaben gespeichert", "Eingaben gespeichert")
+            Messagebox.ok(
+                title="Gespeichert?",
+                message="Eingaben gespeichert.",
+            )
             popup.destroy()
             self.root.deiconify()
 
@@ -215,7 +235,12 @@ class KlassenUploaderApp:
             teachergroup = teachergroup_entry.get()
             set_config_value("TEACHER_GROUP_NAME", teachergroup)
             if not praefix or not teachergroup:
-                messagebox.showerror("Fehler", "Die Werte dürfen nicht leer sein!")
+                #messagebox.showerror("Fehler", "Die Werte dürfen nicht leer sein!")
+                Messagebox.ok(
+                    title="Fehler",
+                    message="Die Werte dürfen nicht leer sein.",
+                    alert=True
+                )
                 return
             popup.destroy()
 
@@ -235,7 +260,11 @@ class KlassenUploaderApp:
 
     def schueler_ipads_zuordnen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
-        messagebox.showinfo("Datei auswählen","Bitte csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer")
+        #messagebox.showinfo("Datei auswählen","Bitte csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer")
+        Messagebox.ok(
+            title="Datei auswählen",
+            message="Bitte csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer.",
+        )
         # Datei auswählen
 
         dateipfad = filedialog.askopenfilename(title="CSV-Auswahl",
@@ -248,7 +277,12 @@ class KlassenUploaderApp:
 
     def lehrer_ipads_zuordnen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
-        messagebox.showinfo("Datei auswählen", "Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer")
+        #messagebox.showinfo("Datei auswählen", "Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer")
+        Messagebox.ok(
+            title="Datei auswählen",
+            message="Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer.",
+            alert=True
+        )
         # Datei auswählen
         dateipfad = filedialog.askopenfilename(title="CSV-Auswahl",
                                                filetypes=(("CSV-Dateien", "*.csv"), ("Alle Dateien", "*.*")))
@@ -261,7 +295,11 @@ class KlassenUploaderApp:
 
     def it_nummern_hochladen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
-        messagebox.showinfo("Datei auswählen", "Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer), Seriennummer")
+        #messagebox.showinfo("Datei auswählen", "Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer), Seriennummer")
+        Messagebox.ok(
+            title="Datei auswählen",
+            message="Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer); Seriennummer",
+        )
         #antwort = askokcancel("Datei auswählen","CSV auswählen")
         # Datei auswählen
 
@@ -293,7 +331,12 @@ class KlassenUploaderApp:
             teachergroup = teachergroup_entry.get()
             set_config_value("TEACHER_GROUP_NAME", teachergroup)
             if not praefix or not teachergroup:
-                messagebox.showerror("Fehler", "Die Werte dürfen nicht leer sein!")
+                #messagebox.showerror("Fehler", "Die Werte dürfen nicht leer sein!")
+                Messagebox.ok(
+                    title="Fehler",
+                    message="Die Werte dürfen nicht leer sein.",
+                    alert=True
+                )
                 return
             popup.destroy()
 
@@ -326,7 +369,12 @@ class KlassenUploaderApp:
             del_praefix = prefix_entry.get()
             print(del_praefix);
             if not del_praefix:
-                messagebox.showerror("Fehler", "Präfix darf nicht leer sein!")
+                #messagebox.showerror("Fehler", "Präfix darf nicht leer sein!")
+                Messagebox.ok(
+                    title="Fehler",
+                    message="Präfix darf nicht leer sein.",
+                    alert=True
+                )
                 return
             popup.destroy()
             threading.Thread(target=self.klassen_loeschen_ausfuehren, args=(del_praefix,), daemon=True).start()
@@ -345,7 +393,12 @@ class KlassenUploaderApp:
             classname = class_entry.get()
             print(classname);
             if not classname:
-                messagebox.showerror("Fehler", "Bitte alles ausfüllen!")
+                #messagebox.showerror("Fehler", "Bitte alles ausfüllen!")
+                Messagebox.ok(
+                    title="Alles ausgefüllt?",
+                    message="Bitte alles ausfüllen.",
+                    alert=True
+                )
                 return
             popup.destroy()
             threading.Thread(target=create_single_user_group, args=(JAMF_URL, TOKEN, classname), daemon=True).start()
@@ -366,7 +419,12 @@ class KlassenUploaderApp:
             del_praefix = prefix_entry.get()
             print(del_praefix);
             if not del_praefix:
-                messagebox.showerror("Fehler", "Präfix darf nicht leer sein!")
+                # messagebox.showerror("Fehler", "Präfix darf nicht leer sein!")
+                Messagebox.ok(
+                    title="Fehler",
+                    message="Präfix darf nicht leer sein.",
+                    alert=True
+                )
                 return
             popup.destroy()
             threading.Thread(target=self.gruppen_loeschen_ausfuehren, args=(del_praefix,), daemon=True).start()
@@ -381,24 +439,51 @@ class KlassenUploaderApp:
             return
 
 
+
     def klassen_loeschen_ausfuehren(self, del_praefix):
 
         antwort = messagebox.askokcancel("Klassen löschen nach Präfix", f"Alle Klassen in JAMF mit dem Präfix {del_praefix} werden gelöscht.")
+
         if antwort:
             loesche_klassen_mit_prefix(JAMF_URL, TOKEN, del_praefix)
         else:
             return
+
+    """
+   # Probierversion klappt nicht richtig
+    def klassen_loeschen_ausfuehren(self, del_praefix):
+        def frage():
+            antwort = Messagebox.yesno(
+                title="Klassen löschen nach Präfix",
+                message=f"Alle Klassen in JAMF mit dem Präfix {del_praefix} werden gelöscht.",
+                alert=True,
+                parent=self.root  # Nur wenn self.root wirklich dein sichtbares Fenster ist
+            )
+
+            if antwort == "Yes":
+                # Langer Prozess in separatem Thread
+                threading.Thread(
+                    target=lambda: loesche_klassen_mit_prefix(JAMF_URL, TOKEN, del_praefix),
+                    daemon=True
+                ).start()
+            else:
+                print("Abgebrochen")
+
+        # Dialog sicher im Hauptthread ausführen
+        self.root.after(0, frage)
+    """
     def gruppen_loeschen_ausfuehren(self, del_praefix):
 
         antwort = messagebox.askokcancel("Gruppen löschen nach Präfix", f"Alle Benutzergruppen in JAMF mit dem Präfix {del_praefix} werden gelöscht.")
+
         if antwort:
             loesche_usergroups_mit_prefix(JAMF_URL, TOKEN, del_praefix)
         else:
             return
 
     def klassenupload_ausfuehren(self, dateipfad, praefix, teachergroupname):
-        """Simuliert eine Datei-Verarbeitung mit Konsolenausgaben."""
-        print(teachergroupname)
+
+        # print(teachergroupname)
         SITE_ID = get_config_value("SITE_ID")
         OUTPUT_FILE_CLASSES = get_config_value("OUTPUT_FILE_CLASSES")
         OUTPUT_FILE_STUDENTS = get_config_value("OUTPUT_FILE_STUDENTS")
@@ -407,8 +492,8 @@ class KlassenUploaderApp:
                   OUTPUT_FILE_CLASSES, POSTFIX)
 
     def gruppen_upload_ausfuehren(self, dateipfad, praefix, teachergroupname):
-        """Simuliert eine Datei-Verarbeitung mit Konsolenausgaben."""
-        print(teachergroupname)
+
+        # print(teachergroupname)
         SITE_ID = get_config_value("SITE_ID")
         OUTPUT_FILE_CLASSES = get_config_value("OUTPUT_FILE_CLASSES")
         OUTPUT_FILE_STUDENTS = get_config_value("OUTPUT_FILE_STUDENTS")
@@ -438,7 +523,6 @@ def main():
     root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
 
     login = JamfLogin(root)
-
     root.mainloop()
 
 if __name__ == "__main__":
