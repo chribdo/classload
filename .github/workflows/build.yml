@@ -25,8 +25,7 @@ jobs:
 
       - name: Build EXE
         run: |
-          pyinstaller --onefile --windowed --name "Classload" --icon=./assets/icon.ico tk_main_menue.py
-
+          pyinstaller --noconfirm --onefile --windowed --add-data "license.txt;." --add-data "hilfe.md;." tk_main_menue.py
       - name: Upload Windows EXE
         uses: actions/upload-artifact@v4
         with:
