@@ -14,7 +14,7 @@ TOKEN=""
 class JamfLogin:
     def __init__(self, root):
         self.root = root
-        self.root.withdraw()  # Hauptfenster verbergen
+        # self.root.withdraw()  # Hauptfenster verbergen
 
         self.login_window = tk.Toplevel(root)
         self.login_window.title("JAMF Login")
@@ -142,7 +142,7 @@ class KlassenUploaderApp:
 
         # Hauptfenster
         root = tk.Tk()
-        root.withdraw()  # Hauptfenster ausblenden
+        # root.withdraw()  # Hauptfenster ausblenden
 
         # Popup-Fenster
         popup = tk.Toplevel()
