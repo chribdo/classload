@@ -64,7 +64,7 @@ class JamfLogin:
             # messagebox.showinfo("Erfolg", "Login erfolgreich!")
             initialisiere(JAMF_URL, TOKEN)
             self.login_window.destroy()
-            app1 = KlassenUploaderApp(root)
+            app1 = KlassenUploaderApp(self.root)
             self.root.deiconify()
 
 
