@@ -18,6 +18,7 @@ import os, sys, markdown, getpass
 import threading
 import platform
 from pathlib import Path
+import ctypes
 import time
 JAMF_URL=""
 TOKEN=""
@@ -25,6 +26,12 @@ ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
 NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
 
 
+# DPI-Fix
+if sys.platform == "win32":
+    try:
+        ctypes.windll.shcore.SetProcessDpiAwareness(1)
+    except:
+        pass
 
 def get_resource_path(filename):
     """
@@ -88,15 +95,19 @@ def zeige_lizenz():
     with open(LIZENZ, "r", encoding="utf-8") as f:
         textfeld.insert("1.0", f.read())
     textfeld.config(state="disabled")
+    lizfenster.update_idletasks()
+    lizfenster.minsize(lizfenster.winfo_width(), lizfenster.winfo_height())
     textfeld.pack(fill="both", expand=True)
 
 
 def zeige_nutzungsdialog():
     auswahlfenster = tk.Toplevel()
     auswahlfenster.title("Nutzungsart wählen")
-    auswahlfenster.geometry("400x200")
+    auswahlfenster.geometry("500x300")
     auswahlfenster.grab_set()
-    auswahlfenster.resizable(False, False)
+    auswahlfenster.resizable(False, True)
+    auswahlfenster.update_idletasks()
+    auswahlfenster.minsize(auswahlfenster.winfo_width(), auswahlfenster.winfo_height())
 
     auswahl = tk.StringVar()
     auswahl.set("privat")
