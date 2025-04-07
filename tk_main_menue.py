@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import ttkbootstrap as ttk
 import tkinter as tk
 from ttkbootstrap.dialogs import *
+from tkhtmlview import HTMLLabel
 from ttkbootstrap.constants import *
 from tkinter.messagebox import askokcancel
 import json
@@ -13,8 +14,9 @@ import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from ttkbootstrap.scrolled import ScrolledText
 from jamfscripts import *
-import os, sys, getpass
+import os, sys, markdown, getpass
 import threading
+import platform
 import time
 JAMF_URL=""
 TOKEN=""
@@ -113,14 +115,6 @@ class JamfLogin:
     def __init__(self, root):
         self.root = root
 
-        # Menüeintrag „Lizenz anzeigen“ ergänzen
-        menubar = tk.Menu(root)
-        hilfe_menu = tk.Menu(menubar, tearoff=0)
-        hilfe_menu.add_command(label="Lizenz anzeigen", command=zeige_lizenz)
-        menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
-        root.config(menu=menubar)
-        # self.root.withdraw()  # Hauptfenster verbergen
-
         self.login_window = ttk.Toplevel(root)
         self.login_window.title("JAMF Login")
         self.login_window.geometry("600x300")
@@ -142,6 +136,9 @@ class JamfLogin:
 
         self.login_button = ttk.Button(self.login_window, text="Login", command=self.validate_login)
         self.login_button.pack(pady=10)
+
+    def show_about(self):
+        messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
 
     def on_close(self):
         LOGGER.info("Fenster wird geschlossen. Programm wird beendet.")
@@ -190,13 +187,6 @@ class JamfLogin:
 class KlassenUploaderApp:
     def __init__(self, root):
         self.root = root
-
-        # Menüeintrag „Lizenz anzeigen“ ergänzen
-        menubar = tk.Menu(root)
-        hilfe_menu = tk.Menu(menubar, tearoff=0)
-        hilfe_menu.add_command(label="Lizenz anzeigen", command=zeige_lizenz)
-        menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
-        root.config(menu=menubar)
         self.root.title("Classload")
         self.root.geometry("1200x400")
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -255,6 +245,26 @@ class KlassenUploaderApp:
     def popup_closed(self, window):
         window.destroy()  # Fenster schließen
         self.root.deiconify()  # Hauptfenster wieder anzeigen
+
+    def show_about(self):
+        messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
+
+    def show_help(self):
+        help_text = self.load_markdown_file("HILFE.md")
+        self.show_markdown_window("Hilfe", help_text)
+    def load_markdown_file(self, filename):
+            if not os.path.exists(filename):
+                return f"Datei '{filename}' nicht gefunden."
+            with open(filename, "r", encoding="utf-8") as f:
+                return markdown.markdown(f.read())
+
+    def show_markdown_window(self, title, html_content):
+            window = ttk.Toplevel(self.root)
+            window.title(title)
+            window.geometry("600x400")
+
+            html_label = HTMLLabel(window, html=html_content)
+            html_label.pack(fill="both", expand=True, padx=10, pady=10)
 
     def konfigurieren(self):
         def speichern():
@@ -705,6 +715,28 @@ def show_license_dialog(root):
         return result["accepted"]
 
 
+
+def show_help(root):
+        help_text = load_markdown_file("HILFE.md")
+        show_markdown_window(root, "Hilfe", help_text)
+
+def load_markdown_file( filename):
+            if not os.path.exists(filename):
+                return f"Datei '{filename}' nicht gefunden."
+            with open(filename, "r", encoding="utf-8") as f:
+                return markdown.markdown(f.read())
+
+def show_markdown_window(root, title, html_content):
+            window = ttk.Toplevel(root)
+            window.title(title)
+            window.geometry("600x400")
+            html_label = HTMLLabel(window, html=html_content)
+            html_label.pack(fill="both", expand=True, padx=10, pady=10)
+
+def show_about():
+        messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
+
+
 def main():
     root = ttk.Window(themename="cosmo")
     #root.withdraw()
@@ -713,6 +745,24 @@ def main():
         if not show_license_dialog(root):
             return
         speichere_zustimmung()
+
+    menubar = tk.Menu(root)
+    hilfe_menu = tk.Menu(menubar, tearoff=0)
+    hilfe_menu.add_command(label="Lizenz anzeigen", command=zeige_lizenz)
+    hilfe_menu.add_command(label="Hilfe anzeigen", command=lambda: show_help(root))
+
+    if platform.system() == "Darwin":
+        apple_menu = tk.Menu(menubar, name="apple", tearoff=0)
+        apple_menu.add_command(label="Über Classload", command=show_about)
+        menubar.add_cascade(menu=apple_menu)
+        menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
+        root["menu"] = menubar
+    else:
+        menubar.add_command(label="Über Classload", command=show_about)
+        menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
+        root.config(menu=menubar)
+    # menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
+    root.config(menu=menubar)
 
     root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
     # Nutzungsprüfung beim Start
@@ -725,7 +775,7 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         import traceback
-        with open("/tmp/classload_error.log", "w") as f:
+        with open("/tmp/classload_error.log", "w", encoding="utf-8") as f:
             f.write(traceback.format_exc())
         raise
 
