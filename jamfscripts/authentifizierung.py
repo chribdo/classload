@@ -136,3 +136,5 @@ def initialisiere(JAMF_URL, TOKEN):
         idf = "./daten/deleteUsers.csv"
         config.set_config_value("INPUT_DELETE_FILENAME", idf)
 
+    LOGGER.info("✅ Initialisierung abgeschlossen.")
+

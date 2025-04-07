@@ -1,23 +1,120 @@
+from ttkbootstrap.dialogs import Messagebox
+from tkinter import filedialog, messagebox, scrolledtext, simpledialog
+# --- Lizenzfunktionen & Nutzungsprüfung ---
+from datetime import datetime, timedelta
 import ttkbootstrap as ttk
 import tkinter as tk
 from ttkbootstrap.dialogs import *
 from ttkbootstrap.constants import *
 from tkinter.messagebox import askokcancel
-from tkinter import filedialog, messagebox, scrolledtext, simpledialog
-
-
+import json
+import tkinter as tk
+import ttkbootstrap as ttk
+from ttkbootstrap.dialogs import Messagebox
+from ttkbootstrap.scrolled import ScrolledText
 from jamfscripts import *
 import os, sys, getpass
 import threading
 import time
-
 JAMF_URL=""
 TOKEN=""
+ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
+NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
+
+
+
+
+
+def lade_nutzungsinfo():
+    if os.path.exists(NUTZUNGSDATEI):
+        with open(NUTZUNGSDATEI, "r") as f:
+            return json.load(f)
+    return {}
+
+def speichere_nutzungsinfo(info):
+    with open(NUTZUNGSDATEI, "w") as f:
+        json.dump(info, f)
+
+def pruefe_nutzungsart():
+    info = lade_nutzungsinfo()
+    if "nutzung" not in info:
+        nutzungsart = zeige_nutzungsdialog()
+        if not nutzungsart:
+            Messagebox.ok(title="Abbruch", message="Nutzungstyp nicht festgelegt. Programm wird beendet.", alert=True)
+            sys.exit()
+        if not nutzungsart:
+            Messagebox.ok(title="Abbruch", message="Nutzungstyp nicht festgelegt. Programm wird beendet.", alert=True)
+            sys.exit()
+        nutzungsart = nutzungsart.strip().lower()
+        info["nutzung"] = nutzungsart
+        if nutzungsart == "gewerblich":
+            info["startdatum"] = datetime.today().strftime("%Y-%m-%d")
+        speichere_nutzungsinfo(info)
+    elif info["nutzung"] == "gewerblich":
+        startdatum = datetime.strptime(info["startdatum"], "%Y-%m-%d")
+        verbleibend = (startdatum + timedelta(days=7)) - datetime.today()
+        if verbleibend.days < 0:
+            Messagebox.ok(title="Testzeitraum abgelaufen", message="Die 7-Tage-Testversion ist abgelaufen. Bitte kontaktieren Sie den Entwickler für eine Lizenz.", alert=True)
+            sys.exit()
+        else:
+            Messagebox.ok(title="Testversion", message=f"Testversion aktiv. Noch {verbleibend.days + 1} Tage verfügbar.", alert=False)
+
+def zeige_lizenz():
+    if not os.path.exists("LICENSE.txt"):
+        Messagebox.ok(title="Lizenz", message="LICENSE.txt nicht gefunden.", alert=False)
+        return
+    lizfenster = tk.Toplevel()
+    lizfenster.title("Lizenz")
+    lizfenster.geometry("600x500")
+    textfeld = scrolledtext.ScrolledText(lizfenster, wrap="word")
+    with open("LICENSE.txt", "r", encoding="utf-8") as f:
+        textfeld.insert("1.0", f.read())
+    textfeld.config(state="disabled")
+    textfeld.pack(fill="both", expand=True)
+
+
+def zeige_nutzungsdialog():
+    auswahlfenster = tk.Toplevel()
+    auswahlfenster.title("Nutzungsart wählen")
+    auswahlfenster.geometry("400x200")
+    auswahlfenster.grab_set()
+    auswahlfenster.resizable(False, False)
+
+    auswahl = tk.StringVar()
+    auswahl.set("privat")
+
+    def bestätigen():
+        auswahlfenster.destroy()
+
+    label = ttk.Label(auswahlfenster, text="Bitte wählen Sie die Art der Nutzung:")
+    label.pack(pady=10)
+
+    r1 = ttk.Radiobutton(auswahlfenster, text="Privat/Schule (dauerhaft erlaubt)", variable=auswahl, value="privat")
+    r2 = ttk.Radiobutton(auswahlfenster, text="Gewerblich/Testversion (7 Tage)", variable=auswahl, value="gewerblich")
+    r1.pack(anchor="w", padx=30, pady=5)
+    r2.pack(anchor="w", padx=30, pady=5)
+
+    button = ttk.Button(auswahlfenster, text="Bestätigen", command=bestätigen)
+    button.pack(pady=20)
+
+    auswahlfenster.wait_window()
+    return auswahl.get()
+
+
+
+
 
 
 class JamfLogin:
     def __init__(self, root):
         self.root = root
+
+        # Menüeintrag „Lizenz anzeigen“ ergänzen
+        menubar = tk.Menu(root)
+        hilfe_menu = tk.Menu(menubar, tearoff=0)
+        hilfe_menu.add_command(label="Lizenz anzeigen", command=zeige_lizenz)
+        menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
+        root.config(menu=menubar)
         # self.root.withdraw()  # Hauptfenster verbergen
 
         self.login_window = ttk.Toplevel(root)
@@ -44,7 +141,6 @@ class JamfLogin:
 
     def on_close(self):
         LOGGER.info("Fenster wird geschlossen. Programm wird beendet.")
-        self.root.destroy()
         sys.exit()  # Beendet das ganze Skript
 
     def validate_login(self):
@@ -69,18 +165,18 @@ class JamfLogin:
 
 
         if TOKEN == "":
-            # messagebox.showerror("Login fehlgeschlagen", "Bitte überprüfen Sie die Zugangsdaten.")
+            # Messagebox.ok(title="Login fehlgeschlagen", "Bitte überprüfen Sie die Zugangsdaten.", alert=True)
             Messagebox.ok(
                 title="Login fehlgeschlagen",
                 message="Bitte überprüfen Sie die Zugangsdaten.",
                 alert=True
             )
         else:
-            # messagebox.showinfo("Erfolg", "Login erfolgreich!")
-            Messagebox.ok(
-                title="Erfolg",
-                message="Login erfolgreich.",
-            )
+            # Messagebox.ok(title="Erfolg", "Login erfolgreich!", alert=False)
+            #Messagebox.ok(
+            #    title="Erfolg",
+            #    message="Login erfolgreich.",
+            # )
             initialisiere(JAMF_URL, TOKEN)
             self.login_window.destroy()
             app1 = KlassenUploaderApp(self.login_window.master)
@@ -90,6 +186,13 @@ class JamfLogin:
 class KlassenUploaderApp:
     def __init__(self, root):
         self.root = root
+
+        # Menüeintrag „Lizenz anzeigen“ ergänzen
+        menubar = tk.Menu(root)
+        hilfe_menu = tk.Menu(menubar, tearoff=0)
+        hilfe_menu.add_command(label="Lizenz anzeigen", command=zeige_lizenz)
+        menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
+        root.config(menu=menubar)
         self.root.title("Classload")
         self.root.geometry("1200x400")
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -143,7 +246,6 @@ class KlassenUploaderApp:
 
     def on_close(self):
         LOGGER.info("Fenster wird geschlossen. Programm wird beendet.")
-        self.root.destroy()
         sys.exit()  # Beendet das ganze Skript
 
     def popup_closed(self, window):
@@ -158,7 +260,7 @@ class KlassenUploaderApp:
             set_config_value("OUTPUT_FILE_STUDENTS", entry_output_sus.get())
             set_config_value("POSTFIX", entry_postfix.get())
             set_config_value("TEACHER_POSTFIX", entry_lehrkraefte_postfix.get())
-            #messagebox.showinfo("Eingaben gespeichert", "Eingaben gespeichert")
+            #Messagebox.ok(title="Eingaben gespeichert", "Eingaben gespeichert", alert=False)
             Messagebox.ok(
                 title="Gespeichert?",
                 message="Eingaben gespeichert.",
@@ -235,7 +337,7 @@ class KlassenUploaderApp:
             teachergroup = teachergroup_entry.get()
             set_config_value("TEACHER_GROUP_NAME", teachergroup)
             if not praefix or not teachergroup:
-                #messagebox.showerror("Fehler", "Die Werte dürfen nicht leer sein!")
+                #Messagebox.ok(title="Fehler", "Die Werte dürfen nicht leer sein!", alert=True)
                 Messagebox.ok(
                     title="Fehler",
                     message="Die Werte dürfen nicht leer sein.",
@@ -260,7 +362,7 @@ class KlassenUploaderApp:
 
     def schueler_ipads_zuordnen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
-        #messagebox.showinfo("Datei auswählen","Bitte csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer")
+        #Messagebox.ok(title="Datei auswählen","Bitte csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer", alert=False)
         Messagebox.ok(
             title="Datei auswählen",
             message="Bitte csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer.",
@@ -277,7 +379,7 @@ class KlassenUploaderApp:
 
     def lehrer_ipads_zuordnen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
-        #messagebox.showinfo("Datei auswählen", "Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer")
+        #Messagebox.ok(title="Datei auswählen", "Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer", alert=False)
         Messagebox.ok(
             title="Datei auswählen",
             message="Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer.",
@@ -295,7 +397,7 @@ class KlassenUploaderApp:
 
     def it_nummern_hochladen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
-        #messagebox.showinfo("Datei auswählen", "Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer), Seriennummer")
+        #Messagebox.ok(title="Datei auswählen", "Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer, alert=False), Seriennummer")
         Messagebox.ok(
             title="Datei auswählen",
             message="Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer); Seriennummer",
@@ -331,7 +433,7 @@ class KlassenUploaderApp:
             teachergroup = teachergroup_entry.get()
             set_config_value("TEACHER_GROUP_NAME", teachergroup)
             if not praefix or not teachergroup:
-                #messagebox.showerror("Fehler", "Die Werte dürfen nicht leer sein!")
+                #Messagebox.ok(title="Fehler", "Die Werte dürfen nicht leer sein!", alert=True)
                 Messagebox.ok(
                     title="Fehler",
                     message="Die Werte dürfen nicht leer sein.",
@@ -369,7 +471,7 @@ class KlassenUploaderApp:
             del_praefix = prefix_entry.get()
             print(del_praefix);
             if not del_praefix:
-                #messagebox.showerror("Fehler", "Präfix darf nicht leer sein!")
+                #Messagebox.ok(title="Fehler", "Präfix darf nicht leer sein!", alert=True)
                 Messagebox.ok(
                     title="Fehler",
                     message="Präfix darf nicht leer sein.",
@@ -393,7 +495,7 @@ class KlassenUploaderApp:
             classname = class_entry.get()
             print(classname);
             if not classname:
-                #messagebox.showerror("Fehler", "Bitte alles ausfüllen!")
+                #Messagebox.ok(title="Fehler", "Bitte alles ausfüllen!", alert=True)
                 Messagebox.ok(
                     title="Alles ausgefüllt?",
                     message="Bitte alles ausfüllen.",
@@ -419,7 +521,7 @@ class KlassenUploaderApp:
             del_praefix = prefix_entry.get()
             print(del_praefix);
             if not del_praefix:
-                # messagebox.showerror("Fehler", "Präfix darf nicht leer sein!")
+                # Messagebox.ok(title="Fehler", "Präfix darf nicht leer sein!", alert=True)
                 Messagebox.ok(
                     title="Fehler",
                     message="Präfix darf nicht leer sein.",
@@ -518,10 +620,99 @@ class KlassenUploaderApp:
         self.root.after(1000, self.update_log)
 
 
+def zeige_about_dialog():
+    about = tk.Toplevel()
+    about.title("Über dieses Tool")
+    about.geometry("400x200")
+    about.resizable(False, False)
+
+    frame = ttk.Frame(about, padding=20)
+    frame.pack(fill="both", expand=True)
+
+    label = ttk.Label(frame, text="macOS Tool für JAMF-Interaktionen\nVersion 1.0.0\n© 2025 von Dir", justify="center", font=("Helvetica", 12))
+    label.pack(pady=(10, 20))
+
+    btn = ttk.Button(frame, text="Schließen", command=about.destroy)
+    btn.pack(pady=(10, 0))
+
+
+
+
+
+
+# --- Lizenzdialog + Zustimmungsspeicherung ---
+
+
+def zustimmung_bereits_erfolgt():
+    if os.path.exists(ZUSTIMMUNGSDATEI):
+        try:
+            with open(ZUSTIMMUNGSDATEI, "r") as f:
+                data = json.load(f)
+                return data.get("zugestimmt", False)
+        except Exception:
+            return False
+    return False
+
+def speichere_zustimmung():
+    with open(ZUSTIMMUNGSDATEI, "w") as f:
+        json.dump({"zugestimmt": True}, f)
+
+def show_license_dialog(root):
+        license_text = ""
+        try:
+            with open("LICENSE.txt", "r", encoding="utf-8") as f:
+                license_text = f.read()
+        except FileNotFoundError:
+            Messagebox.show_error("LICENSE.txt nicht gefunden.", "Fehler", parent=root)
+            return False
+
+        dialog = ttk.Toplevel(root)
+        dialog.title("Lizenzvereinbarung")
+        dialog.geometry("700x500")
+        dialog.transient(root)
+        dialog.grab_set()
+
+        label = ttk.Label(dialog, text="Bitte lesen Sie die Lizenzbedingungen:", font=("Helvetica", 12))
+        label.pack(pady=10)
+
+        text_area = ScrolledText(dialog, height=22, autohide=True)
+        text_area.insert("1.0", license_text)
+        text_area.text.configure(state="disabled")
+        text_area.pack(padx=20, pady=20, fill="both", expand=True)
+
+        result = {"accepted": None}
+
+        def agree():
+            result["accepted"] = True
+            dialog.destroy()
+
+        def disagree():
+            result["accepted"] = False
+            dialog.destroy()
+
+        button_frame = ttk.Frame(dialog)
+        button_frame.pack(pady=10)
+
+        ttk.Button(button_frame, text="Ich stimme zu", command=agree, bootstyle="success").pack(side="left", padx=10)
+        ttk.Button(button_frame, text="Ich lehne ab", command=disagree, bootstyle="danger").pack(side="right", padx=10)
+
+        dialog.wait_window()  # blockiert, bis dialog geschlossen
+
+        return result["accepted"]
+
+
 def main():
     root = ttk.Window(themename="cosmo")
-    root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
+    #root.withdraw()
+    #root.update()
+    if not zustimmung_bereits_erfolgt():
+        if not show_license_dialog(root):
+            return
+        speichere_zustimmung()
 
+    root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
+    # Nutzungsprüfung beim Start
+    pruefe_nutzungsart()
     login = JamfLogin(root)
     root.mainloop()
 
@@ -533,3 +724,5 @@ if __name__ == "__main__":
         with open("/tmp/classload_error.log", "w") as f:
             f.write(traceback.format_exc())
         raise
+
+
