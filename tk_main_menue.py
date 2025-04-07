@@ -437,7 +437,7 @@ if __name__ == "__main__":
 
 def main():
     root = tk.Tk()
-    root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
+    # root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
 
     login = JamfLogin(root)
 
