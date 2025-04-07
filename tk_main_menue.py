@@ -25,14 +25,14 @@ TOKEN=""
 ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
 NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
 
-
+"""
 # DPI-Fix
 if sys.platform == "win32":
     try:
         ctypes.windll.shcore.SetProcessDpiAwareness(1)
     except:
         pass
-
+"""
 def get_resource_path(filename):
     """
     Gibt den Pfad zur Datei zurück – funktioniert mit PyInstaller, py2app und lokal.

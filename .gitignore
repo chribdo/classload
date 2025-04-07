@@ -4,6 +4,8 @@ venv/
 daten/
 logdatei.log
 config.json
+zustimmung.json
+nutzung.json
 jamfscripts/logdatei.log
 jamfscripts/ausprobieren.py
 jamfscripts/ausprobieren2.py
