@@ -427,14 +427,6 @@ class KlassenUploaderApp:
         self.root.after(1000, self.update_log)
 
 
-if __name__ == "__main__":
-    # Hauptfenster erstellen
-    root = tk.Tk()
-    # root.withdraw()
-    app = JamfLogin(root)
-    root.mainloop()
-    #root.deiconify()
-
 def main():
     root = tk.Tk()
     root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
