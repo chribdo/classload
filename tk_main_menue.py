@@ -1,27 +1,18 @@
 from tk_jamf_login import JamfLogin
-from tk_klassen_uploader_app import KlassenUploaderApp
-from ttkbootstrap.dialogs import Messagebox
 from tkinter import filedialog, messagebox, scrolledtext, simpledialog
-# --- Lizenzfunktionen & Nutzungsprüfung ---
-from datetime import datetime, timedelta
-import ttkbootstrap as ttk
-import tkinter as tk
+from datetime import timedelta
+
 from ttkbootstrap.dialogs import *
 from tkhtmlview import HTMLLabel
-from ttkbootstrap.constants import *
-from tkinter.messagebox import askokcancel
-import json
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from ttkbootstrap.scrolled import ScrolledText
 from jamfscripts import *
 import os, sys, markdown, getpass
-import threading
 import platform
 from pathlib import Path
-import ctypes
-import time
+
 JAMF_URL=""
 TOKEN=""
 ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")

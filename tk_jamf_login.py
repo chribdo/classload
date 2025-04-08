@@ -1,27 +1,11 @@
 # tk_jamf_login.py
 from tk_klassen_uploader_app import KlassenUploaderApp
-from ttkbootstrap.dialogs import Messagebox
-from tkinter import filedialog, messagebox, scrolledtext, simpledialog
-# --- Lizenzfunktionen & Nutzungsprüfung ---
-from datetime import datetime, timedelta
-import ttkbootstrap as ttk
-import tkinter as tk
-from ttkbootstrap.dialogs import *
-from tkhtmlview import HTMLLabel
-from ttkbootstrap.constants import *
-from tkinter.messagebox import askokcancel
-import json
-import tkinter as tk
+from tkinter import messagebox
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
-from ttkbootstrap.scrolled import ScrolledText
 from jamfscripts import *
-import os, sys, markdown, getpass
-import threading
-import platform
-from pathlib import Path
-import ctypes
-import time
+import sys
+
 
 
 
@@ -96,6 +80,6 @@ class JamfLogin:
             # )
             initialisiere(JAMF_URL, TOKEN)
             self.login_window.destroy()
-            app1 = KlassenUploaderApp(self.login_window.master)
+            app1 = KlassenUploaderApp(self.login_window.master,JAMF_URL, TOKEN)
             self.root.deiconify()
 

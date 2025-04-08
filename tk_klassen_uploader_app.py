@@ -1,28 +1,18 @@
-from ttkbootstrap.dialogs import Messagebox
-from tkinter import filedialog, messagebox, scrolledtext, simpledialog
-# --- Lizenzfunktionen & Nutzungsprüfung ---
-from datetime import datetime, timedelta
-import ttkbootstrap as ttk
-import tkinter as tk
-from ttkbootstrap.dialogs import *
+from tkinter import filedialog, messagebox, scrolledtext
 from tkhtmlview import HTMLLabel
-from ttkbootstrap.constants import *
 from tkinter.messagebox import askokcancel
-import json
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
-from ttkbootstrap.scrolled import ScrolledText
+
 from jamfscripts import *
-import os, sys, markdown, getpass
+import os, sys, markdown
 import threading
-import platform
-from pathlib import Path
-import ctypes
-import time
 
 class KlassenUploaderApp:
-    def __init__(self, root):
+    def __init__(self, root, JAMF_URL, TOKEN):
+        self.JAMF_URL=JAMF_URL
+        self.TOKEN=TOKEN
         self.root = root
         self.root.title("Classload")
         self.root.geometry("1200x400")
@@ -226,7 +216,7 @@ class KlassenUploaderApp:
             LOGGER.error("❌ Kein Dateipfad ausgewählt!")
             return
         else:
-            threading.Thread(target=schueler_ipads_aktualisieren, args=(JAMF_URL, TOKEN, dateipfad), daemon=True).start()
+            threading.Thread(target=schueler_ipads_aktualisieren, args=(self.JAMF_URL, self.TOKEN, dateipfad), daemon=True).start()
 
     def lehrer_ipads_zuordnen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
@@ -243,7 +233,7 @@ class KlassenUploaderApp:
             LOGGER.error("❌ Kein Dateipfad ausgewählt!")
             return
         else:
-            threading.Thread(target=lehrer_ipads_aktualisieren, args=(JAMF_URL, TOKEN, dateipfad),
+            threading.Thread(target=lehrer_ipads_aktualisieren, args=(self.JAMF_URL, self.TOKEN, dateipfad),
                              daemon=True).start()
 
     def it_nummern_hochladen(self):
@@ -262,7 +252,7 @@ class KlassenUploaderApp:
             LOGGER.error("❌ Kein Dateipfad ausgewählt!")
             return
         else:
-            threading.Thread(target=it_nummern_hochladen, args=(JAMF_URL, TOKEN, dateipfad), daemon=True).start()
+            threading.Thread(target=it_nummern_hochladen, args=(self.JAMF_URL, self.TOKEN, dateipfad), daemon=True).start()
 
     def group_upload(self):
         """Wählt eine Datei aus und gibt ein Präfix ein, bevor eine Funktion ausgeführt wird."""
@@ -354,7 +344,7 @@ class KlassenUploaderApp:
                 )
                 return
             popup.destroy()
-            threading.Thread(target=create_single_user_group, args=(JAMF_URL, TOKEN, classname), daemon=True).start()
+            threading.Thread(target=create_single_user_group, args=(self.JAMF_URL, self.TOKEN, classname), daemon=True).start()
 
         ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
 
@@ -387,7 +377,7 @@ class KlassenUploaderApp:
     def delete_users_wo_md(self):
         ok_del=askokcancel("Bestätigen", "Alle Benutzer ohne Mobilgerät werden gelöscht (Lehrkräfte ausgenommen).")
         if ok_del:
-            threading.Thread(target=delete_users_without_devices, args=(JAMF_URL,TOKEN), daemon=True).start()
+            threading.Thread(target=delete_users_without_devices, args=(self.JAMF_URL,self.TOKEN), daemon=True).start()
         else:
             return
 
@@ -398,7 +388,7 @@ class KlassenUploaderApp:
         antwort = messagebox.askokcancel("Klassen löschen nach Präfix", f"Alle Klassen in JAMF mit dem Präfix {del_praefix} werden gelöscht.")
 
         if antwort:
-            loesche_klassen_mit_prefix(JAMF_URL, TOKEN, del_praefix)
+            loesche_klassen_mit_prefix(self.JAMF_URL, self.TOKEN, del_praefix)
         else:
             return
 
@@ -416,7 +406,7 @@ class KlassenUploaderApp:
             if antwort == "Yes":
                 # Langer Prozess in separatem Thread
                 threading.Thread(
-                    target=lambda: loesche_klassen_mit_prefix(JAMF_URL, TOKEN, del_praefix),
+                    target=lambda: loesche_klassen_mit_prefix(self.JAMF_URL, self.TOKEN, del_praefix),
                     daemon=True
                 ).start()
             else:
@@ -430,7 +420,7 @@ class KlassenUploaderApp:
         antwort = messagebox.askokcancel("Gruppen löschen nach Präfix", f"Alle Benutzergruppen in JAMF mit dem Präfix {del_praefix} werden gelöscht.")
 
         if antwort:
-            loesche_usergroups_mit_prefix(JAMF_URL, TOKEN, del_praefix)
+            loesche_usergroups_mit_prefix(self.JAMF_URL, self.TOKEN, del_praefix)
         else:
             return
 
@@ -441,7 +431,7 @@ class KlassenUploaderApp:
         OUTPUT_FILE_CLASSES = get_config_value("OUTPUT_FILE_CLASSES")
         OUTPUT_FILE_STUDENTS = get_config_value("OUTPUT_FILE_STUDENTS")
         POSTFIX = get_config_value("POSTFIX")
-        big_merge(JAMF_URL, TOKEN, dateipfad, SITE_ID, teachergroupname, praefix, OUTPUT_FILE_STUDENTS,
+        big_merge(self.JAMF_URL, self.TOKEN, dateipfad, SITE_ID, teachergroupname, praefix, OUTPUT_FILE_STUDENTS,
                   OUTPUT_FILE_CLASSES, POSTFIX)
 
     def gruppen_upload_ausfuehren(self, dateipfad, praefix, teachergroupname):
@@ -451,7 +441,7 @@ class KlassenUploaderApp:
         OUTPUT_FILE_CLASSES = get_config_value("OUTPUT_FILE_CLASSES")
         OUTPUT_FILE_STUDENTS = get_config_value("OUTPUT_FILE_STUDENTS")
         POSTFIX = get_config_value("POSTFIX")
-        create_user_groups(JAMF_URL, TOKEN, dateipfad, SITE_ID, teachergroupname, praefix, OUTPUT_FILE_STUDENTS,
+        create_user_groups(self.JAMF_URL, self.TOKEN, dateipfad, SITE_ID, teachergroupname, praefix, OUTPUT_FILE_STUDENTS,
                   OUTPUT_FILE_CLASSES, POSTFIX)
 
 
