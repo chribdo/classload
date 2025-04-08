@@ -38,6 +38,7 @@ def get_cipher():
 # 🔹 Anmelden usw....
 def get_auth_token(JAMF_URL, USERNAME, PASSWORD):
     """Holt ein Bearer-Token von der Jamf Pro API."""
+    LOGGER.info("Hole Token")
     url = f"{JAMF_URL}/api/v1/auth/token"
     headers = {
         "Accept": "application/json"
