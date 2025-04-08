@@ -140,8 +140,10 @@ class JamfLogin:
 
         self.login_window = ttk.Toplevel(root)
         self.login_window.title("JAMF Login")
-        self.login_window.geometry("600x300")
-        self.login_window.resizable(False, False)
+        self.login_window.geometry("600x400")
+        self.login_window.resizable(False, True)
+        self.login_window.update_idletasks()
+        self.login_window..minsize( self.login_window..winfo_width(), self.login_window.winfo_height())
         self.login_window.protocol("WM_DELETE_WINDOW", self.on_close)
 
         ttk.Label(self.login_window, text="JAMF-URL:").pack(pady=5)
