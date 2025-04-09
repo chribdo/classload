@@ -236,7 +236,7 @@ def main():
     init_dpi_awareness()
     root = ttk.Window(themename="cosmo")
     if sys.platform.startswith("win"):
-        root.iconbitmap("icon.ico")
+        root.iconbitmap("/assets/icon.ico")
     #root.withdraw()
     #root.update()
     if not zustimmung_bereits_erfolgt():
