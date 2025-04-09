@@ -50,20 +50,6 @@ class KlassenUploaderApp:
         self.btn_gruppen_loeschen.grid(row=4, column=1, padx=5, pady=5, sticky="ew")
         self.btn_del_users.grid(row=4, column=0, padx=5, pady=5, sticky="ew")
 
-        """
-        # Buttons platzieren
-        self.btn_konfiguration.pack(pady=5)
-        self.btn_sus_ipads_zuordnen.pack(pady=5)
-        self.btn_lehrer_ipads_zuordnen.pack(pady=5)
-        self.btn_it_nummern_hochladen.pack(pady=5)
-        self.btn_upload.pack(pady=5)
-        self.btn_single_group_upload.pack(pady=5)
-        self.btn_group_upload.pack(pady=5)
-        self.btn_loeschen.pack(pady=5)
-        self.btn_gruppen_loeschen.pack(pady=5)
-
-        self.btn_del_users.pack(pady=5)
-        """
         # Textfeld für Log-Ausgabe
         self.text_log = scrolledtext.ScrolledText(root, height=20, width=80, state=tk.DISABLED, wrap=tk.WORD)
         self.text_log.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
@@ -120,8 +106,8 @@ class KlassenUploaderApp:
         popup = ttk.Toplevel()
         popup.protocol("WM_DELETE_WINDOW", lambda: self.popup_closed(popup))
         self.root.withdraw()
-        popup.title("Formular")
-        popup.geometry("700x250")
+        popup.title("Konfiguration")
+
 
         # Labels und Eingabefelder
         ttk.Label(popup, text="Statische Benutzergruppe aller Lehrkräfte in JAMF:").grid(row=0, column=0, sticky='e',
@@ -167,6 +153,8 @@ class KlassenUploaderApp:
 
         # Speichern-Button
         ttk.Button(popup, text="Speichern", command=speichern).grid(row=6, column=0, columnspan=2, pady=10)
+        popup.update_idletasks()
+        popup.minsize(popup.winfo_width(), popup.winfo_height())
 
     def klassen_upload(self):
         """Wählt eine Datei aus und gibt ein Präfix ein, bevor eine Funktion ausgeführt wird."""

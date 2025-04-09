@@ -48,6 +48,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install py2app
+          pip install pyinstaller
 
       - name: Optional sanity check
         run: |
@@ -55,7 +56,14 @@ jobs:
 
       - name: Build macOS App with py2app
         run: |
-          python setup.py py2app
+          # python setup.py py2app
+          pyinstaller --noconfirm --onefile --windowed \
+          --add-data "LICENSE.txt:." \
+         --add-data "hilfe.md:." \
+         --add-data "assets:assets" \
+         --name "Classload" \
+         --icon=assets/icon.icns \
+         tk_main_menue.py
 
       - name: Zip App Bundle
         run: |
