@@ -80,12 +80,14 @@ def speichere_nutzungsinfo(info):
 
 def pruefe_testversion(root, verbleibend):
     root.deiconify()
+    root.geometry("500x300")  # Fenstergröße setzen
+    root.minsize(500, 300)
     if verbleibend.days < 0:
         def beenden():
             root.destroy()
             sys.exit()
 
-        frame = ttk.Frame(root, padding=30, iconphoto=iconpic)
+        frame = ttk.Frame(root, padding=30, iconphoto=None)
         frame.pack(expand=True)
         label = ttk.Label(frame,
                           text="❌ Die 7-Tage-Testversion ist abgelaufen.\nBitte kontaktieren Sie den Entwickler für eine Lizenz.",
@@ -144,7 +146,7 @@ def zeige_lizenz():
         Messagebox.ok(title="Lizenz", message="LICENSE.txt nicht gefunden.", alert=False)
         return
     lizfenster = tk.Toplevel()
-    set_window_icon(lizfenster)
+    #set_window_icon(lizfenster)
     lizfenster.title("Lizenz")
     lizfenster.geometry("600x500")
     textfeld = scrolledtext.ScrolledText(lizfenster, wrap="word")
@@ -188,7 +190,7 @@ def zeige_nutzungsdialog():
 
 def zeige_about_dialog():
     about = tk.Toplevel()
-    set_window_icon(about)
+    #set_window_icon(about)
     about.title("Über dieses Tool")
     about.geometry("400x200")
     about.resizable(False, False)
@@ -222,50 +224,6 @@ def speichere_zustimmung():
     with open(ZUSTIMMUNGSDATEI, "w") as f:
         json.dump({"zugestimmt": True}, f)
 
-"""
-def show_license_dialog(root):
-    license_text = ""
-    try:
-        with open(LIZENZ, "r", encoding="utf-8") as f:
-            license_text = f.read()
-    except FileNotFoundError:
-        Messagebox.show_error("LICENSE.txt nicht gefunden.", "Fehler", parent=root)
-        return False
-
-    dialog = ttk.Toplevel(root)
-    dialog.title("Lizenzvereinbarung")
-    dialog.geometry("700x500")
-    dialog.transient(root)
-    dialog.grab_set()
-
-    label = ttk.Label(dialog, text="Bitte lesen Sie die Lizenzbedingungen:", font=("Helvetica", 12))
-    label.pack(pady=10)
-
-    text_area = ScrolledText(dialog, height=22, autohide=True)
-    text_area.insert("1.0", license_text)
-    text_area.text.configure(state="disabled")
-    text_area.pack(padx=20, pady=20, fill="both", expand=True)
-
-    result = {"accepted": None}
-
-    def agree():
-        result["accepted"] = True
-        dialog.destroy()
-
-    def disagree():
-        result["accepted"] = False
-        dialog.destroy()
-
-    button_frame = ttk.Frame(dialog)
-    button_frame.pack(pady=10)
-
-    ttk.Button(button_frame, text="Ich stimme zu", command=agree, bootstyle="success").pack(side="left", padx=10)
-    ttk.Button(button_frame, text="Ich lehne ab", command=disagree, bootstyle="danger").pack(side="right", padx=10)
-
-    dialog.wait_window()  # blockiert, bis dialog geschlossen
-
-    return result["accepted"]
-"""
 
 def show_license_dialog(root):
     try:
@@ -275,8 +233,8 @@ def show_license_dialog(root):
         Messagebox.show_error("LICENSE.txt nicht gefunden.", "Fehler", parent=root)
         return False
 
-    dialog = ttk.Toplevel(root, iconphoto=iconpic)
-    set_window_icon(dialog)
+    dialog = ttk.Toplevel(root, iconphoto=None)
+    #set_window_icon(dialog)
     dialog.title("Lizenzvereinbarung")
     dialog.minsize(700, 500)
     dialog.transient(root)
@@ -327,8 +285,8 @@ def load_markdown_file(filename):
 
 
 def show_markdown_window(root, title, html_content):
-    window = ttk.Toplevel(root, iconphoto=iconpic)
-    set_window_icon(window)
+    window = ttk.Toplevel(root, iconphoto=None)
+    #set_window_icon(window)
     window.title(title)
     window.geometry("600x400")
     html_label = HTMLLabel(window, html=html_content)
@@ -342,7 +300,7 @@ def show_about():
 def main():
     iconpic=get_resource_path("assets/icon.png")
     init_dpi_awareness()
-    root = ttk.Window(themename="cosmo", iconphoto=iconpic)
+    root = ttk.Window(themename="cosmo", iconphoto=None)
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
     if sys.platform.startswith("win"):
         try:
