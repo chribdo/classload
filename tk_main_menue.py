@@ -17,6 +17,20 @@ JAMF_URL = ""
 TOKEN = ""
 ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
 NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
+global iconpic
+def get_resource_path(filename):
+    """
+    Gibt den Pfad zur Datei zurück – funktioniert mit PyInstaller, py2app und lokal.
+    """
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, filename)
+    elif hasattr(sys, 'frozen') and 'RESOURCEPATH' in os.environ:
+        return os.path.join(os.environ['RESOURCEPATH'], filename)
+    else:
+        # Lokaler Entwicklungsmodus – Bezug relativ zur Python-Datei
+        base_path = Path(__file__).resolve().parent
+        return str(base_path / filename)
+
 
 
 def init_dpi_awareness():
@@ -34,18 +48,6 @@ def init_dpi_awareness():
             pass
 
 
-def get_resource_path(filename):
-    """
-    Gibt den Pfad zur Datei zurück – funktioniert mit PyInstaller, py2app und lokal.
-    """
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, filename)
-    elif hasattr(sys, 'frozen') and 'RESOURCEPATH' in os.environ:
-        return os.path.join(os.environ['RESOURCEPATH'], filename)
-    else:
-        # Lokaler Entwicklungsmodus – Bezug relativ zur Python-Datei
-        base_path = Path(__file__).resolve().parent
-        return str(base_path / filename)
 
 
 LIZENZ = get_resource_path("LICENSE.txt")
@@ -83,7 +85,7 @@ def pruefe_testversion(root, verbleibend):
             root.destroy()
             sys.exit()
 
-        frame = ttk.Frame(root, padding=30)
+        frame = ttk.Frame(root, padding=30, iconphoto=iconpic)
         frame.pack(expand=True)
         label = ttk.Label(frame,
                           text="❌ Die 7-Tage-Testversion ist abgelaufen.\nBitte kontaktieren Sie den Entwickler für eine Lizenz.",
@@ -104,43 +106,6 @@ def pruefe_testversion(root, verbleibend):
 
         btn = ttk.Button(hinweis, text="OK", command=weiter)
         btn.pack()
-
-"""
-def pruefe_testversion(root, verbleibend):
-    if verbleibend.days < 0:
-        def beenden():
-            root.destroy()
-            sys.exit()
-
-        frame = ttk.Frame(root, padding=30)
-        frame.pack(expand=True)
-        label = ttk.Label(
-            frame,
-            text="❌ Die 7-Tage-Testversion ist abgelaufen.\nBitte kontaktieren Sie den Entwickler für eine Lizenz.",
-            font=("Arial", 12),
-            justify="center"
-        )
-        label.pack()
-
-        root.after(5000, beenden)
-        root.mainloop()  # Hier wird die Anzeige gestartet und blockiert
-    else:
-        def weiter():
-            hinweis.destroy()
-
-        hinweis = ttk.Frame(root, padding=20)
-        hinweis.place(relx=0.5, rely=0.5, anchor="center")
-
-        label = ttk.Label(
-            hinweis,
-            text=f"✔ Testversion aktiv\nNoch {verbleibend.days + 1} Tage verfügbar",
-            font=("Arial", 11)
-        )
-        label.pack(pady=(0, 10))
-
-        btn = ttk.Button(hinweis, text="OK", command=weiter)
-        btn.pack()
-"""
 
 
 def pruefe_nutzungsart(root):
@@ -310,7 +275,7 @@ def show_license_dialog(root):
         Messagebox.show_error("LICENSE.txt nicht gefunden.", "Fehler", parent=root)
         return False
 
-    dialog = ttk.Toplevel(root)
+    dialog = ttk.Toplevel(root, iconphoto=iconpic)
     set_window_icon(dialog)
     dialog.title("Lizenzvereinbarung")
     dialog.minsize(700, 500)
@@ -350,7 +315,7 @@ def show_license_dialog(root):
     return result["accepted"]
 
 def show_help(root):
-    help_text = load_markdown_file("hilfe.md")
+    help_text = load_markdown_file(get_resource_path("hilfe.md"))
     show_markdown_window(root, "Hilfe", help_text)
 
 
@@ -362,7 +327,7 @@ def load_markdown_file(filename):
 
 
 def show_markdown_window(root, title, html_content):
-    window = ttk.Toplevel(root)
+    window = ttk.Toplevel(root, iconphoto=iconpic)
     set_window_icon(window)
     window.title(title)
     window.geometry("600x400")
@@ -375,8 +340,9 @@ def show_about():
 
 
 def main():
+    iconpic=get_resource_path("assets/icon.png")
     init_dpi_awareness()
-    root = ttk.Window(themename="cosmo")
+    root = ttk.Window(themename="cosmo", iconphoto=iconpic)
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
     if sys.platform.startswith("win"):
         try:
