@@ -88,7 +88,7 @@ def speichere_nutzungsinfo(info):
 
 def pruefe_testversion(root, verbleibend):
     root.deiconify()
-    root.geometry("500x300")  # Fenstergröße setzen
+    #root.geometry("400x300")  # Fenstergröße setzen
     root.minsize(400, 250)
     if verbleibend.days < 0:
         def beenden():
@@ -116,6 +116,8 @@ def pruefe_testversion(root, verbleibend):
 
         btn = ttk.Button(hinweis, text="OK", command=weiter)
         btn.pack()
+        root.update_idletasks()
+        root.minsize(root.winfo_width(), root.winfo_height())
 
 
 def pruefe_nutzungsart(root):

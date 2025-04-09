@@ -1,7 +1,10 @@
 from setuptools import setup
 
 APP = ['tk_main_menue.py']
-DATA_FILES = ['LICENSE.txt', 'hilfe.md', 'assets']  # Icon muss im Projektverzeichnis liegen
+DATA_FILES = [
+    ('', ['LICENSE.txt', 'hilfe.md']),
+    ('assets', ['assets/icon.png']),
+]
 OPTIONS = {
     'argv_emulation': False,  # Debug: Terminalfenster beim Doppelklick sichtbar
     'iconfile': 'icon.icns',
@@ -12,8 +15,9 @@ OPTIONS = {
         'certifi',
         'dotenv',
         'ttkbootstrap',
+        'charset_normalizer'
     ],
-    'packages': ['cryptography', 'cffi'],
+    'packages': ['cryptography', 'cffi', 'charset_normalizer'],
     'plist': {
         'CFBundleName': 'Classload',
         'CFBundleDisplayName': 'Classload',
