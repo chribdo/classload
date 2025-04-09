@@ -302,9 +302,10 @@ def main():
 
     root = ttk.Window(themename="cosmo", iconphoto=None)
     root.title("Classload")
-    icon_path = get_resource_path("assets/icon.png")
-    icon_img = tk.PhotoImage(file=icon_path)
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
+    icon_path = os.path.join(base_path, "assets", "icon.png")
+    icon_img = tk.PhotoImage(file=icon_path)
+
     if sys.platform.startswith("win"):
         try:
             icon_path = os.path.join(base_path, "assets", "icon.ico")
