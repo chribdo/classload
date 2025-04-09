@@ -50,6 +50,15 @@ def get_resource_path(filename):
 
 LIZENZ = get_resource_path("LICENSE.txt")
 
+def set_window_icon(widget):
+    try:
+        icon_path = os.path.join("assets", "icon.png")
+        icon_img = tk.PhotoImage(file=icon_path)
+        widget.iconphoto(True, icon_img)
+        widget._icon_img_ref = icon_img
+    except:
+        pass
+
 
 def lade_nutzungsinfo():
     """
@@ -67,8 +76,74 @@ def speichere_nutzungsinfo(info):
     with open(NUTZUNGSDATEI, "w") as f:
         json.dump(info, f)
 
+def pruefe_testversion(root, verbleibend):
+    root.deiconify()
+    if verbleibend.days < 0:
+        def beenden():
+            root.destroy()
+            sys.exit()
 
-def pruefe_nutzungsart():
+        frame = ttk.Frame(root, padding=30)
+        frame.pack(expand=True)
+        label = ttk.Label(frame,
+                          text="❌ Die 7-Tage-Testversion ist abgelaufen.\nBitte kontaktieren Sie den Entwickler für eine Lizenz.",
+                          font=("Arial", 12), justify="center")
+        label.pack()
+        root.after(5000, beenden)  # Automatisch schließen & Programm beenden
+    else:
+        def weiter():
+            JamfLogin(root)
+            hinweis.destroy()
+            root.withdraw()
+
+        hinweis = ttk.Frame(root, padding=20)
+        hinweis.place(relx=0.5, rely=0.5, anchor="center")
+
+        label = ttk.Label(hinweis, text=f"✔ Testversion aktiv\nNoch {verbleibend.days + 1} Tage verfügbar", font=("Arial", 11))
+        label.pack(pady=(0, 10))
+
+        btn = ttk.Button(hinweis, text="OK", command=weiter)
+        btn.pack()
+
+"""
+def pruefe_testversion(root, verbleibend):
+    if verbleibend.days < 0:
+        def beenden():
+            root.destroy()
+            sys.exit()
+
+        frame = ttk.Frame(root, padding=30)
+        frame.pack(expand=True)
+        label = ttk.Label(
+            frame,
+            text="❌ Die 7-Tage-Testversion ist abgelaufen.\nBitte kontaktieren Sie den Entwickler für eine Lizenz.",
+            font=("Arial", 12),
+            justify="center"
+        )
+        label.pack()
+
+        root.after(5000, beenden)
+        root.mainloop()  # Hier wird die Anzeige gestartet und blockiert
+    else:
+        def weiter():
+            hinweis.destroy()
+
+        hinweis = ttk.Frame(root, padding=20)
+        hinweis.place(relx=0.5, rely=0.5, anchor="center")
+
+        label = ttk.Label(
+            hinweis,
+            text=f"✔ Testversion aktiv\nNoch {verbleibend.days + 1} Tage verfügbar",
+            font=("Arial", 11)
+        )
+        label.pack(pady=(0, 10))
+
+        btn = ttk.Button(hinweis, text="OK", command=weiter)
+        btn.pack()
+"""
+
+
+def pruefe_nutzungsart(root):
     info = lade_nutzungsinfo()
     if "nutzung" not in info:
         nutzungsart = zeige_nutzungsdialog()
@@ -86,6 +161,7 @@ def pruefe_nutzungsart():
     elif info["nutzung"] == "gewerblich":
         startdatum = datetime.strptime(info["startdatum"], "%Y-%m-%d")
         verbleibend = (startdatum + timedelta(days=7)) - datetime.today()
+        """
         if verbleibend.days < 0:
             Messagebox.ok(title="Testzeitraum abgelaufen",
                           message="Die 7-Tage-Testversion ist abgelaufen. Bitte kontaktieren Sie den Entwickler für eine Lizenz.",
@@ -94,6 +170,8 @@ def pruefe_nutzungsart():
         else:
             Messagebox.ok(title="Testversion",
                           message=f"Testversion aktiv. Noch {verbleibend.days + 1} Tage verfügbar.", alert=False)
+        """
+        pruefe_testversion(root, verbleibend)
 
 
 def zeige_lizenz():
@@ -101,6 +179,7 @@ def zeige_lizenz():
         Messagebox.ok(title="Lizenz", message="LICENSE.txt nicht gefunden.", alert=False)
         return
     lizfenster = tk.Toplevel()
+    set_window_icon(lizfenster)
     lizfenster.title("Lizenz")
     lizfenster.geometry("600x500")
     textfeld = scrolledtext.ScrolledText(lizfenster, wrap="word")
@@ -144,6 +223,7 @@ def zeige_nutzungsdialog():
 
 def zeige_about_dialog():
     about = tk.Toplevel()
+    set_window_icon(about)
     about.title("Über dieses Tool")
     about.geometry("400x200")
     about.resizable(False, False)
@@ -231,6 +311,7 @@ def show_license_dialog(root):
         return False
 
     dialog = ttk.Toplevel(root)
+    set_window_icon(dialog)
     dialog.title("Lizenzvereinbarung")
     dialog.minsize(700, 500)
     dialog.transient(root)
@@ -269,7 +350,7 @@ def show_license_dialog(root):
     return result["accepted"]
 
 def show_help(root):
-    help_text = load_markdown_file("HILFE.md")
+    help_text = load_markdown_file("hilfe.md")
     show_markdown_window(root, "Hilfe", help_text)
 
 
@@ -282,6 +363,7 @@ def load_markdown_file(filename):
 
 def show_markdown_window(root, title, html_content):
     window = ttk.Toplevel(root)
+    set_window_icon(window)
     window.title(title)
     window.geometry("600x400")
     html_label = HTMLLabel(window, html=html_content)
@@ -302,12 +384,7 @@ def main():
             root.iconbitmap(icon_path)
         except Exception as e:
             print(f"Icon konnte nicht gesetzt werden: {e}")
-    try:
-        png_path = os.path.join(base_path, "assets", "icon.png")
-        icon_img = tk.PhotoImage(file=png_path)
-        root.iconphoto(True, icon_img)
-    except Exception as e:
-        print(f"PNG-Icon konnte nicht gesetzt werden: {e}")
+    set_window_icon(root)
 
     if not zustimmung_bereits_erfolgt():
         if not show_license_dialog(root):
@@ -333,9 +410,10 @@ def main():
     root.config(menu=menubar)
 
     root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
-    # Nutzungsprüfung beim Start
-    pruefe_nutzungsart()
-    login = JamfLogin(root)
+
+
+    pruefe_nutzungsart(root)
+    #login = JamfLogin(root)
     root.mainloop()
 
 

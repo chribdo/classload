@@ -55,6 +55,7 @@ class JamfLogin:
                 title="Alles ausgefüllt?",
                 message="Alle Felder müssen ausgefüllt werden!.",
                 alert=True,
+                parent= self.login_window
             )
 
             return
@@ -67,8 +68,8 @@ class JamfLogin:
             Messagebox.ok(
                 title="Login fehlgeschlagen",
                 message="Bitte überprüfen Sie die Zugangsdaten.",
-                alert=True
-            )
+                alert=True,
+                parent=self.login_window            )
         else:
             # Messagebox.ok(title="Erfolg", "Login erfolgreich!", alert=False)
             # Messagebox.ok(

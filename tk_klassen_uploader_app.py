@@ -4,7 +4,6 @@ from tkinter.messagebox import askokcancel
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
-
 from jamfscripts import *
 import os, sys, markdown
 import threading
@@ -16,7 +15,7 @@ class KlassenUploaderApp:
         self.TOKEN = TOKEN
         self.root = root
         self.root.title("Classload")
-        self.root.geometry("1200x400")
+        self.root.geometry("1200x600")
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
         button_frame = ttk.Frame(root)
         button_frame.pack(padx=10, pady=10)
@@ -112,6 +111,7 @@ class KlassenUploaderApp:
             Messagebox.ok(
                 title="Gespeichert?",
                 message="Eingaben gespeichert.",
+                parent=popup
             )
             popup.destroy()
             self.root.deiconify()
@@ -193,7 +193,9 @@ class KlassenUploaderApp:
                 Messagebox.ok(
                     title="Fehler",
                     message="Die Werte dürfen nicht leer sein.",
-                    alert=True
+                    alert=True,
+                    parent=popup
+
                 )
                 return
             popup.destroy()
@@ -219,6 +221,7 @@ class KlassenUploaderApp:
         Messagebox.ok(
             title="Datei auswählen",
             message="Bitte csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer.",
+            parent=self.root
         )
         # Datei auswählen
 
@@ -237,7 +240,8 @@ class KlassenUploaderApp:
         Messagebox.ok(
             title="Datei auswählen",
             message="Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer.",
-            alert=True
+            alert=True,
+            parent=self.root
         )
         # Datei auswählen
         dateipfad = filedialog.askopenfilename(title="CSV-Auswahl",
@@ -255,6 +259,7 @@ class KlassenUploaderApp:
         Messagebox.ok(
             title="Datei auswählen",
             message="Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer); Seriennummer",
+            parent=self.root
         )
         # antwort = askokcancel("Datei auswählen","CSV auswählen")
         # Datei auswählen
@@ -293,7 +298,8 @@ class KlassenUploaderApp:
                 Messagebox.ok(
                     title="Fehler",
                     message="Die Werte dürfen nicht leer sein.",
-                    alert=True
+                    alert=True,
+                    parent=popup
                 )
                 return
             popup.destroy()
@@ -331,7 +337,9 @@ class KlassenUploaderApp:
                 Messagebox.ok(
                     title="Fehler",
                     message="Präfix darf nicht leer sein.",
-                    alert=True
+                    alert=True,
+                    parent=popup
+
                 )
                 return
             popup.destroy()
@@ -357,7 +365,9 @@ class KlassenUploaderApp:
                 Messagebox.ok(
                     title="Alles ausgefüllt?",
                     message="Bitte alles ausfüllen.",
-                    alert=True
+                    alert=True,
+                    parent=poup
+
                 )
                 return
             popup.destroy()
@@ -385,7 +395,8 @@ class KlassenUploaderApp:
                 Messagebox.ok(
                     title="Fehler",
                     message="Präfix darf nicht leer sein.",
-                    alert=True
+                    alert=True,
+                    parent=popup
                 )
                 return
             popup.destroy()
