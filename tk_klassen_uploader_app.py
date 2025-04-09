@@ -173,6 +173,8 @@ class KlassenUploaderApp:
         teachergroup_entry.pack(pady=5)
         praefix = ""
         teachergroup = ""
+        popup.update_idletasks()
+        popup.minsize(popup.winfo_width(), popup.winfo_height())
 
         def on_submit():
             praefix = prefix_entry.get()
@@ -278,6 +280,8 @@ class KlassenUploaderApp:
         teachergroup_entry.pack(pady=5)
         praefix = ""
         teachergroup = ""
+        popup.update_idletasks()
+        popup.minsize(popup.winfo_width(), popup.winfo_height())
 
         def on_submit():
             praefix = prefix_entry.get()
@@ -318,6 +322,8 @@ class KlassenUploaderApp:
             pady=5)
         prefix_entry = ttk.Entry(popup)
         prefix_entry.pack(pady=5)
+        popup.update_idletasks()
+        popup.minsize(popup.winfo_width(), popup.winfo_height())
 
         def on_submit():
             del_praefix = prefix_entry.get()
@@ -346,6 +352,8 @@ class KlassenUploaderApp:
             pady=5)
         class_entry = ttk.Entry(popup)
         class_entry.pack(pady=5)
+        popup.update_idletasks()
+        popup.minsize(popup.winfo_width(), popup.winfo_height())
 
         def on_submit():
             classname = class_entry.get()
@@ -376,6 +384,8 @@ class KlassenUploaderApp:
             pady=5)
         prefix_entry = ttk.Entry(popup)
         prefix_entry.pack(pady=5)
+        popup.update_idletasks()
+        popup.minsize(popup.winfo_width(), popup.winfo_height())
 
         def on_submit():
             del_praefix = prefix_entry.get()
@@ -410,30 +420,6 @@ class KlassenUploaderApp:
             loesche_klassen_mit_prefix(self.JAMF_URL, self.TOKEN, del_praefix)
         else:
             return
-
-    """
-   # Probierversion klappt nicht richtig
-    def klassen_loeschen_ausfuehren(self, del_praefix):
-        def frage():
-            antwort = Messagebox.yesno(
-                title="Klassen löschen nach Präfix",
-                message=f"Alle Klassen in JAMF mit dem Präfix {del_praefix} werden gelöscht.",
-                alert=True,
-                parent=self.root  # Nur wenn self.root wirklich dein sichtbares Fenster ist
-            )
-
-            if antwort == "Yes":
-                # Langer Prozess in separatem Thread
-                threading.Thread(
-                    target=lambda: loesche_klassen_mit_prefix(self.JAMF_URL, self.TOKEN, del_praefix),
-                    daemon=True
-                ).start()
-            else:
-                print("Abgebrochen")
-
-        # Dialog sicher im Hauptthread ausführen
-        self.root.after(0, frage)
-    """
 
     def gruppen_loeschen_ausfuehren(self, del_praefix):
 
