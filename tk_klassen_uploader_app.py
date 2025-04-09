@@ -65,7 +65,9 @@ class KlassenUploaderApp:
         self.root.deiconify()  # Hauptfenster wieder anzeigen
 
     def show_about(self):
-        messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
+        messagebox.showinfo("Über Classload",
+                            "Classload\nzum Austausch von Daten mit Jamf\nVersion 0.9\n(c)2025 Christiane Borchel")
+        #messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
 
     def show_help(self):
         help_text = self.load_markdown_file("HILFE.md")

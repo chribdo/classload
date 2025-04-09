@@ -62,7 +62,7 @@ jobs:
             --add-data "hilfe.md:." \
             --add-data "assets:assets" \
             --name "Classload" \
-            --icon=assets/icon.icns \
+            --icon=icon.icns \
             tk_main_menue.py
 
       - name: Zip App Bundle
