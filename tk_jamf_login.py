@@ -78,5 +78,6 @@ class JamfLogin:
             # )
             initialisiere(JAMF_URL, TOKEN)
             self.login_window.destroy()
+            #app1 = KlassenUploaderApp(self.login_window.master, JAMF_URL, TOKEN)
             app1 = KlassenUploaderApp(self.login_window.master, JAMF_URL, TOKEN)
             self.root.deiconify()
