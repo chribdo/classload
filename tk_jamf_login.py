@@ -36,7 +36,8 @@ class JamfLogin:
         self.login_button.pack(pady=10)
 
     def show_about(self):
-        messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
+        messagebox.showinfo("Über Classload","Classload\nsendet Daten zu Geräten, Nutzenden und Kursen an Jamf\nVersion 0.9\n© 2025 Christiane Borchel")
+        #messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
 
     def on_close(self):
         LOGGER.info("Fenster wird geschlossen. Programm wird beendet.")

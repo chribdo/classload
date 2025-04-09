@@ -58,12 +58,12 @@ jobs:
         run: |
           # python setup.py py2app
           pyinstaller --noconfirm --onefile --windowed \
-          --add-data "LICENSE.txt:." \
-         --add-data "hilfe.md:." \
-         --add-data "assets:assets" \
-         --name "Classload" \
-         --icon=assets/icon.icns \
-         tk_main_menue.py
+            --add-data "LICENSE.txt:." \
+            --add-data "hilfe.md:." \
+            --add-data "assets:assets" \
+            --name "Classload" \
+            --icon=assets/icon.icns \
+            tk_main_menue.py
 
       - name: Zip App Bundle
         run: |

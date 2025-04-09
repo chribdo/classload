@@ -194,14 +194,14 @@ def zeige_nutzungsdialog(root):
 def zeige_about_dialog():
     about = tk.Toplevel()
     #set_window_icon(about)
-    about.title("Über dieses Tool")
+    about.title("Über Classload")
     about.geometry("400x200")
-    about.resizable(False, False)
+    about.resizable(True, True)
 
     frame = ttk.Frame(about, padding=20)
     frame.pack(fill="both", expand=True)
 
-    label = ttk.Label(frame, text="macOS Tool für JAMF-Interaktionen\nVersion 1.0.0\n© 2025 von Dir", justify="center",
+    label = ttk.Label(frame, text="Classload\nsendet Daten zu Geräten, Nutzenden und Kursen an Jamf\nVersion 0.9\n© 2025 Christiane Borchel", justify="center",
                       font=("Helvetica", 12))
     label.pack(pady=(10, 20))
 
@@ -297,7 +297,8 @@ def show_markdown_window(root, title, html_content):
 
 
 def show_about():
-    messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
+    # messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
+    messagebox.showinfo("Über Classload","Classload\nzum Austausch von Daten mit Jamf\nVersion 0.9\n(c)2025 Christiane Borchel")
 
 
 def main():
