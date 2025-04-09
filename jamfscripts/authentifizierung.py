@@ -7,9 +7,33 @@ from dotenv import load_dotenv
 import jamfscripts.big_class_merge
 from jamfscripts.logging_config import LOGGER
 from jamfscripts import config,big_class_merge
+from pathlib import Path
 
-"""Funktion  zur Verschlüsselung"""
+def get_cipher():
+    # 👉 env_file zuerst definieren
+    env_file = Path.home() / ".Classload.env"
 
+    # dann laden
+    load_dotenv(dotenv_path=env_file)
+
+    key = os.getenv("SECRET_KEY")
+
+    if key is None:
+        print("🔑 Kein Schlüssel gefunden. Generiere neuen...")
+
+        key = Fernet.generate_key().decode()
+
+        with open(env_file, "a") as f:
+            f.write(f"SECRET_KEY={key}\n")
+
+        print(f"✅ Neuer Schlüssel wurde erstellt in {env_file}")
+    else:
+        print("✅ Schlüssel geladen.")
+
+    return Fernet(key.encode())
+
+
+"""
 def get_cipher():
   load_dotenv()
   env_file = ".env"
@@ -34,7 +58,7 @@ def get_cipher():
 
   # cipher = Fernet(key.encode())
   return Fernet(key.encode())
-
+"""
 # 🔹 Anmelden usw....
 def get_auth_token(JAMF_URL, USERNAME, PASSWORD):
     """Holt ein Bearer-Token von der Jamf Pro API."""
