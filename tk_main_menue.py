@@ -51,7 +51,7 @@ def init_dpi_awareness():
 
 
 LIZENZ = get_resource_path("LICENSE.txt")
-
+"""
 def set_window_icon(widget):
     try:
         icon_path = os.path.join("assets", "icon.png")
@@ -60,7 +60,15 @@ def set_window_icon(widget):
         widget.icon_img = icon_img
     except:
         pass
-
+"""
+def set_window_icon(widget):
+    try:
+        icon_path = get_resource_path(os.path.join("assets", "icon.png"))
+        icon_img = tk.PhotoImage(file=icon_path)
+        widget.iconphoto(True, icon_img)
+        widget.icon_img = icon_img  # Referenz halten!
+    except Exception as e:
+        print(f"Icon konnte nicht gesetzt werden: {e}")
 
 def lade_nutzungsinfo():
     """
@@ -81,7 +89,7 @@ def speichere_nutzungsinfo(info):
 def pruefe_testversion(root, verbleibend):
     root.deiconify()
     root.geometry("500x300")  # Fenstergröße setzen
-    root.minsize(500, 300)
+    root.minsize(400, 250)
     if verbleibend.days < 0:
         def beenden():
             root.destroy()
