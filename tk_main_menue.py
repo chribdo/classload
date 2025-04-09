@@ -222,6 +222,7 @@ def load_markdown_file( filename):
                 return markdown.markdown(f.read())
 
 def show_markdown_window(root, title, html_content):
+
             window = ttk.Toplevel(root)
             window.title(title)
             window.geometry("600x400")
@@ -236,7 +237,9 @@ def main():
     init_dpi_awareness()
     root = ttk.Window(themename="cosmo")
     if sys.platform.startswith("win"):
-        root.iconbitmap("/assets/icon.ico")
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        icon_path = os.path.join(script_dir, "assets", "icon.ico")
+        root.iconbitmap(icon_path)
     #root.withdraw()
     #root.update()
     if not zustimmung_bereits_erfolgt():
