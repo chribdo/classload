@@ -18,6 +18,7 @@ TOKEN = ""
 ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
 NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
 global iconpic
+
 def get_resource_path(filename):
     """
     Gibt den Pfad zur Datei zurück – funktioniert mit PyInstaller, py2app und lokal.
@@ -317,9 +318,13 @@ def main():
     root = ttk.Window(themename="cosmo", iconphoto=None)
     root.title("Classload")
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
-    icon_path = os.path.join(base_path, "assets", "icon.png")
+    #icon_path = os.path.join(base_path, "assets", "icon.png")
+    #icon_img = tk.PhotoImage(file=icon_path)
+    icon_relpath = os.path.join("assets", "icon.png")  # Pfad zusammensetzen
+    icon_path = get_resource_path(icon_relpath)  # Pfad für PyInstaller/py2app auflösen
     icon_img = tk.PhotoImage(file=icon_path)
-
+    root.iconphoto(True, icon_img)
+    root.icon_img = icon_img
     if sys.platform.startswith("win"):
         try:
             icon_path = os.path.join(base_path, "assets", "icon.ico")
