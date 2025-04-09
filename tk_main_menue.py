@@ -113,7 +113,7 @@ def pruefe_testversion(root, verbleibend):
 def pruefe_nutzungsart(root):
     info = lade_nutzungsinfo()
     if "nutzung" not in info:
-        nutzungsart = zeige_nutzungsdialog()
+        nutzungsart = zeige_nutzungsdialog(root)
         if not nutzungsart:
             Messagebox.ok(title="Abbruch", message="Nutzungstyp nicht festgelegt. Programm wird beendet.", alert=True)
             sys.exit()
@@ -125,6 +125,8 @@ def pruefe_nutzungsart(root):
         if nutzungsart == "gewerblich":
             info["startdatum"] = datetime.today().strftime("%Y-%m-%d")
         speichere_nutzungsinfo(info)
+    elif info["nutzung"] == "privat":
+        JamfLogin(root)
     elif info["nutzung"] == "gewerblich":
         startdatum = datetime.strptime(info["startdatum"], "%Y-%m-%d")
         verbleibend = (startdatum + timedelta(days=7)) - datetime.today()
@@ -158,7 +160,7 @@ def zeige_lizenz():
     textfeld.pack(fill="both", expand=True)
 
 
-def zeige_nutzungsdialog():
+def zeige_nutzungsdialog(root):
     auswahlfenster = tk.Toplevel()
     auswahlfenster.title("Nutzungsart wählen")
     auswahlfenster.geometry("500x300")
@@ -171,6 +173,7 @@ def zeige_nutzungsdialog():
     auswahl.set("privat")
 
     def bestätigen():
+        JamfLogin(root)
         auswahlfenster.destroy()
 
     label = ttk.Label(auswahlfenster, text="Bitte wählen Sie die Art der Nutzung:")
@@ -190,7 +193,7 @@ def zeige_nutzungsdialog():
 
 def zeige_about_dialog():
     about = tk.Toplevel()
-    set_window_icon(about)
+    #set_window_icon(about)
     about.title("Über dieses Tool")
     about.geometry("400x200")
     about.resizable(False, False)
@@ -286,7 +289,7 @@ def load_markdown_file(filename):
 
 def show_markdown_window(root, title, html_content):
     window = ttk.Toplevel(root, iconphoto=None)
-    set_window_icon(window)
+    #set_window_icon(window)
     window.title(title)
     window.geometry("600x400")
     html_label = HTMLLabel(window, html=html_content)
