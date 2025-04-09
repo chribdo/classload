@@ -55,7 +55,7 @@ def set_window_icon(widget):
         icon_path = os.path.join("assets", "icon.png")
         icon_img = tk.PhotoImage(file=icon_path)
         widget.iconphoto(True, icon_img)
-        widget._icon_img_ref = icon_img
+        widget.icon_img = icon_img
     except:
         pass
 
