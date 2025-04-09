@@ -298,9 +298,12 @@ def show_about():
 
 
 def main():
-    iconpic=get_resource_path("assets/icon.png")
     init_dpi_awareness()
+
     root = ttk.Window(themename="cosmo", iconphoto=None)
+    root.title("Classload")
+    icon_path = get_resource_path("assets/icon.png")
+    icon_img = tk.PhotoImage(file=icon_path)
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
     if sys.platform.startswith("win"):
         try:
@@ -338,6 +341,8 @@ def main():
 
     pruefe_nutzungsart(root)
     #login = JamfLogin(root)
+    root.iconphoto(True, icon_img)
+    root.icon_img = icon_img
     root.mainloop()
 
 
