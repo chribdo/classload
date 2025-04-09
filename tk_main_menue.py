@@ -18,6 +18,19 @@ TOKEN=""
 ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
 NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
 
+def init_dpi_awareness():
+    """
+    Aktiviert DPI-Awareness unter Windows, um eine scharfe und korrekt skalierte
+    Darstellung in tkinter/ttkbootstrap-Fenstern zu gewährleisten.
+    Hat keinen Effekt auf macOS oder Linux.
+    """
+    if sys.platform.startswith("win"):
+        try:
+            import ctypes
+            # 1 = system DPI aware, 2 = per-monitor DPI aware
+            ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        except Exception:
+            pass
 
 def get_resource_path(filename):
     """
@@ -220,7 +233,10 @@ def show_about():
 
 
 def main():
+    init_dpi_awareness()
     root = ttk.Window(themename="cosmo")
+    if sys.platform.startswith("win"):
+        root.iconbitmap("icon.ico")
     #root.withdraw()
     #root.update()
     if not zustimmung_bereits_erfolgt():

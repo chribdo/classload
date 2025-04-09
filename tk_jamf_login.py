@@ -15,7 +15,7 @@ class JamfLogin:
 
         self.login_window = ttk.Toplevel(root)
         self.login_window.title("JAMF Login")
-        self.login_window.geometry("600x400")
+        self.login_window.geometry("600x350")
         self.login_window.resizable(False, True)
         self.login_window.update_idletasks()
         self.login_window.minsize( self.login_window.winfo_width(), self.login_window.winfo_height())
