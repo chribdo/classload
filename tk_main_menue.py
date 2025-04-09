@@ -146,7 +146,7 @@ def zeige_lizenz():
         Messagebox.ok(title="Lizenz", message="LICENSE.txt nicht gefunden.", alert=False)
         return
     lizfenster = tk.Toplevel()
-    #set_window_icon(lizfenster)
+    set_window_icon(lizfenster)
     lizfenster.title("Lizenz")
     lizfenster.geometry("600x500")
     textfeld = scrolledtext.ScrolledText(lizfenster, wrap="word")
@@ -190,7 +190,7 @@ def zeige_nutzungsdialog():
 
 def zeige_about_dialog():
     about = tk.Toplevel()
-    #set_window_icon(about)
+    set_window_icon(about)
     about.title("Über dieses Tool")
     about.geometry("400x200")
     about.resizable(False, False)
@@ -234,7 +234,7 @@ def show_license_dialog(root):
         return False
 
     dialog = ttk.Toplevel(root, iconphoto=None)
-    #set_window_icon(dialog)
+    set_window_icon(dialog)
     dialog.title("Lizenzvereinbarung")
     dialog.minsize(700, 500)
     dialog.transient(root)
@@ -286,7 +286,7 @@ def load_markdown_file(filename):
 
 def show_markdown_window(root, title, html_content):
     window = ttk.Toplevel(root, iconphoto=None)
-    #set_window_icon(window)
+    set_window_icon(window)
     window.title(title)
     window.geometry("600x400")
     html_label = HTMLLabel(window, html=html_content)
