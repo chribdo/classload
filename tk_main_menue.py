@@ -323,6 +323,8 @@ def main():
     icon_relpath = os.path.join("assets", "icon.png")  # Pfad zusammensetzen
     icon_path = get_resource_path(icon_relpath)  # Pfad für PyInstaller/py2app auflösen
     icon_img = tk.PhotoImage(file=icon_path)
+    print("🔍 Icon-Pfad:", icon_path)
+    print("📦 Existiert:", os.path.exists(icon_path))
     root.iconphoto(True, icon_img)
     root.icon_img = icon_img
     if sys.platform.startswith("win"):
