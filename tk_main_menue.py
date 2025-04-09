@@ -177,7 +177,7 @@ def speichere_zustimmung():
     with open(ZUSTIMMUNGSDATEI, "w") as f:
         json.dump({"zugestimmt": True}, f)
 
-
+"""
 def show_license_dialog(root):
     license_text = ""
     try:
@@ -220,7 +220,53 @@ def show_license_dialog(root):
     dialog.wait_window()  # blockiert, bis dialog geschlossen
 
     return result["accepted"]
+"""
 
+def show_license_dialog(root):
+    try:
+        with open(LIZENZ, "r", encoding="utf-8") as f:
+            license_text = f.read()
+    except FileNotFoundError:
+        Messagebox.show_error("LICENSE.txt nicht gefunden.", "Fehler", parent=root)
+        return False
+
+    dialog = ttk.Toplevel(root)
+    dialog.title("Lizenzvereinbarung")
+    dialog.minsize(700, 500)
+    dialog.transient(root)
+    dialog.grab_set()
+
+    # Label oben
+    ttk.Label(dialog, text="Bitte lesen Sie die Lizenzbedingungen:", font=("Helvetica", 12)).pack(pady=10)
+
+    # Textbereich in eigenem Frame
+    text_frame = ttk.Frame(dialog)
+    text_frame.pack(fill="both", expand=True, padx=20, pady=10)
+
+    text_area = ScrolledText(text_frame, autohide=True)
+    text_area.pack(fill="both", expand=True)
+    text_area.text.insert("1.0", license_text)
+    text_area.text.configure(state="disabled")
+
+    # Button-Frame
+    button_frame = ttk.Frame(dialog)
+    button_frame.pack(pady=10)
+
+    result = {"accepted": None}
+
+    def agree():
+        result["accepted"] = True
+        dialog.destroy()
+
+    def disagree():
+        result["accepted"] = False
+        dialog.destroy()
+
+    ttk.Button(button_frame, text="Ich stimme zu", command=agree, bootstyle="success").pack(side="left", padx=10)
+    ttk.Button(button_frame, text="Ich lehne ab", command=disagree, bootstyle="danger").pack(side="right", padx=10)
+
+    dialog.wait_window()
+    return result["accepted"]
 
 def show_help(root):
     help_text = load_markdown_file("HILFE.md")
@@ -249,12 +295,20 @@ def show_about():
 def main():
     init_dpi_awareness()
     root = ttk.Window(themename="cosmo")
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
     if sys.platform.startswith("win"):
         try:
-            icon_path = os.path.join(os.path.dirname(__file__), "assets", "icon.ico")
+            icon_path = os.path.join(base_path, "assets", "icon.ico")
             root.iconbitmap(icon_path)
         except Exception as e:
             print(f"Icon konnte nicht gesetzt werden: {e}")
+    try:
+        png_path = os.path.join(base_path, "assets", "icon.png")
+        icon_img = tk.PhotoImage(file=png_path)
+        root.iconphoto(True, icon_img)
+    except Exception as e:
+        print(f"PNG-Icon konnte nicht gesetzt werden: {e}")
+
     if not zustimmung_bereits_erfolgt():
         if not show_license_dialog(root):
             return
