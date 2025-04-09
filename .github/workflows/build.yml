@@ -23,10 +23,6 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Clean PyInstaller output
-        run: |
-          rm -rf build dist *.spec
-
       - name: Build EXE
         run: |
           pyinstaller --noconfirm --onefile --windowed --add-data "LICENSE.txt;." --add-data "hilfe.md;." --add-data "assets;assets" --name "Classload" --icon=assets/icon.ico tk_main_menue.py
@@ -58,6 +54,9 @@ jobs:
         run: |
           python -c "import requests, cryptography, cffi, charset_normalizer, dotenv, ttkbootstrap; print('All modules OK')"
 
+      - name: Clean PyInstaller output
+        run: |
+          rm -rf build dist *.spec
       - name: Build macOS App with py2app
         run: |
           # python setup.py py2app
