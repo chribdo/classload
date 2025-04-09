@@ -7,8 +7,6 @@ from jamfscripts import *
 import sys
 
 
-
-
 class JamfLogin:
     def __init__(self, root):
         self.root = root
@@ -18,7 +16,7 @@ class JamfLogin:
         self.login_window.geometry("600x350")
         self.login_window.resizable(False, True)
         self.login_window.update_idletasks()
-        self.login_window.minsize( self.login_window.winfo_width(), self.login_window.winfo_height())
+        self.login_window.minsize(self.login_window.winfo_width(), self.login_window.winfo_height())
         self.login_window.protocol("WM_DELETE_WINDOW", self.on_close)
 
         ttk.Label(self.login_window, text="JAMF-URL:").pack(pady=5)
@@ -49,10 +47,10 @@ class JamfLogin:
 
         JAMF_URL = self.url_entry.get()
         username = self.username_entry.get()
-        #password = self.password_entry.get()
+        # password = self.password_entry.get()
 
         if not JAMF_URL or not username or not self.password_entry.get():
-            #messagebox.showwarning("Fehler", "Alle Felder müssen ausgefüllt werden!")
+            # messagebox.showwarning("Fehler", "Alle Felder müssen ausgefüllt werden!")
             Messagebox.ok(
                 title="Alles ausgefüllt?",
                 message="Alle Felder müssen ausgefüllt werden!.",
@@ -64,7 +62,6 @@ class JamfLogin:
         encrypted_password = get_cipher().encrypt(self.password_entry.get().encode())
         TOKEN = get_auth_token(JAMF_URL, username, encrypted_password)
 
-
         if TOKEN == "":
             # Messagebox.ok(title="Login fehlgeschlagen", "Bitte überprüfen Sie die Zugangsdaten.", alert=True)
             Messagebox.ok(
@@ -74,12 +71,11 @@ class JamfLogin:
             )
         else:
             # Messagebox.ok(title="Erfolg", "Login erfolgreich!", alert=False)
-            #Messagebox.ok(
+            # Messagebox.ok(
             #    title="Erfolg",
             #    message="Login erfolgreich.",
             # )
             initialisiere(JAMF_URL, TOKEN)
             self.login_window.destroy()
-            app1 = KlassenUploaderApp(self.login_window.master,JAMF_URL, TOKEN)
+            app1 = KlassenUploaderApp(self.login_window.master, JAMF_URL, TOKEN)
             self.root.deiconify()
-

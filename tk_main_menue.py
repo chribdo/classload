@@ -13,10 +13,11 @@ import os, sys, markdown, getpass
 import platform
 from pathlib import Path
 
-JAMF_URL=""
-TOKEN=""
+JAMF_URL = ""
+TOKEN = ""
 ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
 NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
+
 
 def init_dpi_awareness():
     """
@@ -32,6 +33,7 @@ def init_dpi_awareness():
         except Exception:
             pass
 
+
 def get_resource_path(filename):
     """
     Gibt den Pfad zur Datei zurück – funktioniert mit PyInstaller, py2app und lokal.
@@ -45,19 +47,26 @@ def get_resource_path(filename):
         base_path = Path(__file__).resolve().parent
         return str(base_path / filename)
 
+
 LIZENZ = get_resource_path("LICENSE.txt")
 
 
-
 def lade_nutzungsinfo():
+    """
+
+    Returns:
+
+    """
     if os.path.exists(NUTZUNGSDATEI):
         with open(NUTZUNGSDATEI, "r") as f:
             return json.load(f)
     return {}
 
+
 def speichere_nutzungsinfo(info):
     with open(NUTZUNGSDATEI, "w") as f:
         json.dump(info, f)
+
 
 def pruefe_nutzungsart():
     info = lade_nutzungsinfo()
@@ -78,10 +87,14 @@ def pruefe_nutzungsart():
         startdatum = datetime.strptime(info["startdatum"], "%Y-%m-%d")
         verbleibend = (startdatum + timedelta(days=7)) - datetime.today()
         if verbleibend.days < 0:
-            Messagebox.ok(title="Testzeitraum abgelaufen", message="Die 7-Tage-Testversion ist abgelaufen. Bitte kontaktieren Sie den Entwickler für eine Lizenz.", alert=True)
+            Messagebox.ok(title="Testzeitraum abgelaufen",
+                          message="Die 7-Tage-Testversion ist abgelaufen. Bitte kontaktieren Sie den Entwickler für eine Lizenz.",
+                          alert=True)
             sys.exit()
         else:
-            Messagebox.ok(title="Testversion", message=f"Testversion aktiv. Noch {verbleibend.days + 1} Tage verfügbar.", alert=False)
+            Messagebox.ok(title="Testversion",
+                          message=f"Testversion aktiv. Noch {verbleibend.days + 1} Tage verfügbar.", alert=False)
+
 
 def zeige_lizenz():
     if not os.path.exists(LIZENZ):
@@ -138,15 +151,12 @@ def zeige_about_dialog():
     frame = ttk.Frame(about, padding=20)
     frame.pack(fill="both", expand=True)
 
-    label = ttk.Label(frame, text="macOS Tool für JAMF-Interaktionen\nVersion 1.0.0\n© 2025 von Dir", justify="center", font=("Helvetica", 12))
+    label = ttk.Label(frame, text="macOS Tool für JAMF-Interaktionen\nVersion 1.0.0\n© 2025 von Dir", justify="center",
+                      font=("Helvetica", 12))
     label.pack(pady=(10, 20))
 
     btn = ttk.Button(frame, text="Schließen", command=about.destroy)
     btn.pack(pady=(10, 0))
-
-
-
-
 
 
 # --- Lizenzdialog + Zustimmungsspeicherung ---
@@ -162,85 +172,89 @@ def zustimmung_bereits_erfolgt():
             return False
     return False
 
+
 def speichere_zustimmung():
     with open(ZUSTIMMUNGSDATEI, "w") as f:
         json.dump({"zugestimmt": True}, f)
 
+
 def show_license_dialog(root):
-        license_text = ""
-        try:
-            with open(LIZENZ, "r", encoding="utf-8") as f:
-                license_text = f.read()
-        except FileNotFoundError:
-            Messagebox.show_error("LICENSE.txt nicht gefunden.", "Fehler", parent=root)
-            return False
+    license_text = ""
+    try:
+        with open(LIZENZ, "r", encoding="utf-8") as f:
+            license_text = f.read()
+    except FileNotFoundError:
+        Messagebox.show_error("LICENSE.txt nicht gefunden.", "Fehler", parent=root)
+        return False
 
-        dialog = ttk.Toplevel(root)
-        dialog.title("Lizenzvereinbarung")
-        dialog.geometry("700x500")
-        dialog.transient(root)
-        dialog.grab_set()
+    dialog = ttk.Toplevel(root)
+    dialog.title("Lizenzvereinbarung")
+    dialog.geometry("700x500")
+    dialog.transient(root)
+    dialog.grab_set()
 
-        label = ttk.Label(dialog, text="Bitte lesen Sie die Lizenzbedingungen:", font=("Helvetica", 12))
-        label.pack(pady=10)
+    label = ttk.Label(dialog, text="Bitte lesen Sie die Lizenzbedingungen:", font=("Helvetica", 12))
+    label.pack(pady=10)
 
-        text_area = ScrolledText(dialog, height=22, autohide=True)
-        text_area.insert("1.0", license_text)
-        text_area.text.configure(state="disabled")
-        text_area.pack(padx=20, pady=20, fill="both", expand=True)
+    text_area = ScrolledText(dialog, height=22, autohide=True)
+    text_area.insert("1.0", license_text)
+    text_area.text.configure(state="disabled")
+    text_area.pack(padx=20, pady=20, fill="both", expand=True)
 
-        result = {"accepted": None}
+    result = {"accepted": None}
 
-        def agree():
-            result["accepted"] = True
-            dialog.destroy()
+    def agree():
+        result["accepted"] = True
+        dialog.destroy()
 
-        def disagree():
-            result["accepted"] = False
-            dialog.destroy()
+    def disagree():
+        result["accepted"] = False
+        dialog.destroy()
 
-        button_frame = ttk.Frame(dialog)
-        button_frame.pack(pady=10)
+    button_frame = ttk.Frame(dialog)
+    button_frame.pack(pady=10)
 
-        ttk.Button(button_frame, text="Ich stimme zu", command=agree, bootstyle="success").pack(side="left", padx=10)
-        ttk.Button(button_frame, text="Ich lehne ab", command=disagree, bootstyle="danger").pack(side="right", padx=10)
+    ttk.Button(button_frame, text="Ich stimme zu", command=agree, bootstyle="success").pack(side="left", padx=10)
+    ttk.Button(button_frame, text="Ich lehne ab", command=disagree, bootstyle="danger").pack(side="right", padx=10)
 
-        dialog.wait_window()  # blockiert, bis dialog geschlossen
+    dialog.wait_window()  # blockiert, bis dialog geschlossen
 
-        return result["accepted"]
-
+    return result["accepted"]
 
 
 def show_help(root):
-        help_text = load_markdown_file("HILFE.md")
-        show_markdown_window(root, "Hilfe", help_text)
+    help_text = load_markdown_file("HILFE.md")
+    show_markdown_window(root, "Hilfe", help_text)
 
-def load_markdown_file( filename):
-            if not os.path.exists(filename):
-                return f"Datei '{filename}' nicht gefunden."
-            with open(filename, "r", encoding="utf-8") as f:
-                return markdown.markdown(f.read())
+
+def load_markdown_file(filename):
+    if not os.path.exists(filename):
+        return f"Datei '{filename}' nicht gefunden."
+    with open(filename, "r", encoding="utf-8") as f:
+        return markdown.markdown(f.read())
+
 
 def show_markdown_window(root, title, html_content):
+    window = ttk.Toplevel(root)
+    window.title(title)
+    window.geometry("600x400")
+    html_label = HTMLLabel(window, html=html_content)
+    html_label.pack(fill="both", expand=True, padx=10, pady=10)
 
-            window = ttk.Toplevel(root)
-            window.title(title)
-            window.geometry("600x400")
-            html_label = HTMLLabel(window, html=html_content)
-            html_label.pack(fill="both", expand=True, padx=10, pady=10)
 
 def show_about():
-        messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
+    messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
 
 
 def main():
     init_dpi_awareness()
     root = ttk.Window(themename="cosmo")
     if sys.platform.startswith("win"):
-        icon_path=os.path.join(os.getcwd(), "/assets/icon.ico")
-        root.iconbitmap(icon_path)
-    #root.withdraw()
-    #root.update()
+        try:
+            icon_path = os.path.join(os.path.dirname(__file__), "assets", "icon.ico")
+            root.iconbitmap(icon_path)
+        except Exception as e:
+            print(f"Icon konnte nicht gesetzt werden: {e}")
     if not zustimmung_bereits_erfolgt():
         if not show_license_dialog(root):
             return
@@ -270,13 +284,13 @@ def main():
     login = JamfLogin(root)
     root.mainloop()
 
+
 if __name__ == "__main__":
     try:
         main()
     except Exception as e:
         import traceback
+
         with open("/tmp/classload_error.log", "w", encoding="utf-8") as f:
             f.write(traceback.format_exc())
         raise
-
-
