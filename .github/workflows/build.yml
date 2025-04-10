@@ -45,7 +45,7 @@ jobs:
 
       - name: Install py2app
         run: |
-          python3 -m pip install --upgrade pip setuptools wheel py2app
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install py2app
           pip install pyinstaller
@@ -59,7 +59,7 @@ jobs:
           rm -rf build dist *.spec
       - name: Build macOS App with py2app
         run: |
-          python3 setup.py py2app
+          python setup.py py2app
           
 
       - name: Zip App Bundle
