@@ -71,39 +71,39 @@ jobs:
           name: Classload-mac
           path: dist/Classload-mac.zip
 
-build-linux:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-tk
-        pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pyinstaller
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
 
-    - name: Build Executable
-      run: |
-        pyinstaller --noconfirm --onefile --windowed \
-          --add-data "LICENSE.txt:." \
-          --add-data "hilfe.md:." \
-          --add-data "assets:assets" \
-          --name "Classload" \
-          --icon=assets/icon.ico \
-          tk_main_menue.py
+      - name: Build Executable
+        run: |
+          pyinstaller --noconfirm --onefile --windowed \
+            --add-data "LICENSE.txt:." \
+            --add-data "hilfe.md:." \
+            --add-data "assets:assets" \
+            --name "Classload" \
+            --icon=assets/icon.ico \
+            tk_main_menue.py
 
-    - name: Upload Linux Executable
-      uses: actions/upload-artifact@v4
-      with:
-        name: Linux-Binary
-        path: dist/Classload
+      - name: Upload Linux Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: Linux-Binary
+          path: dist/Classload
 
 
