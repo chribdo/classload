@@ -353,15 +353,15 @@ def main():
     icon_img = tk.PhotoImage(file=icon_path)
     print("🔍 Icon-Pfad:", icon_path)
     print("📦 Existiert:", os.path.exists(icon_path))
-    root.iconphoto(True, icon_img)
-    root.icon_img = icon_img
+    #root.iconphoto(True, icon_img)
+    #root.icon_img = icon_img
     if sys.platform.startswith("win"):
         try:
             icon_path = os.path.join(base_path, "assets", "icon.ico")
             root.iconbitmap(icon_path)
         except Exception as e:
             print(f"Icon konnte nicht gesetzt werden: {e}")
-    set_window_icon(root)
+    #set_window_icon(root)
 
     if not zustimmung_bereits_erfolgt():
         if not show_license_dialog(root):

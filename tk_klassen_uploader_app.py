@@ -364,7 +364,7 @@ class KlassenUploaderApp:
                     title="Alles ausgefüllt?",
                     message="Bitte alles ausfüllen.",
                     alert=True,
-                    parent=poup
+                    parent=popup
 
                 )
                 return

@@ -300,6 +300,7 @@ def create_xml_from_class(class_data):
 # 🔹 Hauptfunktion
 def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLASS_PREFIX, OUTPUT_FILE_STUDENTS,
               OUTPUT_FILE_CLASSES, postfix):
+    from jamfscripts.authentifizierung import refresh_token
     csv_data = csv_to_json(INPUT_FILENAME)
     token = TOKEN
     # get_site_id(JAMF_URL, token)
@@ -322,8 +323,11 @@ def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLAS
             "Accept": "application/xml",
             "Authorization": f"Bearer {token}"
         }
-
+        i=0
         for class_entry in class_data:
+            if (i%40==0):
+                TOKEN= refresh_token()
+            i=i+1
             xml_string = create_xml_from_class(class_entry)
             LOGGER.info(class_entry["class"]["name"])
             """
