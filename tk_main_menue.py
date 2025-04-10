@@ -339,11 +339,13 @@ def show_about():
     # messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
     messagebox.showinfo("Über Classload","Classload\nzum Austausch von Daten mit Jamf\nVersion 0.9\n(c)2025 Christiane Borchel")
 
-"""
+
 def main():
     init_dpi_awareness()
-
-    root = ttk.Window(themename="cosmo", iconphoto=None)
+    if sys.platform == "darwin":
+      root = ttk.Window(themename="cosmo")
+    else:
+      root = ttk.Window(themename="cosmo", iconphoto=None)
     root.title("Classload")
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
     # icon_path = os.path.join(base_path, "assets", "icon.png")
@@ -400,58 +402,6 @@ def main():
     #login = JamfLogin(root)
     root.iconphoto(True, icon_img)
     #root.icon_img = icon_img
-    root.mainloop()
-"""
-def main():
-    init_dpi_awareness()
-
-    root = ttk.Window(themename="cosmo")
-    root.title("Classload")
-
-    if sys.platform == "darwin":
-        icon_relpath = os.path.join("assets", "icon_small.png")
-    else:
-        icon_relpath = os.path.join("assets", "icon.png")
-
-    icon_path = get_resource_path(icon_relpath)
-    print("🔍 Icon-Pfad:", icon_path)
-    print("📦 Existiert:", os.path.exists(icon_path))
-
-    try:
-        icon_img = tk.PhotoImage(file=icon_path)
-        root.iconphoto(True, icon_img)
-        root.icon_img = icon_img
-    except Exception as e:
-        print(f"⚠️ Icon konnte nicht gesetzt werden: {e}")
-
-    # root.withdraw() erst NACH Lizenzabfrage
-    if not zustimmung_bereits_erfolgt():
-        if not show_license_dialog(root):
-            return
-        speichere_zustimmung()
-
-    # Menü aufbauen
-    menubar = tk.Menu(root)
-    hilfe_menu = tk.Menu(menubar, tearoff=0)
-    hilfe_menu.add_command(label="Lizenz anzeigen", command=zeige_lizenz)
-    hilfe_menu.add_command(label="Hilfe anzeigen", command=lambda: show_help(root))
-
-    if platform.system() == "Darwin":
-        apple_menu = tk.Menu(menubar, name="apple", tearoff=0)
-        apple_menu.add_command(label="Über Classload", command=show_about)
-        menubar.add_cascade(menu=apple_menu)
-        menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
-        root["menu"] = menubar
-    else:
-        menubar.add_command(label="Über Classload", command=show_about)
-        menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
-        root.config(menu=menubar)
-
-    # Jetzt Login starten
-    root.withdraw()
-    login = JamfLogin(root)
-
-    # root wird erst wieder sichtbar gemacht, wenn Login erfolgreich war
     root.mainloop()
 
 
