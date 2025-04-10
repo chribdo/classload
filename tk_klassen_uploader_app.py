@@ -174,6 +174,7 @@ class KlassenUploaderApp:
         teachergroup_entry.pack(pady=5)
         praefix = ""
         teachergroup = ""
+        confirmed = tk.BooleanVar(value=False)
         popup.update_idletasks()
         popup.minsize(popup.winfo_width(), popup.winfo_height())
 
@@ -192,8 +193,11 @@ class KlassenUploaderApp:
 
                 )
                 return
+            confirmed.set(True)
             popup.destroy()
 
+        if not confirmed.get():
+            return  # Abgebrochen
         ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
         popup.wait_window()
         # Datei auswählen

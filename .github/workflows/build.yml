@@ -29,7 +29,7 @@ jobs:
       - name: Upload Windows EXE
         uses: actions/upload-artifact@v4
         with:
-          name: Windows-EXE
+          name: Classload-EXE
           path: dist/*.exe
 
 
@@ -103,7 +103,7 @@ jobs:
       - name: Upload Linux Executable
         uses: actions/upload-artifact@v4
         with:
-          name: Linux-Binary
+          name: Classload-linux
           path: dist/Classload
 
 
