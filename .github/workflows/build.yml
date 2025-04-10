@@ -76,7 +76,6 @@ jobs:
             name: Classload-mac
             path: dist/Classload-mac.zip
 
-
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -103,7 +102,7 @@ jobs:
             --add-data "hilfe.md:." \
             --add-data "assets:assets" \
             --name "Classload" \
-            --icon=assets/icon.png \
+            --icon=assets/icon.ico \
             tk_main_menue.py
 
       - name: Upload Linux Executable
@@ -111,3 +110,5 @@ jobs:
         with:
           name: Linux-Binary
           path: dist/Classload
+
+
