@@ -393,7 +393,7 @@ class KlassenUploaderApp:
         #popup.geometry("600x300")
         # Label mit Zeilenumbruch und linker Ausrichtung
         label_text = (
-            "Bitte das Klassen-Präfix der Klassen eingeben, "
+            "Bitte das Klassen-Präfix der Klassen eingeben,\n"
             "die gelöscht werden sollen:"
         )
         ttk.Label(
@@ -464,7 +464,7 @@ class KlassenUploaderApp:
         popup = ttk.Toplevel(self.root)
         popup.title("Gruppen-Präfix")
         label_text = (
-            "Bitte das Klassen-Präfix der Klassen eingeben, "
+            "Bitte das Gruppen-Präfix der Gruppen eingeben,\n"
             "die gelöscht werden sollen:"
         )
         ttk.Label(
