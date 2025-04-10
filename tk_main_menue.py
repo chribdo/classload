@@ -180,7 +180,7 @@ def zeige_lizenz():
         Messagebox.ok(title="Lizenz", message="LICENSE.txt nicht gefunden.", alert=False)
         return
     lizfenster = tk.Toplevel()
-    set_window_icon(lizfenster)
+    #set_window_icon(lizfenster)
     lizfenster.title("Lizenz")
     lizfenster.geometry("600x500")
     textfeld = scrolledtext.ScrolledText(lizfenster, wrap="word")
@@ -269,7 +269,7 @@ def show_license_dialog(root):
         return False
 
     dialog = ttk.Toplevel(root, iconphoto=None)
-    set_window_icon(dialog)
+    #set_window_icon(dialog)
     dialog.title("Lizenzvereinbarung")
     dialog.minsize(700, 500)
     dialog.transient(root)
@@ -392,7 +392,7 @@ def main():
     pruefe_nutzungsart(root)
     #login = JamfLogin(root)
     root.iconphoto(True, icon_img)
-    root.icon_img = icon_img
+    #root.icon_img = icon_img
     root.mainloop()
 
 
