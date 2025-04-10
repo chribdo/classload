@@ -12,6 +12,7 @@ from jamfscripts import *
 import os, sys, markdown, getpass
 import platform
 from pathlib import Path
+import tempfile
 
 JAMF_URL = ""
 TOKEN = ""
@@ -397,7 +398,8 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         import traceback
-        log_path = os.path.join(os.path.expanduser("~"), "Desktop", "classload_error.log")
+        log_path = os.path.join(tempfile.gettempdir(), "classload_error.log")
+        #log_path = os.path.join(os.path.expanduser("~"), "Desktop", "classload_error.log")
 
 
         with open(log_path, "w", encoding="utf-8") as f:
