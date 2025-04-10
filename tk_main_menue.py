@@ -339,7 +339,6 @@ def show_about():
     # messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
     messagebox.showinfo("Über Classload","Classload\nzum Austausch von Daten mit Jamf\nVersion 0.9\n(c)2025 Christiane Borchel")
 
-"""
 def main():
     init_dpi_awareness()
     if sys.platform == "darwin":
@@ -401,7 +400,7 @@ def main():
     # menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
     root.config(menu=menubar)
 
-    # root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
+    root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
 
 
     pruefe_nutzungsart(root)
@@ -423,7 +422,7 @@ def main():
     root.after(100, lambda: root.attributes("-topmost", False))
 
     root.mainloop()
-
+"""
 
 if __name__ == "__main__":
     try:
