@@ -104,7 +104,7 @@ class KlassenUploaderApp:
             self.root.deiconify()
 
         # Breite je nach Plattform setzen
-        entry_width = 60 if sys.platform == "darwin" else 80
+        entry_width = 70 if sys.platform == "darwin" else 80
 
         # Optional: Einheitliche Monospace-Schriftart für alle Entries
         style = ttk.Style()
@@ -390,11 +390,23 @@ class KlassenUploaderApp:
         # Präfix eingeben
         popup = ttk.Toplevel(self.root)
         popup.title("Klassen-Präfix")
-        popup.geometry("600x300")
-        ttk.Label(popup, text="Bitte das Klassen-Präfix, der Klassen eingeben, die gelöscht werden sollen: ").pack(
-            pady=5)
-        prefix_entry = ttk.Entry(popup)
-        prefix_entry.pack(pady=5)
+        #popup.geometry("600x300")
+        # Label mit Zeilenumbruch und linker Ausrichtung
+        label_text = (
+            "Bitte das Klassen-Präfix der Klassen eingeben, "
+            "die gelöscht werden sollen:"
+        )
+        ttk.Label(
+            popup,
+            text=label_text,
+            wraplength=580,  # verhindert Abschneiden auf Windows
+            justify="left"  # schöner für mehrzeiligen Text
+        ).pack(padx=10, pady=10, anchor="w")
+
+        # Eingabefeld
+        prefix_entry = ttk.Entry(popup, width=50)
+        prefix_entry.pack(padx=10, pady=5)
+
         popup.update_idletasks()
         popup.minsize(popup.winfo_width(), popup.winfo_height())
 
@@ -451,12 +463,20 @@ class KlassenUploaderApp:
         # Präfix eingeben
         popup = ttk.Toplevel(self.root)
         popup.title("Gruppen-Präfix")
-        popup.geometry("600x300")
-        ttk.Label(popup,
-                  text="Bitte das Gruppen-Präfix, der Benutzergruppen eingeben, die gelöscht werden sollen: ").pack(
-            pady=5)
-        prefix_entry = ttk.Entry(popup)
-        prefix_entry.pack(pady=5)
+        label_text = (
+            "Bitte das Klassen-Präfix der Klassen eingeben, "
+            "die gelöscht werden sollen:"
+        )
+        ttk.Label(
+            popup,
+            text=label_text,
+            wraplength=580,  # verhindert Abschneiden auf Windows
+            justify="left"  # schöner für mehrzeiligen Text
+        ).pack(padx=10, pady=10, anchor="w")
+
+        # Eingabefeld
+        prefix_entry = ttk.Entry(popup, width=50)
+        prefix_entry.pack(padx=10, pady=5)
         popup.update_idletasks()
         popup.minsize(popup.winfo_width(), popup.winfo_height())
 

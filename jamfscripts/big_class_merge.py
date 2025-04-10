@@ -310,7 +310,7 @@ def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLAS
     teachers = get_teachers(JAMF_URL, token, TEACHER_GROUP_NAME)
     create_class_structure(courses, SITE_ID, CLASS_PREFIX, teachers, student_classes, OUTPUT_FILE_CLASSES)
     class_data = load_json(OUTPUT_FILE_CLASSES)
-
+    LOGGER.info("Jetzt kommt die askokcancel-Abfrage")
     ok = tkinter.messagebox.askokcancel("Bestätigen",
                                         "Der Klassenupload kann beginnen.")
     if not ok:

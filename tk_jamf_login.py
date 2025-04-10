@@ -13,11 +13,15 @@ class JamfLogin:
 
         self.login_window = ttk.Toplevel(root)
         self.login_window.title("JAMF Login")
-        self.login_window.geometry("600x350")
+        #self.login_window.geometry("600x350")
+
+        # WICHTIG: Fenster sichtbar und aktiv
+        self.login_window.lift()
+        self.login_window.focus_force()
+        self.login_window.attributes("-topmost", True)
+        self.login_window.after(100, lambda: self.login_window.attributes("-topmost", False))
         self.login_window.resizable(False, True)
-        self.login_window.update_idletasks()
-        self.login_window.minsize(self.login_window.winfo_width(), self.login_window.winfo_height())
-        self.login_window.protocol("WM_DELETE_WINDOW", self.on_close)
+
 
         ttk.Label(self.login_window, text="JAMF-URL:").pack(pady=5)
         self.url_entry = ttk.Entry(self.login_window, width=40)
@@ -34,6 +38,9 @@ class JamfLogin:
 
         self.login_button = ttk.Button(self.login_window, text="Login", command=self.validate_login)
         self.login_button.pack(pady=10)
+        self.login_window.update_idletasks()
+        self.login_window.minsize(self.login_window.winfo_width()+20, self.login_window.winfo_height()+20)
+        self.login_window.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def show_about(self):
         messagebox.showinfo("Über Classload",

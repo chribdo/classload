@@ -5,17 +5,18 @@ DATA_FILES = [
     ('', ['LICENSE.txt', 'hilfe.md']),
     ('assets', ['assets/icon_small.png']),
 ]
+
 OPTIONS = {
-    'argv_emulation': False,  # Debug: Terminalfenster beim Doppelklick sichtbar
-    'iconfile': 'icon.icns',
+    'argv_emulation': True,  # Terminalfenster zeigt Fehler
+    # 'iconfile': 'icon.icns',  # Nur aktivieren, wenn icon.icns existiert
     'includes': [
         'requests',
         'charset_normalizer',
-        '_cffi_backend',
-        'certifi',
-        'dotenv',
+        'tkinter',
         'ttkbootstrap',
-        'charset_normalizer'
+        'PIL.Image',
+        'PIL.ImageTk',
+        'jamfscripts'
     ],
     'packages': ['cryptography', 'cffi', 'charset_normalizer'],
     'plist': {
@@ -25,7 +26,7 @@ OPTIONS = {
         'CFBundleVersion': '1.0',
         'CFBundleShortVersionString': '1.0',
         'NSHighResolutionCapable': True,
-        'CFBundleIconFile': 'icon',  # Wichtig: ohne .icns-Endung
+        'CFBundleIconFile': 'icon',  # nur wenn icon.icns da ist
     },
     'resources': ['LICENSE.txt', 'hilfe.md'],
     'verbose': 1,
