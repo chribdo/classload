@@ -159,78 +159,6 @@ class KlassenUploaderApp:
         popup.update_idletasks()
         popup.minsize(popup.winfo_width(), popup.winfo_height())
 
-    """
-    def konfigurieren(self):
-        def speichern():
-            set_config_value("TEACHER_GROUP_NAME", entry_teachergroup.get())
-            set_config_value("SITE_ID", entry_site_id.get())
-            set_config_value("OUTPUT_FILE_CLASSES", entry_output_classes.get())
-            set_config_value("OUTPUT_FILE_STUDENTS", entry_output_sus.get())
-            set_config_value("POSTFIX", entry_postfix.get())
-            set_config_value("TEACHER_POSTFIX", entry_lehrkraefte_postfix.get())
-            # Messagebox.ok(title="Eingaben gespeichert", "Eingaben gespeichert", alert=False)
-            Messagebox.ok(
-                title="Gespeichert?",
-                message="Eingaben gespeichert.",
-                parent=popup
-            )
-            popup.destroy()
-            self.root.deiconify()
-
-        # Popup-Fenster
-        popup = ttk.Toplevel()
-        popup.protocol("WM_DELETE_WINDOW", lambda: self.popup_closed(popup))
-        self.root.withdraw()
-        popup.title("Konfiguration")
-
-
-        # Labels und Eingabefelder
-        ttk.Label(popup, text="Statische Benutzergruppe aller Lehrkräfte in JAMF:").grid(row=0, column=0, sticky='e',
-                                                                                         padx=5, pady=2)
-        entry_teachergroup = ttk.Entry(popup, width=60)
-        tg = config.get_config_value("TEACHER_GROUP_NAME")
-        entry_teachergroup.insert(0, tg)
-        entry_teachergroup.grid(row=0, column=1, padx=5, pady=2)
-
-        ttk.Label(popup, text="SITE-ID:").grid(row=1, column=0, sticky='e', padx=5, pady=2)
-        entry_site_id = ttk.Entry(popup, width=60)
-        sid = get_config_value("SITE_ID")
-        entry_site_id.insert(0, sid)
-        entry_site_id.grid(row=1, column=1, padx=5, pady=2)
-
-        ttk.Label(popup, text="Pfad zur Ausgabe aktualisierter Schüler:").grid(row=2, column=0, sticky='e', padx=5,
-                                                                               pady=2)
-        entry_output_sus = ttk.Entry(popup, width=60)
-        ofs = get_config_value("OUTPUT_FILE_STUDENTS")
-        entry_output_sus.insert(0, ofs)
-        entry_output_sus.grid(row=2, column=1, padx=5, pady=2)
-
-        ttk.Label(popup, text="Pfad zur Ausgabe der Classroom-Klassen-Daten:").grid(row=3, column=0, sticky='e', padx=5,
-                                                                                    pady=2)
-        entry_output_classes = ttk.Entry(popup, width=60)
-        ofc = get_config_value("OUTPUT_FILE_CLASSES")
-        entry_output_classes.insert(0, ofc)
-        entry_output_classes.grid(row=3, column=1, padx=5, pady=2)
-
-        ttk.Label(popup, text="Mögliches Postfix für JAMF-Schüler-Benutzer ggf. mit Leerzeichen:").grid(row=4, column=0,
-                                                                                                        sticky='e',
-                                                                                                        padx=5, pady=2)
-        entry_postfix = ttk.Entry(popup, width=60)
-        pf = get_config_value("POSTFIX")
-        entry_postfix.insert(0, pf)
-        entry_postfix.grid(row=4, column=1, padx=5, pady=2)
-
-        ttk.Label(popup, text="Lehrkräfte-POSTFIX:").grid(row=5, column=0, sticky='e', padx=5, pady=2)
-        entry_lehrkraefte_postfix = ttk.Entry(popup, width=60)
-        pf = get_config_value("TEACHER_POSTFIX")
-        entry_lehrkraefte_postfix.insert(0, pf)
-        entry_lehrkraefte_postfix.grid(row=5, column=1, padx=5, pady=2)
-
-        # Speichern-Button
-        ttk.Button(popup, text="Speichern", command=speichern).grid(row=6, column=0, columnspan=2, pady=10)
-        popup.update_idletasks()
-        popup.minsize(popup.winfo_width(), popup.winfo_height())
-    """
     def klassen_upload(self):
         """Wählt eine Datei aus und gibt ein Präfix ein, bevor eine Funktion ausgeführt wird."""
         # Präfix eingeben
@@ -532,7 +460,7 @@ class KlassenUploaderApp:
         OUTPUT_FILE_STUDENTS = get_config_value("OUTPUT_FILE_STUDENTS")
         POSTFIX = get_config_value("POSTFIX")
         big_merge(self.JAMF_URL, self.TOKEN, dateipfad, SITE_ID, teachergroupname, praefix, OUTPUT_FILE_STUDENTS,
-                  OUTPUT_FILE_CLASSES, POSTFIX)
+                  OUTPUT_FILE_CLASSES, POSTFIX,self.root)
 
     def gruppen_upload_ausfuehren(self, dateipfad, praefix, teachergroupname):
 
@@ -543,7 +471,7 @@ class KlassenUploaderApp:
         POSTFIX = get_config_value("POSTFIX")
         create_user_groups(self.JAMF_URL, self.TOKEN, dateipfad, SITE_ID, teachergroupname, praefix,
                            OUTPUT_FILE_STUDENTS,
-                           OUTPUT_FILE_CLASSES, POSTFIX)
+                           OUTPUT_FILE_CLASSES, POSTFIX, self.root)
 
     def update_log(self):
         """Liest die Log-Datei aus und aktualisiert das Log-Textfeld."""

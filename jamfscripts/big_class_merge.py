@@ -299,26 +299,32 @@ def create_xml_from_class(class_data):
 
 # 🔹 Hauptfunktion
 def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLASS_PREFIX, OUTPUT_FILE_STUDENTS,
-              OUTPUT_FILE_CLASSES, postfix):
+              OUTPUT_FILE_CLASSES, postfix, parent=None):
     from jamfscripts.authentifizierung import refresh_token
     csv_data = csv_to_json(INPUT_FILENAME)
     token = TOKEN
     # get_site_id(JAMF_URL, token)
     users = get_users(JAMF_URL, token)
     schueler = merge_students(csv_data, users, OUTPUT_FILE_STUDENTS, postfix)
-    LOGGER.info("Schueler-Merge fertig.")
+    LOGGER.info("IServ- und Jamf-Schülerdaten abgeglichen.")
     courses, student_classes = extract_courses(schueler)
     teachers = get_teachers(JAMF_URL, token, TEACHER_GROUP_NAME)
     LOGGER.info("Lehrer geholt.")
     create_class_structure(courses, SITE_ID, CLASS_PREFIX, teachers, student_classes, OUTPUT_FILE_CLASSES)
     class_data = load_json(OUTPUT_FILE_CLASSES)
     LOGGER.info("Jetzt kommt die askokcancel-Abfrage")
-    ok = tkinter.messagebox.askokcancel("Bestätigen",
-                                        "Der Klassenupload kann beginnen.")
+    ok=True
+    if parent is not None:
+        ok = tkinter.messagebox.askokcancel(
+        "Bestätigen",
+        "Der Klassenupload kann beginnen.",
+        parent=parent)
+    # ok = tkinter.messagebox.askokcancel("Bestätigen", "Der Klassenupload kann beginnen.")
     if not ok:
+        LOGGER.info("Cancel gewählt")
         return
     else:
-
+        LOGGER.info("OK gewählt")
         url = f"{JAMF_URL}/JSSResource/classes/id/0"
         headers = {
             "Content-Type": "application/xml",
@@ -328,7 +334,7 @@ def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLAS
         i=0
         for class_entry in class_data:
             if (i%40==0):
-                TOKEN= refresh_token()
+                TOKEN= refresh_token(JAMF_URL, TOKEN)
             i=i+1
             xml_string = create_xml_from_class(class_entry)
             LOGGER.info(class_entry["class"]["name"])

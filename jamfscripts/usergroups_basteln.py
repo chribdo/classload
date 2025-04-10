@@ -145,17 +145,31 @@ def create_single_user_group(jamf_url, token,  my_classname):
 
 
 
-def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLASS_PREFIX, OUTPUT_FILE_STUDENTS, OUTPUT_FILE_CLASSES, postfix):
+def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLASS_PREFIX, OUTPUT_FILE_STUDENTS, OUTPUT_FILE_CLASSES, postfix, parent=None):
         csv_data = csv_to_json(INPUT_FILENAME)
         token = TOKEN
         # get_site_id(JAMF_URL, token)
-        LOGGER.info("Der Vorgang kann sehr lange dauern.")
+        LOGGER.info("Der Vorgang kann SEHR lange dauern.")
         users = get_users(JAMF_URL, token)
         schueler = merge_students(csv_data, users, OUTPUT_FILE_STUDENTS, postfix)
         courses, student_classes = extract_courses(schueler)
         teachers = get_teachers(JAMF_URL, token, TEACHER_GROUP_NAME)
         create_class_structure(courses, SITE_ID, CLASS_PREFIX, teachers, student_classes, OUTPUT_FILE_CLASSES)
         class_data = load_json(OUTPUT_FILE_CLASSES)
+
+        LOGGER.info("Jetzt kommt die askokcancel-Abfrage")
+        ok = True
+        if parent is not None:
+            ok = tkinter.messagebox.askokcancel(
+                "Bestätigen",
+                "Der Klassenupload kann beginnen.",
+                parent=parent)
+        # ok = tkinter.messagebox.askokcancel("Bestätigen", "Der Klassenupload kann beginnen.")
+        if not ok:
+            LOGGER.info("Cancel gewählt")
+            return
+        else:
+            LOGGER.info("OK gewählt")
 
 
         for class_entry in class_data:
@@ -176,7 +190,7 @@ def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_N
             if response.status_code in (200, 201):
                 LOGGER.info("Gruppe erfolgreich erstellt!")
             else:
-                LOGGER.error(f"Fehler beim Erstellen der Gruppe: {response.text}")
+                LOGGER.error(f"Fehler beim Erstellen der Gruppe: Existiert die Gruppe mit dem Namen vielleicht bereits?")
 
         LOGGER.info("Upload abgeschlossen.")
 
