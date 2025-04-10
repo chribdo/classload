@@ -339,7 +339,7 @@ def show_about():
     # messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
     messagebox.showinfo("Über Classload","Classload\nzum Austausch von Daten mit Jamf\nVersion 0.9\n(c)2025 Christiane Borchel")
 
-
+"""
 def main():
     init_dpi_awareness()
     if sys.platform == "darwin":
@@ -408,6 +408,20 @@ def main():
     #login = JamfLogin(root)
     root.iconphoto(True, icon_img)
     #root.icon_img = icon_img
+    root.mainloop()
+"""
+def main():
+    root = ttk.Window(themename="cosmo")
+    root.title("Teststart")
+
+    label = ttk.Label(root, text="App läuft sichtbar 🎉", font=("Arial", 16))
+    label.pack(padx=40, pady=40)
+
+    root.lift()
+    root.focus_force()
+    root.attributes("-topmost", True)
+    root.after(100, lambda: root.attributes("-topmost", False))
+
     root.mainloop()
 
 
