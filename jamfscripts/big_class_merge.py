@@ -311,7 +311,7 @@ def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLAS
     class_data = load_json(OUTPUT_FILE_CLASSES)
 
     ok = tkinter.messagebox.askokcancel("Bestätigen",
-                                        "Alle Benutzer ohne Mobilgerät werden gelöscht (Lehrkräfte ausgenommen).")
+                                        "Der Klassenupload kann beginnen.")
     if not ok:
         return
     else:

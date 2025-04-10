@@ -3,7 +3,7 @@ from setuptools import setup
 APP = ['tk_main_menue.py']
 DATA_FILES = [
     ('', ['LICENSE.txt', 'hilfe.md']),
-    ('assets', ['assets/icon.png']),
+    ('assets', ['assets/icon_small.png']),
 ]
 OPTIONS = {
     'argv_emulation': False,  # Debug: Terminalfenster beim Doppelklick sichtbar
