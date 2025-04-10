@@ -9,14 +9,17 @@ importlib_metadata==8.6.1
 jaraco.classes==3.4.0
 jaraco.context==6.0.1
 jaraco.functools==4.1.0
+Jinja2==3.1.6
 keyring==25.6.0
 macholib==1.16.3
 Markdown==3.7
 markdown-it-py==3.0.0
+MarkupSafe==3.0.2
 mdurl==0.1.2
 modulegraph==0.19.6
 more-itertools==10.6.0
 packaging==24.2
+pdoc==15.0.1
 pillow==10.4.0
 py2app==0.28.8
 pycparser==2.22

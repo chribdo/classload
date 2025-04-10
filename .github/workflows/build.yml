@@ -32,43 +32,50 @@ jobs:
           name: Windows-EXE
           path: dist/*.exe
 
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+  name: Build Classload for macOS
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+  on:
+    push:
+      tags:
+        - 'v*'  # oder main branch etc.
 
-      - name: Install py2app
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install py2app
-          # pip install pyinstaller
+  jobs:
+    build-macos:
+      runs-on: macos-latest
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v3
 
-      - name: Clean PyInstaller output
-        run: |
-          rm -rf build dist *.spec
+        - name: Setup Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.11'
 
-      - name: Build macOS App with py2app
-        run: |
-          python setup.py py2app
-          
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install py2app
 
-      - name: Zip App Bundle
-        run: |
-          cd dist
-          zip -r Classload-mac.zip Classload.app
+        - name: Clean previous builds
+          run: |
+            rm -rf build dist *.spec
 
-      - name: Upload macOS ZIP
-        uses: actions/upload-artifact@v4
-        with:
-          name: macOS-App
-          path: dist/Classload-mac.zip
+        - name: Build macOS .app with py2app
+          run: |
+            python setup.py py2app
+
+        - name: Create ZIP archive of .app
+          run: |
+            cd dist
+            zip -r Classload-mac.zip Classload.app
+
+        - name: Upload .app ZIP as artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: Classload-mac
+            path: dist/Classload-mac.zip
+
 
   build-linux:
     runs-on: ubuntu-latest
@@ -83,16 +90,24 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build Linux Executable
+      - name: Build Executable
         run: |
-          pyinstaller --onefile --windowed --name "Classload" tk_main_menue.py
+          pyinstaller --noconfirm --onefile --windowed \
+            --add-data "LICENSE.txt:." \
+            --add-data "hilfe.md:." \
+            --add-data "assets:assets" \
+            --name "Classload" \
+            --icon=assets/icon.png \
+            tk_main_menue.py
 
-      - name: Upload Linux Binary
+      - name: Upload Linux Executable
         uses: actions/upload-artifact@v4
         with:
           name: Linux-Binary
-          path: dist/*
+          path: dist/Classload
