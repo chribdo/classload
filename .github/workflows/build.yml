@@ -32,14 +32,9 @@ jobs:
           name: Windows-EXE
           path: dist/*.exe
 
-name: Build Classload for macOS
 
-on:
-  push:
-    tags:
-      - 'v*'  # oder main branch etc.
 
-jobs:
+
   build-macos:
     runs-on: macos-latest
     steps:
