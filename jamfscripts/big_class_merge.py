@@ -310,6 +310,7 @@ def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLAS
     courses, student_classes = extract_courses(schueler)
     teachers = get_teachers(JAMF_URL, token, TEACHER_GROUP_NAME)
     LOGGER.info("Lehrer geholt.")
+    LOGGER.info("Class-Prefix: "+ CLASS_PREFIX)
     create_class_structure(courses, SITE_ID, CLASS_PREFIX, teachers, student_classes, OUTPUT_FILE_CLASSES)
     class_data = load_json(OUTPUT_FILE_CLASSES)
     LOGGER.info("Jetzt kommt die askokcancel-Abfrage")

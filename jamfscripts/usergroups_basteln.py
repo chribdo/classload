@@ -55,11 +55,11 @@ def create_group_structure(course_data, prefix, output_file):
     LOGGER.info(f"Datei {output_file} wurde erfolgreich erstellt.")
 
 # 🔹 XML-Objekt aus Klassendaten erstellen
-def create_group_xml_from_class(class_data):
+def create_group_xml_from_class(class_data, prefix):
     group_element = ET.Element("user_group")
 
     name_element = ET.SubElement(group_element, "name")
-    name_element.text = class_data["class"]["name"]
+    name_element.text = prefix+class_data["class"]["name"]
 
     is_smart_element = ET.SubElement(group_element, "is_smart")
     is_smart_element.text = "false"
@@ -162,7 +162,7 @@ def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_N
         if parent is not None:
             ok = tkinter.messagebox.askokcancel(
                 "Bestätigen",
-                "Der Klassenupload kann beginnen.",
+                "Der Gruppenupload kann beginnen.",
                 parent=parent)
         # ok = tkinter.messagebox.askokcancel("Bestätigen", "Der Klassenupload kann beginnen.")
         if not ok:
@@ -180,7 +180,7 @@ def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_N
                 "Accept": "application/xml",
                 "Authorization": f"Bearer {token}"
             }
-            xml_string = create_group_xml_from_class(class_entry)
+            xml_string = create_group_xml_from_class(class_entry, CLASS_PREFIX)
             # print(create_group_xml_from_class(class_entry))
             LOGGER.info(class_entry["class"]["name"])
 
