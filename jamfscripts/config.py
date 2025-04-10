@@ -1,20 +1,25 @@
 # config.py
 import json
 import os, sys
+from platformdirs import user_documents_dir, user_data_dir
 
-
-CONFIG_FILE = os.path.join(os.getcwd(), "config.json")
+config_dir = user_data_dir("Classload", "chribdo")
+os.makedirs(config_dir, exist_ok=True)
+CONFIG_FILE  = os.path.join(config_dir, "config.json")
+#CONFIG_FILE = os.path.join(os.getcwd(), "config.json")
 #CONFIG_FILE = "../config.json"
 
-# Standardwerte für die Konfigurationsdatei
+DATA_DIR = os.path.join(user_documents_dir(), "Classload")
+os.makedirs(DATA_DIR, exist_ok=True)
+
 DEFAULT_CONFIG = {
-    "SITE_ID": "",
-    "POSTFIX": "",
-    "INPUT_FILENAME": os.path.join(os.getcwd(), "daten/iserv_schueler.json"),
+    "INPUT_FILENAME": os.path.join(DATA_DIR, "iserv_schueler.json"),
     "TEACHER_GROUP_NAME": "",
-    "OUTPUT_FILE_CLASSES": os.path.join(os.getcwd(), "daten/alle_klassen.json"),
-    "OUTPUT_FILE_STUDENTS": os.path.join(os.getcwd(), "daten/merged_schueler.json"),
-    "INPUT_DELETE_FILENAME": os.path.join(os.getcwd(), "daten/delete_users.json"),
+    "OUTPUT_FILE_CLASSES": os.path.join(DATA_DIR, "alle_klassen.json"),
+    "OUTPUT_FILE_STUDENTS": os.path.join(DATA_DIR, "merged_schueler.json"),
+    "INPUT_DELETE_FILENAME": os.path.join(DATA_DIR, "delete_users.json"),
+    "POSTFIX": "",
+    "SITE_ID": "",
     "TEACHER_POSTFIX": "Nicht festgelegt"
 }
 

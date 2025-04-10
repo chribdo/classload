@@ -12,13 +12,18 @@ from jamfscripts import *
 import os, sys, markdown, getpass
 import platform
 from pathlib import Path
+from platformdirs import user_data_dir
 import tempfile
 
 JAMF_URL = ""
 TOKEN = ""
-ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
-NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
-global iconpic
+#ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
+#NUTZUNGSDATEI = os.path.join(os.getcwd(), "nutzung.json")
+config_dir = user_data_dir("Classload", "chribdo")
+os.makedirs(config_dir, exist_ok=True)
+
+ZUSTIMMUNGSDATEI  = os.path.join(config_dir, "zustimmung.json")
+NUTZUNGSDATEI  = os.path.join(config_dir, "nutzung.json")
 
 def get_resource_path(filename):
     """
@@ -230,6 +235,7 @@ def zeige_about_dialog():
 def zustimmung_bereits_erfolgt():
     if os.path.exists(ZUSTIMMUNGSDATEI):
         try:
+            print(f"✅ Schreiben/Lesen von: {ZUSTIMMUNGSDATEI}")
             with open(ZUSTIMMUNGSDATEI, "r") as f:
                 data = json.load(f)
                 return data.get("zugestimmt", False)
@@ -239,6 +245,7 @@ def zustimmung_bereits_erfolgt():
 
 
 def speichere_zustimmung():
+    print(f"✅ Schreiben/Lesen von: {ZUSTIMMUNGSDATEI}")
     with open(ZUSTIMMUNGSDATEI, "w") as f:
         json.dump({"zugestimmt": True}, f)
 

@@ -21,6 +21,7 @@ more-itertools==10.6.0
 packaging==24.2
 pdoc==15.0.1
 pillow==10.4.0
+platformdirs==4.3.7
 py2app==0.28.8
 pycparser==2.22
 Pygments==2.19.1
