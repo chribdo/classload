@@ -347,6 +347,12 @@ def main():
     else:
       root = ttk.Window(themename="cosmo", iconphoto=None)
     root.title("Classload")
+
+    root.lift()
+    root.focus_force()
+    root.attributes("-topmost", True)
+    root.after(100, lambda: root.attributes("-topmost", False))
+
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
     # icon_path = os.path.join(base_path, "assets", "icon.png")
     #icon_img = tk.PhotoImage(file=icon_path)

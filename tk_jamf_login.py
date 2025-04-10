@@ -41,6 +41,7 @@ class JamfLogin:
         self.login_window.update_idletasks()
         self.login_window.minsize(self.login_window.winfo_width()+20, self.login_window.winfo_height()+20)
         self.login_window.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.login_window.bind("<Return>", lambda event: self.validate_login())
 
     def show_about(self):
         messagebox.showinfo("Über Classload",
