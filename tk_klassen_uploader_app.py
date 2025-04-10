@@ -178,6 +178,7 @@ class KlassenUploaderApp:
         popup.minsize(popup.winfo_width(), popup.winfo_height())
 
         def on_submit():
+            nonlocal praefix
             praefix = prefix_entry.get()
             teachergroup = teachergroup_entry.get()
             set_config_value("TEACHER_GROUP_NAME", teachergroup)
@@ -285,7 +286,9 @@ class KlassenUploaderApp:
         popup.minsize(popup.winfo_width(), popup.winfo_height())
 
         def on_submit():
+            nonlocal praefix
             praefix = prefix_entry.get()
+            LOGGER.info(praefix)
             teachergroup = teachergroup_entry.get()
             set_config_value("TEACHER_GROUP_NAME", teachergroup)
             if not praefix or not teachergroup:

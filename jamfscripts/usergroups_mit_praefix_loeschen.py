@@ -49,10 +49,10 @@ def filter_and_delete_usergroups(JAMF_URL, token, PREFIX, json_data):
         response = requests.delete(url, headers=headers)
         if response.status_code in (200,201):
             count+=1
-            print(id_list[i])
-            print("Usergroup erfolgreich gelöscht!")
+            LOGGER.info(id_list[i])
+            LOGGER.info("Usergroup erfolgreich gelöscht!")
         else:
-            print(f"Fehler beim Löschen: {response.text}")
+            LOGGER.error(f"Fehler beim Löschen: {response.text}")
 
 def loesche_usergroups_mit_prefix(JAMF_URL,TOKEN, PREFIX):
     token=TOKEN

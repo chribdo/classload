@@ -59,7 +59,8 @@ def create_group_xml_from_class(class_data, prefix):
     group_element = ET.Element("user_group")
 
     name_element = ET.SubElement(group_element, "name")
-    name_element.text = prefix+class_data["class"]["name"]
+    name_element.text = class_data["class"]["name"]
+    LOGGER.info(name_element.text)
 
     is_smart_element = ET.SubElement(group_element, "is_smart")
     is_smart_element.text = "false"
@@ -150,6 +151,7 @@ def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_N
         token = TOKEN
         # get_site_id(JAMF_URL, token)
         LOGGER.info("Der Vorgang kann SEHR lange dauern.")
+        LOGGER.info(CLASS_PREFIX)
         users = get_users(JAMF_URL, token)
         schueler = merge_students(csv_data, users, OUTPUT_FILE_STUDENTS, postfix)
         courses, student_classes = extract_courses(schueler)
@@ -157,7 +159,6 @@ def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_N
         create_class_structure(courses, SITE_ID, CLASS_PREFIX, teachers, student_classes, OUTPUT_FILE_CLASSES)
         class_data = load_json(OUTPUT_FILE_CLASSES)
 
-        LOGGER.info("Jetzt kommt die askokcancel-Abfrage")
         ok = True
         if parent is not None:
             ok = tkinter.messagebox.askokcancel(
@@ -182,7 +183,7 @@ def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_N
             }
             xml_string = create_group_xml_from_class(class_entry, CLASS_PREFIX)
             # print(create_group_xml_from_class(class_entry))
-            LOGGER.info(class_entry["class"]["name"])
+            #LOGGER.info(class_entry["class"]["name"])
 
             # EINKOMMENTIEREN FÜR UPLOAD
 
