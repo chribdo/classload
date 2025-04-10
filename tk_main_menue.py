@@ -48,6 +48,27 @@ def init_dpi_awareness():
         except Exception:
             pass
 
+import sys
+import os
+import tkinter as tk
+
+def set_window_icon(widget):
+    try:
+        if sys.platform == "darwin":
+            # macOS: kleineres Icon verwenden, sonst kommt "path is bad"
+            icon_relpath = os.path.join("assets", "icon_small.png")
+        else:
+            # Windows/Linux: großes Icon mit Alpha verwenden
+            icon_relpath = os.path.join("assets", "icon.png")
+
+        icon_path = get_resource_path(icon_relpath)
+        print(f"🖼 Verwende Icon: {icon_path}")
+
+        icon_img = tk.PhotoImage(file=icon_path)
+        widget.iconphoto(True, icon_img)
+        widget.icon_img = icon_img  # Referenz halten!
+    except Exception as e:
+        print(f"⚠️ Icon konnte nicht gesetzt werden: {e}")
 
 
 
@@ -61,7 +82,7 @@ def set_window_icon(widget):
         widget.icon_img = icon_img
     except:
         pass
-"""
+
 def set_window_icon(widget):
     try:
         icon_path = get_resource_path(os.path.join("assets", "icon.png"))
@@ -70,7 +91,7 @@ def set_window_icon(widget):
         widget.icon_img = icon_img  # Referenz halten!
     except Exception as e:
         print(f"Icon konnte nicht gesetzt werden: {e}")
-
+"""
 def lade_nutzungsinfo():
     """
 
@@ -320,7 +341,14 @@ def main():
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
     #icon_path = os.path.join(base_path, "assets", "icon.png")
     #icon_img = tk.PhotoImage(file=icon_path)
-    icon_relpath = os.path.join("assets", "icon.png")  # Pfad zusammensetzen
+    #icon_relpath = os.path.join("assets", "icon.png")  # Pfad zusammensetzen
+    if sys.platform == "darwin":
+        # macOS → kleineres, sicheres Icon verwenden
+        icon_relpath = os.path.join("assets", "icon_small.png")
+    else:
+        # Windows/Linux → großes Icon mit Alpha
+        icon_relpath = os.path.join("assets", "icon.png")
+
     icon_path = get_resource_path(icon_relpath)  # Pfad für PyInstaller/py2app auflösen
     icon_img = tk.PhotoImage(file=icon_path)
     print("🔍 Icon-Pfad:", icon_path)
