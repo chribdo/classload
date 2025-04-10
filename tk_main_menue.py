@@ -73,25 +73,7 @@ def set_window_icon(widget):
 
 
 LIZENZ = get_resource_path("LICENSE.txt")
-"""
-def set_window_icon(widget):
-    try:
-        icon_path = os.path.join("assets", "icon.png")
-        icon_img = tk.PhotoImage(file=icon_path)
-        widget.iconphoto(True, icon_img)
-        widget.icon_img = icon_img
-    except:
-        pass
 
-def set_window_icon(widget):
-    try:
-        icon_path = get_resource_path(os.path.join("assets", "icon.png"))
-        icon_img = tk.PhotoImage(file=icon_path)
-        widget.iconphoto(True, icon_img)
-        widget.icon_img = icon_img  # Referenz halten!
-    except Exception as e:
-        print(f"Icon konnte nicht gesetzt werden: {e}")
-"""
 def lade_nutzungsinfo():
     """
 
@@ -408,21 +390,7 @@ def main():
     root.iconphoto(True, icon_img)
     #root.icon_img = icon_img
     root.mainloop()
-"""
-def main():
-    root = ttk.Window(themename="cosmo")
-    root.title("Teststart")
 
-    label = ttk.Label(root, text="App läuft sichtbar 🎉", font=("Arial", 16))
-    label.pack(padx=40, pady=40)
-
-    root.lift()
-    root.focus_force()
-    root.attributes("-topmost", True)
-    root.after(100, lambda: root.attributes("-topmost", False))
-
-    root.mainloop()
-"""
 
 if __name__ == "__main__":
     try:
