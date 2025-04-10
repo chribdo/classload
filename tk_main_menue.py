@@ -1,3 +1,5 @@
+from tkinter.messagebox import askyesno
+
 from tk_jamf_login import JamfLogin
 from tkinter import filedialog, messagebox, scrolledtext, simpledialog
 from datetime import timedelta

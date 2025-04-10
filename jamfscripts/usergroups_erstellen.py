@@ -19,7 +19,6 @@ def get_class(jamf_url, token, classname):
         LOGGER.info("Class Daten erhalten")
         return response.json()
     else:
-        print(response.status_code)
         LOGGER.error("Class Daten nicht erhalten")
         return ""
         #raise Exception(f"Fehler beim Abrufen des T
@@ -126,7 +125,16 @@ def update_teacher_group(jamf_url, token, teacher_group_name, teacher_name):
 
 def create_single_user_group(jamf_url, token,  my_classname):
     myclass = get_class(jamf_url, token, my_classname)
-    student_ids = myclass["class"]["student_ids"]
+    if not isinstance(myclass, dict):
+        LOGGER.error(f"❌ Abbruch: Klasse '{my_classname}' nicht gefunden/erhalten oder ungültiges Format: {myclass}")
+        return
+
+    try:
+        student_ids = myclass["class"]["student_ids"]
+    except (KeyError, TypeError) as e:
+        LOGGER.error(f"❌ Abbruch: Klasse nicht gefunden/erhalten: '{my_classname}': {e}")
+        return
+    #student_ids = myclass["class"]["student_ids"]
     # print(student_ids)
     xml_string = create_group_xml(my_classname, student_ids)
     #print(xml_string)

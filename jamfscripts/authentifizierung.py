@@ -19,46 +19,19 @@ def get_cipher():
     key = os.getenv("SECRET_KEY")
 
     if key is None:
-        print("🔑 Kein Schlüssel gefunden. Generiere neuen...")
+        LOGGER.info("🔑 Kein Schlüssel gefunden. Generiere neuen...")
 
         key = Fernet.generate_key().decode()
 
         with open(env_file, "a") as f:
             f.write(f"SECRET_KEY={key}\n")
 
-        print(f"✅ Neuer Schlüssel wurde erstellt in {env_file}")
+        LOGGER.info(f"✅ Neuer Schlüssel wurde erstellt in {env_file}")
     else:
-        print("✅ Schlüssel geladen.")
+        LOGGER.info("✅ Schlüssel geladen.")
 
     return Fernet(key.encode())
 
-
-"""
-def get_cipher():
-  load_dotenv()
-  env_file = ".env"
-
-# Prüfe, ob bereits ein Schlüssel existiert
-  key = os.getenv("SECRET_KEY")
-
-  if key is None:
-    LOGGER.info("🔑 Kein Schlüssel gefunden. Generiere einen neuen...")
-
-    # Neuen Schlüssel generieren
-    key = Fernet.generate_key().decode()
-
-    # Speichere den Schlüssel in der .env-Datei
-    with open(env_file, "a") as f:
-        f.write(f"SECRET_KEY={key}\n")
-
-    LOGGER.info(f"✅ Neuer Schlüssel wurde erstellt und in {env_file} gespeichert!")
-
-  else:
-    LOGGER.info("✅ Schlüssel gefunden.")
-
-  # cipher = Fernet(key.encode())
-  return Fernet(key.encode())
-"""
 # 🔹 Anmelden usw....
 def get_auth_token(JAMF_URL, USERNAME, PASSWORD):
     """Holt ein Bearer-Token von der Jamf Pro API."""

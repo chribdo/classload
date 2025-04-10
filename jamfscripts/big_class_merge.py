@@ -313,7 +313,7 @@ def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLAS
     LOGGER.info("Class-Prefix: "+ CLASS_PREFIX)
     create_class_structure(courses, SITE_ID, CLASS_PREFIX, teachers, student_classes, OUTPUT_FILE_CLASSES)
     class_data = load_json(OUTPUT_FILE_CLASSES)
-    LOGGER.info("Jetzt kommt die askokcancel-Abfrage")
+    #LOGGER.info("Jetzt kommt die askokcancel-Abfrage")
     ok=True
     if parent is not None:
         ok = tkinter.messagebox.askokcancel(
@@ -339,7 +339,7 @@ def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLAS
             i=i+1
             xml_string = create_xml_from_class(class_entry)
             LOGGER.info(class_entry["class"]["name"])
-            """
+
             # EINKOMMENTIEREN FÜR UPLOAD
             
             response = requests.post(url, headers=headers, data=xml_string)
@@ -347,5 +347,5 @@ def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLAS
               LOGGER.info("Klasse erfolgreich erstellt!")
             else:
               LOGGER.error(f"Fehler beim Erstellen der Klasse: {response.text}")
-             """
+
         LOGGER.info("Upload abgeschlossen.")

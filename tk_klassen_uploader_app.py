@@ -216,11 +216,15 @@ class KlassenUploaderApp:
     def schueler_ipads_zuordnen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
         # Messagebox.ok(title="Datei auswählen","Bitte csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer", alert=False)
-        Messagebox.ok(
+        antwort = messagebox.askyesno(
             title="Datei auswählen",
-            message="Bitte csv mit 3 Spalten auswählen: Vorname, Nachname, Seriennummer.",
-            parent=self.root
+            message="Bitte CSV mit 3 Spalten auswählen:\nVorname; Nachname; Seriennummer.\n\nMöchten Sie fortfahren?",
+            parent= self.root
         )
+
+        if not antwort:
+            LOGGER.info("🚫 Abgebrochen durch den Benutzer.")
+            return
         # Datei auswählen
 
         dateipfad = filedialog.askopenfilename(title="CSV-Auswahl",
@@ -235,12 +239,15 @@ class KlassenUploaderApp:
     def lehrer_ipads_zuordnen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
         # Messagebox.ok(title="Datei auswählen", "Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer", alert=False)
-        Messagebox.ok(
+        antwort = messagebox.askyesno(
             title="Datei auswählen",
-            message="Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer.",
-            alert=True,
+            message="Bitte csv mit 4 Spalten auswählen: Vorname; Nachname; eindeutiges Kürzel; Seriennummer",
             parent=self.root
         )
+        if not antwort:
+            LOGGER.info("🚫 Abgebrochen durch den Benutzer.")
+            return
+
         # Datei auswählen
         dateipfad = filedialog.askopenfilename(title="CSV-Auswahl",
                                                filetypes=(("CSV-Dateien", "*.csv"), ("Alle Dateien", "*.*")))
@@ -254,11 +261,15 @@ class KlassenUploaderApp:
     def it_nummern_hochladen(self):
         """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
         # Messagebox.ok(title="Datei auswählen", "Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer, alert=False), Seriennummer")
-        Messagebox.ok(
+
+        antwort = messagebox.askyesno(
             title="Datei auswählen",
             message="Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer); Seriennummer",
             parent=self.root
         )
+        if not antwort:
+            LOGGER.info("🚫 Abgebrochen durch den Benutzer.")
+            return
         # antwort = askokcancel("Datei auswählen","CSV auswählen")
         # Datei auswählen
 
@@ -277,6 +288,7 @@ class KlassenUploaderApp:
         popup = ttk.Toplevel(self.root)
         popup.title("Upload-Einstellungen")
         popup.geometry("600x300")
+        confirmed = tk.BooleanVar(value=False)
         ttk.Label(popup, text="Präfix für neue Statische Benutzergruppen:").pack(pady=5)
         prefix_entry = ttk.Entry(popup)
         prefix_entry.pack(pady=5)
@@ -286,6 +298,7 @@ class KlassenUploaderApp:
         teachergroup_entry.pack(pady=5)
         praefix = ""
         teachergroup = ""
+
         popup.update_idletasks()
         popup.minsize(popup.winfo_width(), popup.winfo_height())
 
@@ -304,8 +317,11 @@ class KlassenUploaderApp:
                     parent=popup
                 )
                 return
+            confirmed.set(True)
             popup.destroy()
 
+        if not confirmed.get():
+            return  # Abgebrochen
         ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
         popup.wait_window()
         # Datei auswählen
@@ -417,7 +433,7 @@ class KlassenUploaderApp:
 
         def on_submit():
             del_praefix = prefix_entry.get()
-            print(del_praefix);
+            LOGGER.info(del_praefix);
             if not del_praefix:
                 # Messagebox.ok(title="Fehler", "Präfix darf nicht leer sein!", alert=True)
                 Messagebox.ok(
