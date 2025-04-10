@@ -395,7 +395,7 @@ def main():
     # menubar.add_cascade(label="Hilfe", menu=hilfe_menu)
     root.config(menu=menubar)
 
-    root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
+    # root.withdraw()  # root bleibt im Hintergrund, aber notwendig für Tkinter
 
 
     pruefe_nutzungsart(root)
