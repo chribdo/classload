@@ -339,7 +339,7 @@ def main():
     root = ttk.Window(themename="cosmo", iconphoto=None)
     root.title("Classload")
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
-    #icon_path = os.path.join(base_path, "assets", "icon.png")
+    # icon_path = os.path.join(base_path, "assets", "icon.png")
     #icon_img = tk.PhotoImage(file=icon_path)
     #icon_relpath = os.path.join("assets", "icon.png")  # Pfad zusammensetzen
     if sys.platform == "darwin":
