@@ -117,7 +117,7 @@ def pruefe_testversion(root, verbleibend):
             root.destroy()
             sys.exit()
 
-        frame = ttk.Frame(root, padding=30, iconphoto=None)
+        frame = ttk.Frame(root, padding=30)
         frame.pack(expand=True)
         label = ttk.Label(frame,
                           text="❌ Die 7-Tage-Testversion ist abgelaufen.\nBitte kontaktieren Sie den Entwickler für eine Lizenz.",
@@ -268,7 +268,10 @@ def show_license_dialog(root):
         Messagebox.show_error("LICENSE.txt nicht gefunden.", "Fehler", parent=root)
         return False
 
-    dialog = ttk.Toplevel(root, iconphoto=None)
+    if sys.platform == "darwin":
+      dialog = ttk.Toplevel(root)
+    else:
+       dialog = ttk.Toplevel(root, iconphoto=None)
     #set_window_icon(dialog)
     dialog.title("Lizenzvereinbarung")
     dialog.minsize(700, 500)
@@ -320,7 +323,11 @@ def load_markdown_file(filename):
 
 
 def show_markdown_window(root, title, html_content):
-    window = ttk.Toplevel(root, iconphoto=None)
+    #window = ttk.Toplevel(root, iconphoto=None)
+    if sys.platform == "darwin":
+      window = ttk.Toplevel(root)
+    else:
+       window = ttk.Toplevel(root, iconphoto=None)
     #set_window_icon(window)
     window.title(title)
     window.geometry("600x400")

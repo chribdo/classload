@@ -95,6 +95,79 @@ class KlassenUploaderApp:
             set_config_value("OUTPUT_FILE_STUDENTS", entry_output_sus.get())
             set_config_value("POSTFIX", entry_postfix.get())
             set_config_value("TEACHER_POSTFIX", entry_lehrkraefte_postfix.get())
+            Messagebox.ok(
+                title="Gespeichert?",
+                message="Eingaben gespeichert.",
+                parent=popup
+            )
+            popup.destroy()
+            self.root.deiconify()
+
+        # Breite je nach Plattform setzen
+        entry_width = 60 if sys.platform == "darwin" else 80
+
+        # Optional: Einheitliche Monospace-Schriftart für alle Entries
+        style = ttk.Style()
+        style.configure("TEntry", font=("Courier New", 10))
+
+        # Popup-Fenster
+        popup = ttk.Toplevel()
+        popup.protocol("WM_DELETE_WINDOW", lambda: self.popup_closed(popup))
+        self.root.withdraw()
+        popup.title("Konfiguration")
+
+        # Labels & Eingabefelder
+        ttk.Label(popup, text="Statische Benutzergruppe aller Lehrkräfte in JAMF:").grid(row=0, column=0, sticky='e',
+                                                                                         padx=5, pady=2)
+        entry_teachergroup = ttk.Entry(popup, width=entry_width)
+        entry_teachergroup.insert(0, get_config_value("TEACHER_GROUP_NAME"))
+        entry_teachergroup.grid(row=0, column=1, padx=5, pady=2)
+
+        ttk.Label(popup, text="SITE-ID:").grid(row=1, column=0, sticky='e', padx=5, pady=2)
+        entry_site_id = ttk.Entry(popup, width=entry_width)
+        entry_site_id.insert(0, get_config_value("SITE_ID"))
+        entry_site_id.grid(row=1, column=1, padx=5, pady=2)
+
+        ttk.Label(popup, text="Pfad zur Ausgabe aktualisierter Schüler:").grid(row=2, column=0, sticky='e', padx=5,
+                                                                               pady=2)
+        entry_output_sus = ttk.Entry(popup, width=entry_width)
+        entry_output_sus.insert(0, get_config_value("OUTPUT_FILE_STUDENTS"))
+        entry_output_sus.grid(row=2, column=1, padx=5, pady=2)
+
+        ttk.Label(popup, text="Pfad zur Ausgabe der Classroom-Klassen-Daten:").grid(row=3, column=0, sticky='e', padx=5,
+                                                                                    pady=2)
+        entry_output_classes = ttk.Entry(popup, width=entry_width)
+        entry_output_classes.insert(0, get_config_value("OUTPUT_FILE_CLASSES"))
+        entry_output_classes.grid(row=3, column=1, padx=5, pady=2)
+
+        ttk.Label(popup, text="Mögliches Postfix für JAMF-Schüler-Benutzer ggf. mit Leerzeichen:").grid(row=4, column=0,
+                                                                                                        sticky='e',
+                                                                                                        padx=5, pady=2)
+        entry_postfix = ttk.Entry(popup, width=entry_width)
+        entry_postfix.insert(0, get_config_value("POSTFIX"))
+        entry_postfix.grid(row=4, column=1, padx=5, pady=2)
+
+        ttk.Label(popup, text="Lehrkräfte-POSTFIX:").grid(row=5, column=0, sticky='e', padx=5, pady=2)
+        entry_lehrkraefte_postfix = ttk.Entry(popup, width=entry_width)
+        entry_lehrkraefte_postfix.insert(0, get_config_value("TEACHER_POSTFIX"))
+        entry_lehrkraefte_postfix.grid(row=5, column=1, padx=5, pady=2)
+
+        # Speichern-Button
+        ttk.Button(popup, text="Speichern", command=speichern).grid(row=6, column=0, columnspan=2, pady=10)
+
+        # Fenstergröße fixieren
+        popup.update_idletasks()
+        popup.minsize(popup.winfo_width(), popup.winfo_height())
+
+    """
+    def konfigurieren(self):
+        def speichern():
+            set_config_value("TEACHER_GROUP_NAME", entry_teachergroup.get())
+            set_config_value("SITE_ID", entry_site_id.get())
+            set_config_value("OUTPUT_FILE_CLASSES", entry_output_classes.get())
+            set_config_value("OUTPUT_FILE_STUDENTS", entry_output_sus.get())
+            set_config_value("POSTFIX", entry_postfix.get())
+            set_config_value("TEACHER_POSTFIX", entry_lehrkraefte_postfix.get())
             # Messagebox.ok(title="Eingaben gespeichert", "Eingaben gespeichert", alert=False)
             Messagebox.ok(
                 title="Gespeichert?",
@@ -157,7 +230,7 @@ class KlassenUploaderApp:
         ttk.Button(popup, text="Speichern", command=speichern).grid(row=6, column=0, columnspan=2, pady=10)
         popup.update_idletasks()
         popup.minsize(popup.winfo_width(), popup.winfo_height())
-
+    """
     def klassen_upload(self):
         """Wählt eine Datei aus und gibt ein Präfix ein, bevor eine Funktion ausgeführt wird."""
         # Präfix eingeben
