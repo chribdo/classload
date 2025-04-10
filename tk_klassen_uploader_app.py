@@ -114,27 +114,27 @@ class KlassenUploaderApp:
         # Labels und Eingabefelder
         ttk.Label(popup, text="Statische Benutzergruppe aller Lehrkräfte in JAMF:").grid(row=0, column=0, sticky='e',
                                                                                          padx=5, pady=2)
-        entry_teachergroup = ttk.Entry(popup)
+        entry_teachergroup = ttk.Entry(popup, width=60)
         tg = config.get_config_value("TEACHER_GROUP_NAME")
         entry_teachergroup.insert(0, tg)
         entry_teachergroup.grid(row=0, column=1, padx=5, pady=2)
 
         ttk.Label(popup, text="SITE-ID:").grid(row=1, column=0, sticky='e', padx=5, pady=2)
-        entry_site_id = ttk.Entry(popup)
+        entry_site_id = ttk.Entry(popup, width=60)
         sid = get_config_value("SITE_ID")
         entry_site_id.insert(0, sid)
         entry_site_id.grid(row=1, column=1, padx=5, pady=2)
 
         ttk.Label(popup, text="Pfad zur Ausgabe aktualisierter Schüler:").grid(row=2, column=0, sticky='e', padx=5,
                                                                                pady=2)
-        entry_output_sus = ttk.Entry(popup)
+        entry_output_sus = ttk.Entry(popup, width=60)
         ofs = get_config_value("OUTPUT_FILE_STUDENTS")
         entry_output_sus.insert(0, ofs)
         entry_output_sus.grid(row=2, column=1, padx=5, pady=2)
 
         ttk.Label(popup, text="Pfad zur Ausgabe der Classroom-Klassen-Daten:").grid(row=3, column=0, sticky='e', padx=5,
                                                                                     pady=2)
-        entry_output_classes = ttk.Entry(popup)
+        entry_output_classes = ttk.Entry(popup, width=60)
         ofc = get_config_value("OUTPUT_FILE_CLASSES")
         entry_output_classes.insert(0, ofc)
         entry_output_classes.grid(row=3, column=1, padx=5, pady=2)
@@ -142,13 +142,13 @@ class KlassenUploaderApp:
         ttk.Label(popup, text="Mögliches Postfix für JAMF-Schüler-Benutzer ggf. mit Leerzeichen:").grid(row=4, column=0,
                                                                                                         sticky='e',
                                                                                                         padx=5, pady=2)
-        entry_postfix = ttk.Entry(popup)
+        entry_postfix = ttk.Entry(popup, width=60)
         pf = get_config_value("POSTFIX")
         entry_postfix.insert(0, pf)
         entry_postfix.grid(row=4, column=1, padx=5, pady=2)
 
         ttk.Label(popup, text="Lehrkräfte-POSTFIX:").grid(row=5, column=0, sticky='e', padx=5, pady=2)
-        entry_lehrkraefte_postfix = ttk.Entry(popup)
+        entry_lehrkraefte_postfix = ttk.Entry(popup, width=60)
         pf = get_config_value("TEACHER_POSTFIX")
         entry_lehrkraefte_postfix.insert(0, pf)
         entry_lehrkraefte_postfix.grid(row=5, column=1, padx=5, pady=2)
