@@ -1,13 +1,12 @@
-#from benutzer_loeschen import *
 import requests
 import xml.etree.ElementTree as ET
-
 import jamfscripts
 from jamfscripts import get_config_value, refresh_token
 from jamfscripts.logging_config import LOGGER
 import csv
 
 def create_asset_xml(asset_tag):
+    """gibt eine Asset- Information als XML-String zurück"""
     top_element = ET.Element("mobile_device")
     general_element = ET.SubElement(top_element, "general")
     it_n_element = ET.SubElement(general_element, "asset_tag")
@@ -15,6 +14,7 @@ def create_asset_xml(asset_tag):
     return ET.tostring(top_element, encoding="utf-8").decode("utf-8")
 
 def create_mobile_device_xml(geraetename, benutzername, asset_tag=None, phone=None ):   #### Hier WEITERMACHEN!!!!!!!!!!!!!! Upload einzelner Gruppe
+    """gibt einen XML-String für ein einzelnes Mobilgerät (für Schüler) zurück"""
     top_element = ET.Element("mobile_device")
 
     general_element = ET.SubElement(top_element, "general")
@@ -53,6 +53,11 @@ def create_mobile_device_xml(geraetename, benutzername, asset_tag=None, phone=No
     return ET.tostring(top_element, encoding="utf-8").decode("utf-8")
 
 def create_teacher_device_xml(geraetename, lehrername, kuerzel):   #### Hier WEITERMACHEN!!!!!!!!!!!!!! Upload einzelner Gruppe
+    """
+    gibt einen XML-String für ein einzelnes Lehrkräfte-Mobilgerät zurück.
+    Dabei wird auch das Kürzel berücksichtigt und unter anderem als Telefonnummer eingetragen.
+    Das war bei der Implementierung leider praktisch ;)
+    """
     top_element = ET.Element("mobile_device")
 
     general_element = ET.SubElement(top_element, "general")
@@ -86,6 +91,12 @@ def create_teacher_device_xml(geraetename, lehrername, kuerzel):   #### Hier WEI
     return ET.tostring(top_element, encoding="utf-8").decode("utf-8")
 
 def upload_device_information_(jamf_url, token, serial, geraetename, benutzername, asset_tag=None, phone=None):
+    """
+    Schueler-Geräte werden gemäß einer csv-Liste aktualisiert.
+    Die Geräte erhalten einen neuen Namen und einen neuen Benutzer.
+    Die Namen ergeben sich so: "Vorname Name" bzw. "Vorname Name Postfix"
+    zum Postfix siehe config.json bzw. Konfigurationsdialog.
+    """
     LOGGER.info("Gerätezuordnung gestartet..")
     xml_string = create_mobile_device_xml(geraetename, benutzername, asset_tag, phone)
 
@@ -106,8 +117,10 @@ def upload_device_information_(jamf_url, token, serial, geraetename, benutzernam
         LOGGER.error(f"Fehler beim Put: {response.text}")
 
 def upload_teacher_device_information_(jamf_url, token, serial, lehrer_name, kuerzel):
-    # ein Lehrer-iPad erhält einen neuen Namen, einen neuen Benutzer mit Name und Kürzel (wird anstelle der Telefonnummer eingesetzt)
-    # außerdem wird  der Lehrer der Lehrkräfte-Benutzergruppe hinzugefügt.
+    """
+    Ein Lehrer-iPad erhält einen neuen Namen, einen neuen Benutzer mit Name und Kürzel (wird anstelle der Telefonnummer eingesetzt).
+    Außerdem wird die Lehrkraft der Lehrkräfte-Benutzergruppe hinzugefügt.
+    """
     LOGGER.info("Gerätezuordnung gestartet..")
     teacher_postfix=get_config_value("TEACHER_POSTFIX")
     geraetename=lehrer_name+teacher_postfix
@@ -138,6 +151,7 @@ def upload_teacher_device_information_(jamf_url, token, serial, lehrer_name, kue
         LOGGER.error(f"Fehler beim Put: {response.text}")
 
 def upload_asset_information(jamf_url, token, serial, asset_tag):
+        """Die Asset-Information zu einem einzelnen Mobilgerät wird zu JAMF hochgeladen."""
         LOGGER.info("Gerätezuordnung gestartet..")
         xml_string = create_asset_xml( asset_tag)
         url = f"{jamf_url}/JSSResource/mobiledevices/serialnumber/{serial}"
@@ -157,6 +171,7 @@ def upload_asset_information(jamf_url, token, serial, asset_tag):
             LOGGER.error(f"Fehler beim Put: {response.text}")
 
 def it_nummern_hochladen(jamf_url, token, pfad_zur_csv):
+    """Mehrere Asset-Informationen zu Geräten werden zu JAMF hochgeladen."""
     with open(pfad_zur_csv, 'r', encoding='utf-8-sig', newline='') as f:
         # BOM wird durch utf-8-sig automatisch entfernt
         sample = f.read(1024)
@@ -183,6 +198,12 @@ def it_nummern_hochladen(jamf_url, token, pfad_zur_csv):
 
 
 def schueler_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
+    """
+    Schueler-Geräte werden gemäß einer csv-Liste aktualisiert.
+    Die Geräte erhalten einen neuen Namen und einen neuen Benutzer.
+    Die Namen ergeben sich so: "Vorname Name" bzw. "Vorname Name Postfix"
+    zum Postfix siehe config.json bzw. Konfigurationsdialog.
+    """
     with open(pfad_zur_csv, 'r', encoding='utf-8-sig', newline='') as f:
         # BOM wird durch utf-8-sig automatisch entfernt
         sample = f.read(1024)
@@ -215,6 +236,10 @@ def schueler_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
             upload_device_information_(jamf_url, token, seriennummer, geraetename, name)
 
 def lehrer_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
+    """
+    Lehrer-Geräte werden gemäß einer csv-Liste aktualisiert.
+    Die Geräte erhalten einen neuen Namen und einen neuen Benutzer.
+    """
     with open(pfad_zur_csv, 'r', encoding='utf-8-sig', newline='') as f:
         # BOM wird durch utf-8-sig automatisch entfernt
         sample = f.read(1024)

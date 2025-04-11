@@ -23,9 +23,9 @@ Untersagt ist die Nutzung der Software durch:
 – Organisationen, die die Software oder Teile davon in kommerzielle oder institutionelle Produkte oder Leistungen integrieren,
 – jede Form des Weiterverkaufs, der Vermietung oder Lizenzvergabe an Dritte ohne schriftliche Zustimmung.
 
-5. Quellcode
+5. Quellcode und Bearbeitung
 
-Der auf GitHub veröffentlichte Quellcode dient ausschließlich der Transparenz und der nicht-kommerziellen Nutzung im Sinne dieser Lizenz. Er darf ohne ausdrückliche schriftliche Genehmigung weder kopiert, verändert, noch in andere Projekte integriert werden, sofern diese nicht unter Punkt 2 fallende Zwecke verfolgen.
+Der auf GitHub veröffentlichte Quellcode dient ausschließlich der Transparenz sowie der Nutzung im Sinne dieser Lizenz. Eine Bearbeitung, Veränderung, Weiterverarbeitung oder Integration in andere Projekte – auch in Teilen oder in abgewandelter Form – ist nicht gestattet. Ebenso unzulässig ist die Veröffentlichung abgeleiteter Werke oder sogenannter „Forks“, unabhängig von der Art der Nutzung.
 
 6. Haftungsausschluss
 

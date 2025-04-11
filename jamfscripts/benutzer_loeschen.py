@@ -1,17 +1,12 @@
-# benutzer_loeschen.py
-import requests, json, logging
+import requests, json
 from requests import Response
-
 from jamfscripts.big_class_merge import fetch_teachers
 from jamfscripts import refresh_token
 from jamfscripts.logging_config import LOGGER
 from jamfscripts.config import get_config_value
 
-# 🔹 die csv-Datei (z.B. deleteUsers.csv) muss die Namen der Benutzer enthalten, die gelöscht werden sollen.
-#  so eine Liste kann man direkt aus Jamf exportieren um z.B. Benutzer ohne Mobile Devices zu löschen.
-
 def get_users(JAMF_URL, token):
-    # holt alle Benutzer von JAMF
+    """holt alle Benutzer von JAMF"""
     url = f"{JAMF_URL}/JSSResource/users"
     headers = { "Authorization": f"Bearer {token}",
                 "Content-Type": "application/xml", 
@@ -33,8 +28,8 @@ def get_users(JAMF_URL, token):
         json_data = None
     return json_data
 
-# 🔹 CSV Datei in Jason umwandeln
 def csv_to_json(csv_file):
+    """wandelt eine csv in ein json mit Benutzernamen um"""
     data = {}
     
     # Öffne die CSV-Datei und lese den Inhalt
@@ -48,13 +43,19 @@ def csv_to_json(csv_file):
     return data
 
 def delete_csv_json(JAMF_URL, token, csv_file, json_data):
-    
+    """
+    Wenn die zu löschenden Benutzernamen als csv übergeben werden
+    und die JAMF-Benutzerdaten als JSON übergeben werden
+    holt sich die funktion die passenden Benutzer-IDs aus dem JSON
+    und löscht sie dann Schritt für Schritt.
+    """
     # Lade die CSV-Daten
     csv_data = csv_to_json(csv_file)
 
     # Aktualisiere CSV-Daten mit den IDs aus jsondata
     filtered_users = []
     id_list = []
+
     for user in json_data.get("users", []):
         name = user.get("name")
         user_id = user.get("id")
@@ -66,6 +67,8 @@ def delete_csv_json(JAMF_URL, token, csv_file, json_data):
     LOGGER.info(filtered_users)
     LOGGER.info(id_list)
     for i in range(len(id_list)):
+        if (i%30==0):
+            token = refresh_token(JAMF_URL, token)
         url = f"{JAMF_URL}/JSSResource/users/id/{id_list[i]}"
         headers = {
             "Content-Type": "application/xml",
@@ -80,7 +83,7 @@ def delete_csv_json(JAMF_URL, token, csv_file, json_data):
             LOGGER.error(f"Fehler beim Ändern: {response.text}")
 
 def get_mobile_devices(JAMF_URL, token):
-    # holt alle Mobilgeräte von JAMF
+    """holt alle Mobilgeräte von JAMF"""
     url = f"{JAMF_URL}/JSSResource/mobiledevices"
     headers = {"Authorization": f"Bearer {token}",
                "Content-Type": "application/xml",
@@ -103,11 +106,21 @@ def get_mobile_devices(JAMF_URL, token):
     return json_data
 
 def get_username_set(JAMF_URL,token):
+    """
+    Alle Mobile-Device-Daten werden von JAMF geholt.
+    Alle in den Gerätedaten enthaltenen Benutzernamen werden herausgefiltert,
+    sodass Dopplungen vermieden werden.
+    """
     data=get_mobile_devices(JAMF_URL, token)
     usernames = {device['username'] for device in data['mobile_devices'] if 'username' in device}
     return usernames
 
 def delete_users_without_devices(JAMF_URL, token):
+   """
+   löscht alle Benutzer von Jamf,
+   denen kein Mobilgerät zugewiesen ist
+   und die keine Lehrkräfte sind.
+   """
    LOGGER.info("Benutzer, die kein Mobilgerät haben werden gelöscht (Lehrkräfte ausgenommen). Vorgang gestartet... ")
    usernames=get_username_set(JAMF_URL, token)
    users=get_users(JAMF_URL,token)
@@ -145,8 +158,8 @@ def delete_users_without_devices(JAMF_URL, token):
        else:
             LOGGER.error(f"Fehler beim Löschen. Benutzer {id_list[i]} falsch zugeordnet.")
 
-
 def loesche_benutzer_von_csv(JAMF_URL, TOKEN, INPUT_DELETE_FILENAME):
+    """Alle Benutzer von einer CSV-Liste werden gelöscht"""
     token = TOKEN
     users = get_users(JAMF_URL, token)
     delete_csv_json(JAMF_URL, token, INPUT_DELETE_FILENAME, users)

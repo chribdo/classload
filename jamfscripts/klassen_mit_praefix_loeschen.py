@@ -1,12 +1,10 @@
-# klassen_mit_praefix_loeschen.py
-import requests, json, os
-
+import requests, json
 from jamfscripts import refresh_token
 from jamfscripts.logging_config import LOGGER
 
 
-
 def get_classes(JAMF_URL, token):
+    """holt alle Klassen (einer SITE/Schule) von JAMF und gibt sie als json zurück"""
     url = f"{JAMF_URL}/JSSResource/classes"
     headers = { "Authorization": f"Bearer {token}",
                 "Content-Type": "application/xml",
@@ -29,7 +27,12 @@ def get_classes(JAMF_URL, token):
     return json_data
 
 def filter_and_delete_classes(JAMF_URL, token, PREFIX, json_data):
-
+    """
+    Alle Klassen mit einem bestimmten Präfix werden aus
+    den übergebenen JSON-Klassendaten herausgefiltert
+    und Schritt für Schritt gelöscht.
+    Nur Hilfsfunktion für loesche_klassen_mit_praefix (mit kompakterer Signatur)
+    """
     filtered_classes = []
     id_list = []
     for c in json_data.get("classes", []):
@@ -60,6 +63,7 @@ def filter_and_delete_classes(JAMF_URL, token, PREFIX, json_data):
             LOGGER.error(f"Fehler beim Löschen: {response.text}")
 
 def loesche_klassen_mit_prefix(JAMF_URL,TOKEN, PREFIX):
+    """löscht alle Klassen von JAMF, die ein bestimmtes Präfix haben."""
     token=TOKEN
     classes=get_classes(JAMF_URL, token)
     filter_and_delete_classes(JAMF_URL, TOKEN, PREFIX, classes)

@@ -1,23 +1,21 @@
-# big_class_merge.py
-import requests, json, csv, logging, os
+import requests, json, csv
 import xml.etree.ElementTree as ET
 from jamfscripts.logging_config import LOGGER
 import tkinter
 
 
-# Datei laden
 def load_json(file_path):
+    """öffnet eine JSON-Datei und gibt sie zurück"""
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
-
-# JSON-Datei speichern
 def save_json(data, file_path):
+    """speichert eine JSON-Datei am gewünschten Ort"""
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
-
 def get_site_id(JAMF_URL, token):
+    """liefert die SITE-ID (der Schule)"""
     url = f"{JAMF_URL}/JSSResource/sites"
     headers = {"Authorization": f"Bearer {token}",
                "Content-Type": "application/xml",
@@ -30,8 +28,8 @@ def get_site_id(JAMF_URL, token):
     id = seiteninfo["id"]
     return id
 
-
 def get_site_name(JAMF_URL, token):
+    """liefert den Namen der Site (der Schule)"""
     url = f"{JAMF_URL}/JSSResource/sites"
     headers = {"Authorization": f"Bearer {token}",
                "Content-Type": "application/xml",
@@ -44,8 +42,8 @@ def get_site_name(JAMF_URL, token):
     name = seiteninfo["name"]
     return name
 
-
 def get_users(JAMF_URL, token):
+    """gibt alle Benutzer der SITE zurück"""
     url = f"{JAMF_URL}/JSSResource/users"
     headers = {"Authorization": f"Bearer {token}",
                "Content-Type": "application/xml",
@@ -67,9 +65,8 @@ def get_users(JAMF_URL, token):
     LOGGER.info("Benutzer von JAMF wurden importiert.")
     return json_data
 
-
-# 🔹 CSV Datei in Jason umwandeln
 def csv_to_json(csv_file):
+    """wandelt eine CSV mit iServ-Schüler-Daten in ein JSON um."""
     data = {}
 
     # Öffne die CSV-Datei und lese den Inhalt
@@ -92,9 +89,8 @@ def csv_to_json(csv_file):
     LOGGER.info("CSV mit iServ-Schueler_innen wurde importiert.")
     return data
 
-
 def merge_students(csv_data, json_data, output_file, postfix):
-    # Sicherstellen, dass die Struktur beibehalten wird
+    """iServ- und JAMF-Benutzerdaten werden zusammengeführt."""
     merged_data = []
     for user in json_data.get("users", []):
         name = user.get("name")
@@ -116,9 +112,8 @@ def merge_students(csv_data, json_data, output_file, postfix):
     LOGGER.info("JAMF- und iServ Schuelerdaten wurden zusammengeführt.")
     return {"users": merged_data}
 
-
-# 🔹 Kursdaten aus zusammengeführten Schülerdaten (Parameter data) erzeugen
 def extract_courses(data):
+    """ Kursdaten aus zusammengeführten Schülerdaten (Parameter data) erzeugen"""
     courses = {}
     student_classes = {}
     for user in data["users"]:
@@ -133,8 +128,11 @@ def extract_courses(data):
     LOGGER.info("Die Kursstruktur wurde aus den Schülerdaten extrahiert.")
     return courses, student_classes
 
-
 def fetch_teachers(JAMF_URL, token, TEACHER_GROUP_NAME):
+    """
+    Hilfsfunktion von get_teachers.
+    Holt alle Lehrkräfte_Benutzer (der Site) von JAMF und gibt sie als JSON zurück.
+    """
     url = f"{JAMF_URL}/JSSResource/usergroups/name/{TEACHER_GROUP_NAME}"
     headers = {"Authorization": f"Bearer {token}",
                "Content-Type": "application/xml",
@@ -155,9 +153,8 @@ def fetch_teachers(JAMF_URL, token, TEACHER_GROUP_NAME):
     LOGGER.info("Die Lehrkräfte-Daten wurden von JAMF importiert.")
     return json_data
 
-
-# 🔹 Lehrer-Daten aus JSON aufbereiten
 def get_teachers(JAMF_URL, token, TEACHER_GROUP_NAME):
+    """holt Lehrkraft-Informationen von JAMF und gibt sie aufbereitet zurück."""
     teacher_data = fetch_teachers(JAMF_URL, token, TEACHER_GROUP_NAME)
     teachers = {}
     for teacher in teacher_data["user_group"]["users"]:
@@ -167,8 +164,8 @@ def get_teachers(JAMF_URL, token, TEACHER_GROUP_NAME):
     LOGGER.info("Die Lehrkräftedaten wurden aufbereitet")
     return teachers
 
-
 def switch_fach(value):
+    """verschönert die Informationen zum Fach. Aus 'D' wird z.B. 'Deutsch'"""
     match value:
         case "D":
             return "Deutsch"
@@ -209,8 +206,8 @@ def switch_fach(value):
         case _:
             return value
 
-
 def get_fach(bez):
+    """Hilfsfunktion zur Verbesserung der Lesbarkeit einer Kursbezeichnung"""
     teile = bez.split()
     if (teile[0] == "U"):
         wort = teile[1]
@@ -221,9 +218,8 @@ def get_fach(bez):
     else:
         return bez
 
-
-# 🔹 Neue Struktur für das zweite JSON erstellen
 def create_class_structure(course_data, site_id, prefix, teacher_data, student_classes, output_file):
+    """Die Klassenstruktur wird erstellt mit Lehrkräften und Schülern. Das Ganze wird als json abgespeichert."""
     classes = []
     postfix = 0
     seen_class_names = set()
@@ -270,9 +266,8 @@ def create_class_structure(course_data, site_id, prefix, teacher_data, student_c
     LOGGER.info("Die Daten für die JAMF-Klassen wurden erstellt.")
     LOGGER.info(f"Datei {output_file} wurde erfolgreich erstellt.")
 
-
-# 🔹 XML-Objekt aus Klassendaten erstellen
 def create_xml_from_class(class_data):
+    """erstellt ein XML-Objekt aus den übergebenen Klassendaten"""
     class_element = ET.Element("class")
 
     name_element = ET.SubElement(class_element, "name")
@@ -296,10 +291,13 @@ def create_xml_from_class(class_data):
         teacher_id_element.text = str(teacher_id)
     return ET.tostring(class_element, encoding="utf-8").decode("utf-8")
 
-
-# 🔹 Hauptfunktion
 def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLASS_PREFIX, OUTPUT_FILE_STUDENTS,
               OUTPUT_FILE_CLASSES, postfix, parent=None):
+    """
+    Diese Funktion ist das Herzstück von Classload und führt alles zusammen.
+    Die mithilfe der iServ-Schüler-Daten-csv und mit JAMF-API-Zugriffen vorbereiteten Klassen
+    werden zu JAMF hochgeladen.
+    """
     from jamfscripts.authentifizierung import refresh_token
     csv_data = csv_to_json(INPUT_FILENAME)
     token = TOKEN

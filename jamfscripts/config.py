@@ -1,13 +1,10 @@
-# config.py
 import json
-import os, sys
+import os
 from platformdirs import user_documents_dir, user_data_dir
 
 config_dir = user_data_dir("Classload", "chribdo")
 os.makedirs(config_dir, exist_ok=True)
 CONFIG_FILE  = os.path.join(config_dir, "config.json")
-#CONFIG_FILE = os.path.join(os.getcwd(), "config.json")
-#CONFIG_FILE = "../config.json"
 
 DATA_DIR = os.path.join(user_documents_dir(), "Classload")
 os.makedirs(DATA_DIR, exist_ok=True)

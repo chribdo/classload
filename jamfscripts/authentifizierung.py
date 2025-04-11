@@ -1,15 +1,12 @@
-# authentifizierung.py
-import requests, logging, os
-from rich.logging import RichHandler
+import requests, os
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
-
-import jamfscripts.big_class_merge
 from jamfscripts.logging_config import LOGGER
 from jamfscripts import config,big_class_merge
 from pathlib import Path
 
 def get_cipher():
+    """Holt einen (ggf. neuen) Schlüssel"""
     # 👉 env_file zuerst definieren
     env_file = Path.home() / ".Classload.env"
 
@@ -32,7 +29,6 @@ def get_cipher():
 
     return Fernet(key.encode())
 
-# 🔹 Anmelden usw....
 def get_auth_token(JAMF_URL, USERNAME, PASSWORD):
     """Holt ein Bearer-Token von der Jamf Pro API."""
     LOGGER.info("Hole Token")
@@ -51,7 +47,7 @@ def get_auth_token(JAMF_URL, USERNAME, PASSWORD):
         #raise Exception(f"Fehler beim Abrufen des Tokens: {response.text}")
 
 def refresh_token(JAMF_URL, token):
-    """Holt ein Bearer-Token von der Jamf Pro API."""
+    """Holt einen aufgefrischten Bearer-Token von der Jamf Pro API."""
     url = f"{JAMF_URL}/api/v1/auth/keep-alive"
     headers = {
         "Accept": "application/json",
@@ -68,8 +64,8 @@ def refresh_token(JAMF_URL, token):
         #raise Exception(f"Fehler beim Abrufen des Tokens: {response.text}")
 
 
-
 def initialisiere(JAMF_URL, TOKEN):
+    """Standardwerte werden gesetzt, teilweise mithilfe der JAMF-API (z.B. SITE_ID)"""
     LOGGER.info("Initialisiere...")
     fetched_id = big_class_merge.get_site_id(JAMF_URL, TOKEN)
     fetched_name = big_class_merge.get_site_name(JAMF_URL, TOKEN)

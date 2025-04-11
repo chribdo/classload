@@ -1,9 +1,9 @@
-# klassen_mit_praefix_loeschen.py
-import requests, json, os
+import requests, json
 from jamfscripts.logging_config import LOGGER
 from jamfscripts.authentifizierung import refresh_token
 
 def get_usergroups(JAMF_URL, token):
+    """holt alle Usergroups (einer SITE/Schule) von JAMF und gibt sie als JSON zurück"""
     url = f"{JAMF_URL}/JSSResource/usergroups"
     headers = { "Authorization": f"Bearer {token}",
                 "Content-Type": "application/xml",
@@ -26,6 +26,12 @@ def get_usergroups(JAMF_URL, token):
     return json_data
 
 def filter_and_delete_usergroups(JAMF_URL, token, PREFIX, json_data):
+    """
+    Alle Benutzergrupoen mit einem bestimmten Präfix werden aus
+    den übergebenen JSON-Benutzergruppendaten herausgefiltert
+    und Schritt für Schritt gelöscht.
+    Nur Hilfsfunktion für loesche_usergroups_mit_prefix (mit kompakterer Signatur)
+    """
     filtered_usergroups = []
     id_list = []
     for c in json_data.get("user_groups", []):
@@ -55,6 +61,7 @@ def filter_and_delete_usergroups(JAMF_URL, token, PREFIX, json_data):
             LOGGER.error(f"Fehler beim Löschen: {response.text}")
 
 def loesche_usergroups_mit_prefix(JAMF_URL,TOKEN, PREFIX):
+    """löscht alle Benutzergruppen von JAMF, die ein bestimmtes Präfix haben."""
     token=TOKEN
     usergroups=get_usergroups(JAMF_URL, token)
     filter_and_delete_usergroups(JAMF_URL, token, PREFIX, usergroups)

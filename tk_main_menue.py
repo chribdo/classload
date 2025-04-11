@@ -1,16 +1,13 @@
-from tkinter.messagebox import askyesno
-
 from tk_jamf_login import JamfLogin
-from tkinter import filedialog, messagebox, scrolledtext, simpledialog
+from tkinter import messagebox, scrolledtext
 from datetime import timedelta
 from ttkbootstrap.dialogs import *
 from tkhtmlview import HTMLLabel
-import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from ttkbootstrap.scrolled import ScrolledText
 from jamfscripts import *
-import os, sys, markdown, getpass
+import os, sys, markdown
 import platform
 from pathlib import Path
 from platformdirs import user_data_dir
@@ -212,9 +209,6 @@ def zeige_nutzungsdialog(root):
 
     auswahlfenster.wait_window()
     return auswahl.get()
-
-
-# --- Lizenzdialog + Zustimmungsspeicherung ---
 
 
 def zustimmung_bereits_erfolgt():

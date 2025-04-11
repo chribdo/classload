@@ -1,13 +1,9 @@
-import json
-import xml.etree.ElementTree as ET
-
 from jamfscripts import get_config_value
 from jamfscripts.big_class_merge import *
 from jamfscripts.authentifizierung import refresh_token
 
-
 def get_class(jamf_url, token, classname):
-    """Holt ein Bearer-Token von der Jamf Pro API."""
+    """Holt eine Klasse mit einem bestimmten Namen von JAMF und gibt sie als json zurück."""
     url = f"{jamf_url}/JSSResource/classes/name/{classname}"
     headers = {"Authorization": f"Bearer {token}",
                "Content-Type": "application/xml",
@@ -23,9 +19,8 @@ def get_class(jamf_url, token, classname):
         return ""
         #raise Exception(f"Fehler beim Abrufen des T
 
-
 def group_merge(JAMF_URL, TOKEN, INPUT_FILENAME, OUTPUT_FILE_STUDENTS, CLASS_PREFIX,  postfix):
-
+    """Die Daten von JAMF und iServ werden zusammengeführt"""
     csv_data = csv_to_json(INPUT_FILENAME)
     token = TOKEN
     #get_site_id(JAMF_URL, token)
@@ -35,6 +30,7 @@ def group_merge(JAMF_URL, TOKEN, INPUT_FILENAME, OUTPUT_FILE_STUDENTS, CLASS_PRE
     return courses,student_classes
 
 def create_group_structure(course_data, prefix, output_file):
+    """Die Struktur der Benutzergruppe wird als json abgespeichert"""
     groups = []
     postfix=0
     for course_name, students in course_data.items():
@@ -53,10 +49,9 @@ def create_group_structure(course_data, prefix, output_file):
     LOGGER.info("Die Daten für die JAMF-Klassen wurden erstellt.")
     LOGGER.info(f"Datei {output_file} wurde erfolgreich erstellt.")
 
-# 🔹 XML-Objekt aus Klassendaten erstellen
 def create_group_xml_from_class(class_data, prefix):
+    """Aus übergebenen Klassendaten wird ein XML String für eine korrespondierende statische Benutzergruppe erstellt."""
     group_element = ET.Element("user_group")
-
     name_element = ET.SubElement(group_element, "name")
     name_element.text = class_data["class"]["name"]
     LOGGER.info(name_element.text)
@@ -77,6 +72,10 @@ def create_group_xml_from_class(class_data, prefix):
     return ET.tostring(group_element, encoding="utf-8").decode("utf-8")
 
 def create_group_xml(name, liste):
+    """
+    Erstellt aus einer Liste von Benutzernamen einen XML-String
+    zu einer statischen Benutzergruppe mit dem Namen des Werts des 1. Parameters.
+    """
     group_element = ET.Element("user_group")
 
     name_element = ET.SubElement(group_element, "name")
@@ -98,6 +97,10 @@ def create_group_xml(name, liste):
     return ET.tostring(group_element, encoding="utf-8").decode("utf-8")
 
 def create_user_addition_xml(user_name):
+    """
+    Der XML-String, der hier zurückgegeben wird,
+    dient an anderer Stelle dazu Informationen zum Hinzufügen eines Benutzers zu übermitteln
+    """
     group_element = ET.Element("user_group")
     # name_element = ET.SubElement(group_element, "name")
     # name_element.text = group_name
@@ -108,6 +111,9 @@ def create_user_addition_xml(user_name):
     return ET.tostring(group_element, encoding="utf-8").decode("utf-8")
 
 def update_teacher_group(jamf_url, token, teacher_group_name, teacher_name):
+    """
+        Die Lehrerbenutzergruppe wird um einen Benutzer mit Namen teacher_name ergänzt.
+    """
     xml_string=create_user_addition_xml(teacher_name)
     url = f"{jamf_url}/JSSResource/usergroups/name/{teacher_group_name}"
     headers = {"Content-Type": "application/xml",
@@ -124,6 +130,10 @@ def update_teacher_group(jamf_url, token, teacher_group_name, teacher_name):
         LOGGER.error(f"Fehler beim Hinzufügen zur Gruppe: {response.text}")
 
 def create_single_user_group(jamf_url, token,  my_classname):
+    """
+    Zu einer einzelnen Klasse (der Klassennname wird als Parameter übergeben)
+    wird eine korrespondierende statische Benutzergruppe erzeugt.
+    """
     myclass = get_class(jamf_url, token, my_classname)
     if not isinstance(myclass, dict):
         LOGGER.error(f"❌ Abbruch: Klasse '{my_classname}' nicht gefunden/erhalten oder ungültiges Format: {myclass}")
@@ -152,9 +162,11 @@ def create_single_user_group(jamf_url, token,  my_classname):
         LOGGER.info(response.status_code)
         LOGGER.error(f"Fehler beim Erstellen der Gruppe: {response.text}")
 
-
-
 def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLASS_PREFIX, OUTPUT_FILE_STUDENTS, OUTPUT_FILE_CLASSES, postfix, parent=None):
+        """
+        Zu allen Klassen werden entsprechende statische Benutzergruppen angelegt.
+        Der Vorgang dauert sehr lange. Wahrscheinlich mehrere Stunden oder sogar Tage.
+        """
         csv_data = csv_to_json(INPUT_FILENAME)
         token = TOKEN
         # get_site_id(JAMF_URL, token)

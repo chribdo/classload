@@ -1,15 +1,18 @@
 from tkinter import filedialog, messagebox, scrolledtext
-from tkhtmlview import HTMLLabel
 from tkinter.messagebox import askokcancel
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from jamfscripts import *
-import os, sys, markdown
+import os, sys
 import threading
 
 
 class KlassenUploaderApp:
+    """
+    In diesem Hauptmenü können verschiedene Funktionen per Buttonclick aufgerufen werden.
+    Ein Textfeld für Logs gibt Auskunft über Fortschritt und Erfolg der einzelnen Aktionen.
+    """
     def __init__(self, root, JAMF_URL, TOKEN):
         self.JAMF_URL = JAMF_URL
         self.TOKEN = TOKEN
@@ -64,6 +67,7 @@ class KlassenUploaderApp:
         window.destroy()  # Fenster schließen
         self.root.deiconify()  # Hauptfenster wieder anzeigen
 
+    """
     def show_about(self):
         messagebox.showinfo("Über Classload",
                             "Classload\nzum Austausch von Daten mit Jamf\nVersion 0.9\n(c)2025 Christiane Borchel")
@@ -86,8 +90,10 @@ class KlassenUploaderApp:
 
         html_label = HTMLLabel(window, html=html_content)
         html_label.pack(fill="both", expand=True, padx=10, pady=10)
+    """
 
     def konfigurieren(self):
+        """zeigt das Menü zum Einstellen der Standardwerte"""
         def speichern():
             set_config_value("TEACHER_GROUP_NAME", entry_teachergroup.get())
             set_config_value("SITE_ID", entry_site_id.get())
@@ -160,7 +166,10 @@ class KlassenUploaderApp:
         popup.minsize(popup.winfo_width(), popup.winfo_height())
 
     def klassen_upload(self):
-        """Wählt eine Datei aus und gibt ein Präfix ein, bevor eine Funktion ausgeführt wird."""
+        """
+        Eine iServ-Schüler-Datei und ein Präfix für die gewünschten Klasse müssen ausgewählt bzw. eingetragen werden.
+        Dann werden alle Klassen zu JAMF hochgeladen.
+        """
         # Präfix eingeben
         popup = ttk.Toplevel(self.root)
         popup.title("Upload-Einstellungen")
@@ -237,7 +246,7 @@ class KlassenUploaderApp:
                              daemon=True).start()
 
     def lehrer_ipads_zuordnen(self):
-        """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
+        """Upload mit Zuordnung der Lehrkräftenamen mit Kürzeln zu Seriennummern gemäß csv."""
         # Messagebox.ok(title="Datei auswählen", "Bitte csv mit 4 Spalten auswählen: Vorname, Nachname, eindeutiges Kürzel, Seriennummer", alert=False)
         antwort = messagebox.askyesno(
             title="Datei auswählen",
@@ -259,7 +268,7 @@ class KlassenUploaderApp:
                              daemon=True).start()
 
     def it_nummern_hochladen(self):
-        """Upload mit Zuordnung der Schülernamen zu Seriennummern gemäß csv."""
+        """Upload mit Zuordnung der Asset Tags (oder IT_Nummern) zu Seriennummern/Geräten gemäß csv."""
         # Messagebox.ok(title="Datei auswählen", "Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer, alert=False), Seriennummer")
 
         antwort = messagebox.askyesno(
@@ -283,7 +292,10 @@ class KlassenUploaderApp:
                              daemon=True).start()
 
     def group_upload(self):
-        """Wählt eine Datei aus und gibt ein Präfix ein, bevor eine Funktion ausgeführt wird."""
+        """
+        Eine iServ-Schüler-Datei und ein Präfix für die gewünschten statischen Benutzergruppen müssen ausgewählt bzw. eingetragen werden.
+        Dann werden alle neuen Benutzergruppen zu JAMF hochgeladen. Das dauert sehr lange.
+        """
         # Präfix eingeben
         popup = ttk.Toplevel(self.root)
         popup.title("Upload-Einstellungen")
@@ -338,6 +350,7 @@ class KlassenUploaderApp:
                              daemon=True).start()
 
     def klassen_loeschen(self):
+        """ermöglicht das Löschen aller Jamf-Classroom-Klassen mit einem bestimmten Präfix"""
         # Präfix eingeben
         popup = ttk.Toplevel(self.root)
         popup.title("Klassen-Präfix")
@@ -380,6 +393,7 @@ class KlassenUploaderApp:
         ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
 
     def single_group_upload(self):
+        """zu einer auf Jamf bereits vorhandenen Klasse mit einem bestimmten Namen wird eine statische Benutzergruppe erzeugt"""
         popup = ttk.Toplevel(self.root)
         popup.title("Klassen-Namen eingeben")
         popup.geometry("800x200")
@@ -411,7 +425,7 @@ class KlassenUploaderApp:
         ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
 
     def gruppen_loeschen(self):
-        # Präfix eingeben
+        """ermöglicht das Löschen aller statischen Benutzergruppen mit einem bestimmten Präfix in JAMF"""
         popup = ttk.Toplevel(self.root)
         popup.title("Gruppen-Präfix")
         label_text = (
@@ -449,6 +463,7 @@ class KlassenUploaderApp:
         ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
 
     def delete_users_wo_md(self):
+        """löscht alle Benutzer ohne Mobilgerät (sofern sie keine Lehrkräfte sind) von JAMF. Dient dem Aufräumen"""
         ok_del = askokcancel("Bestätigen", "Alle Benutzer ohne Mobilgerät werden gelöscht (Lehrkräfte ausgenommen).")
         if ok_del:
             threading.Thread(target=delete_users_without_devices, args=(self.JAMF_URL, self.TOKEN), daemon=True).start()
@@ -456,7 +471,7 @@ class KlassenUploaderApp:
             return
 
     def klassen_loeschen_ausfuehren(self, del_praefix):
-
+        """Hilfsmethode von klassen_loeschen"""
         antwort = messagebox.askokcancel("Klassen löschen nach Präfix",
                                          f"Alle Klassen in JAMF mit dem Präfix {del_praefix} werden gelöscht.")
 
@@ -466,7 +481,7 @@ class KlassenUploaderApp:
             return
 
     def gruppen_loeschen_ausfuehren(self, del_praefix):
-
+        """Hilfsmethode von gruppen_loeschen"""
         antwort = messagebox.askokcancel("Gruppen löschen nach Präfix",
                                          f"Alle Benutzergruppen in JAMF mit dem Präfix {del_praefix} werden gelöscht.")
 
@@ -476,7 +491,7 @@ class KlassenUploaderApp:
             return
 
     def klassenupload_ausfuehren(self, dateipfad, praefix, teachergroupname):
-
+        """Hilfsmethode von klassenupload"""
         # print(teachergroupname)
         SITE_ID = get_config_value("SITE_ID")
         OUTPUT_FILE_CLASSES = get_config_value("OUTPUT_FILE_CLASSES")
@@ -486,7 +501,7 @@ class KlassenUploaderApp:
                   OUTPUT_FILE_CLASSES, POSTFIX,self.root)
 
     def gruppen_upload_ausfuehren(self, dateipfad, praefix, teachergroupname):
-
+        """Hilfsmethode von group_upload"""
         # print(teachergroupname)
         SITE_ID = get_config_value("SITE_ID")
         OUTPUT_FILE_CLASSES = get_config_value("OUTPUT_FILE_CLASSES")

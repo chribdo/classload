@@ -1,6 +1,5 @@
 # tk_jamf_login.py
 from tk_klassen_uploader_app import KlassenUploaderApp
-from tkinter import messagebox
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from jamfscripts import *
@@ -8,6 +7,7 @@ import sys
 
 
 class JamfLogin:
+    """"regelt den Login vor dem eigentlichen Programmstart."""
     def __init__(self, root):
         self.root = root
 
@@ -43,16 +43,24 @@ class JamfLogin:
         self.login_window.protocol("WM_DELETE_WINDOW", self.on_close)
         self.login_window.bind("<Return>", lambda event: self.validate_login())
 
+    """
     def show_about(self):
         messagebox.showinfo("Über Classload",
                             "Classload\nzum Austausch von Daten mit Jamf\nVersion 0.9\n(c)2025 Christiane Borchel")
         #messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
+        
+    """
 
     def on_close(self):
         LOGGER.info("Fenster wird geschlossen. Programm wird beendet.")
         sys.exit()  # Beendet das ganze Skript
 
     def validate_login(self):
+        """
+        prüft ob alles ausgefüllt ist.
+        Wenn ja wird ein Objekt der Klasse KlassenuploaderApp erstellt
+        und damit landet man im Hauptmenü.
+        """
         global JAMF_URL, TOKEN
 
         JAMF_URL = self.url_entry.get()
