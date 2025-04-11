@@ -3,7 +3,6 @@ from tkinter.messagebox import askyesno
 from tk_jamf_login import JamfLogin
 from tkinter import filedialog, messagebox, scrolledtext, simpledialog
 from datetime import timedelta
-
 from ttkbootstrap.dialogs import *
 from tkhtmlview import HTMLLabel
 import tkinter as tk
@@ -16,7 +15,7 @@ import platform
 from pathlib import Path
 from platformdirs import user_data_dir
 import tempfile
-
+import tkinter as tk
 JAMF_URL = ""
 TOKEN = ""
 #ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
@@ -40,6 +39,7 @@ def get_resource_path(filename):
         base_path = Path(__file__).resolve().parent
         return str(base_path / filename)
 
+LIZENZ = get_resource_path("LICENSE.txt")
 
 
 def init_dpi_awareness():
@@ -56,11 +56,8 @@ def init_dpi_awareness():
         except Exception:
             pass
 
-import sys
-import os
-import tkinter as tk
-
 def set_window_icon(widget):
+    """setzt ein icon-Window. Wird aktuell nicht verwendet."""
     try:
         if sys.platform == "darwin":
             # macOS: kleineres Icon verwenden, sonst kommt "path is bad"
@@ -80,14 +77,8 @@ def set_window_icon(widget):
 
 
 
-LIZENZ = get_resource_path("LICENSE.txt")
-
 def lade_nutzungsinfo():
-    """
-
-    Returns:
-
-    """
+    """öffnet die Nutzungsdatei, sofern vorhanden."""
     if os.path.exists(NUTZUNGSDATEI):
         with open(NUTZUNGSDATEI, "r") as f:
             return json.load(f)
@@ -95,10 +86,12 @@ def lade_nutzungsinfo():
 
 
 def speichere_nutzungsinfo(info):
+    """speichert die Art der Nutzung(privat/gewerblich) in einer.json-Datei"""
     with open(NUTZUNGSDATEI, "w") as f:
         json.dump(info, f)
 
 def pruefe_testversion(root, verbleibend):
+    """Prüft ob die gewerbliche Lizenz noch gültig ist. Wenn ja wird nach Bestätigung das Login-Fenster Jamf-Login aufgerufen."""
     root.deiconify()
     #root.geometry("400x300")  # Fenstergröße setzen
     root.minsize(400, 250)
@@ -133,6 +126,12 @@ def pruefe_testversion(root, verbleibend):
 
 
 def pruefe_nutzungsart(root):
+    """
+    Die Nutzungsart wird überprüft.
+    Sie wird abgespeichert, falls sie noch nicht abgespeichert ist, sonst wird sie gelesen.
+    Für gewerbliche Nutzung wird die verbleibende Nutzungszeit geprüft und ggf. weitergegeben.
+    Bei privater Nutzung wird direkt das Login-Fenster JamfLogin geöffnet.
+    """
     info = lade_nutzungsinfo()
     if "nutzung" not in info:
         nutzungsart = zeige_nutzungsdialog(root)
@@ -166,6 +165,7 @@ def pruefe_nutzungsart(root):
 
 
 def zeige_lizenz():
+    """Die Lizenz wird einfach angezeigt. Wird aus dem Menü aufgerufen."""
     if not os.path.exists(LIZENZ):
         Messagebox.ok(title="Lizenz", message="LICENSE.txt nicht gefunden.", alert=False)
         return
@@ -183,6 +183,7 @@ def zeige_lizenz():
 
 
 def zeige_nutzungsdialog(root):
+    """Die Art der Nutzung muss ausgewählt und bestätigt werden. Wird nur bei der Erstnutzung aufgerufen."""
     auswahlfenster = tk.Toplevel()
     auswahlfenster.title("Nutzungsart wählen")
     auswahlfenster.geometry("500x300")
@@ -213,28 +214,11 @@ def zeige_nutzungsdialog(root):
     return auswahl.get()
 
 
-def zeige_about_dialog():
-    about = tk.Toplevel()
-    #set_window_icon(about)
-    about.title("Über Classload")
-    about.geometry("400x200")
-    about.resizable(True, True)
-
-    frame = ttk.Frame(about, padding=20)
-    frame.pack(fill="both", expand=True)
-
-    label = ttk.Label(frame, text="Classload\nsendet Daten zu Geräten, Nutzenden und Kursen an Jamf\nVersion 0.9\n© 2025 Christiane Borchel", justify="center",
-                      font=("Helvetica", 12))
-    label.pack(pady=(10, 20))
-
-    btn = ttk.Button(frame, text="Schließen", command=about.destroy)
-    btn.pack(pady=(10, 0))
-
-
 # --- Lizenzdialog + Zustimmungsspeicherung ---
 
 
 def zustimmung_bereits_erfolgt():
+    """prüft, ob die Zustimmung bereits erfolgt ist."""
     if os.path.exists(ZUSTIMMUNGSDATEI):
         try:
             print(f"✅ Schreiben/Lesen von: {ZUSTIMMUNGSDATEI}")
@@ -247,12 +231,14 @@ def zustimmung_bereits_erfolgt():
 
 
 def speichere_zustimmung():
+    """speichert die erfolgte Zustimmung in der Zustimmungsdatei (json)"""
     print(f"✅ Schreiben/Lesen von: {ZUSTIMMUNGSDATEI}")
     with open(ZUSTIMMUNGSDATEI, "w") as f:
         json.dump({"zugestimmt": True}, f)
 
 
 def show_license_dialog(root):
+    """zeigt den Lizenz-Dialog zu Beginn. Man wird aufgefordert, die Lizenz zu bestötigen."""
     try:
         with open(LIZENZ, "r", encoding="utf-8") as f:
             license_text = f.read()
@@ -303,11 +289,13 @@ def show_license_dialog(root):
     return result["accepted"]
 
 def show_help(root):
+    """zeigt die hilfe_md.an. Wird über das Menü aufgerufen."""
     help_text = load_markdown_file(get_resource_path("hilfe.md"))
     show_markdown_window(root, "Hilfe", help_text)
 
 
 def load_markdown_file(filename):
+    """öffnet eine Markdown-Datei"""
     if not os.path.exists(filename):
         return f"Datei '{filename}' nicht gefunden."
     with open(filename, "r", encoding="utf-8") as f:
@@ -315,6 +303,7 @@ def load_markdown_file(filename):
 
 
 def show_markdown_window(root, title, html_content):
+    """zeigt ein Fenster mit einer HTMl-Datei an. Ursprünglich war die HTNL mal .md, daher der Name"""
     #window = ttk.Toplevel(root, iconphoto=None)
     if sys.platform == "darwin":
       window = ttk.Toplevel(root)
@@ -328,10 +317,19 @@ def show_markdown_window(root, title, html_content):
 
 
 def show_about():
+    """zeigt die Aboutbox"""
     # messagebox.showinfo("Über Classload", "Classload\nVersion 1.0\n(c) 2025")
     messagebox.showinfo("Über Classload","Classload\nzum Austausch von Daten mit Jamf\nVersion 0.9\n(c)2025 Christiane Borchel")
 
 def main():
+    """
+    Bei der ersten Nutzung wird die Lizenz angezeigt, die bestätigt werden muss.
+    Danach muss die Nutzungsart (privat/gewerblich) gewählt werden.
+    Bei allen späteren Nutzungen wird zunächst die Nutzungsart geprüft.
+    Falls sie gewerblich ist, wird zunächst angezeigt, wie viele Tage die Lizenz noch gültig ist.
+    Falls sie nicht mehr gültig ist, endet das Programm. Sonst wird nach Bestätigung das Login-Fenster angezeigt.
+    Bei privater/schulischer Nutzung wird direkt das Login-Fenster JAMF-Login angezeigt.
+    """
     init_dpi_awareness()
     if sys.platform == "darwin":
       root = ttk.Window(themename="cosmo")

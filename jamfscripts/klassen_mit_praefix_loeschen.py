@@ -62,7 +62,7 @@ def filter_and_delete_classes(JAMF_URL, token, PREFIX, json_data):
 def loesche_klassen_mit_prefix(JAMF_URL,TOKEN, PREFIX):
     token=TOKEN
     classes=get_classes(JAMF_URL, token)
-    filter_and_delete_classes(JAMF_URL, PREFIX, classes)
+    filter_and_delete_classes(JAMF_URL, TOKEN, PREFIX, classes)
     LOGGER.info("Löschen abgeschlossen")
 
 
