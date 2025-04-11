@@ -4,8 +4,7 @@
 
 ## 🖼️ Screenshot
 
-![Screenshot](screenshot.png)  
-*Optional: Füge hier einen Screenshot der App ein*
+![Screenshot](screenshot.png)
 
 ## ✨ Funktionen
 
