@@ -205,10 +205,11 @@ class KlassenUploaderApp:
             confirmed.set(True)
             popup.destroy()
 
-        if not confirmed.get():
-            return  # Abgebrochen
         ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
         popup.wait_window()
+        if not confirmed.get():
+            return  # Abgebrochen
+
         # Datei auswählen
         dateipfad = config.get_config_value("INPUT_FILENAME")
         dateipfad = filedialog.askopenfilename(initialdir=dateipfad, title="Bitte iServ-Schüler-csv auswählen",
@@ -332,10 +333,11 @@ class KlassenUploaderApp:
             confirmed.set(True)
             popup.destroy()
 
-        if not confirmed.get():
-            return  # Abgebrochen
         ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
         popup.wait_window()
+        if not confirmed.get():
+            return  # Abgebrochen
+
         # Datei auswählen
         dateipfad = config.get_config_value("INPUT_FILENAME")
         dateipfad = filedialog.askopenfilename(initialdir=dateipfad, title="Bitte iServ-Schüler-csv auswählen",
