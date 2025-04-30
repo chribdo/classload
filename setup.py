@@ -2,7 +2,7 @@ from setuptools import setup
 
 APP = ['tk_main_menue.py']
 DATA_FILES = [
-    ('', ['LICENSE.txt', 'README.md']),
+    ('', ['LICENSE.txt', 'README.md', 'screenshot.png']),
     ('assets', ['assets/icon_small.png']),
 ]
 
@@ -27,7 +27,7 @@ OPTIONS = {
         'CFBundleIconFile': 'icon',
         'LSUIElement': False  # <-- Sichtbarkeit & Dock-Integration
     },
-    'resources': ['LICENSE.txt', 'README.md', 'icon.icns'],
+    'resources': ['LICENSE.txt', 'README.md', 'screenshot.png', 'icon.icns'],
     'iconfile': 'icon.icns',
     'verbose': 1,
 }
@@ -70,7 +70,7 @@ OPTIONS = {
         'NSHighResolutionCapable': True,
         'CFBundleIconFile': 'icon',  # nur wenn icon.icns da ist
     },
-    'resources': ['LICENSE.txt', 'hilfe.md'],
+    'resources': ['LICENSE.txt', 'README.md'],
     'verbose': 1,
 }
 
