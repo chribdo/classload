@@ -25,7 +25,7 @@ jobs:
 
       - name: Build EXE
         run: |
-          pyinstaller --noconfirm --onefile --windowed --add-data "LICENSE.txt;." --add-data "hilfe.md;." --add-data "assets;assets" --name "Classload" --icon=assets/icon.ico tk_main_menue.py
+          pyinstaller --noconfirm --onefile --windowed --add-data "LICENSE.txt;." --add-data "README.md;." --add-data "assets;assets" --name "Classload" --icon=assets/icon.ico tk_main_menue.py
       - name: Upload Windows EXE
         uses: actions/upload-artifact@v4
         with:
@@ -94,7 +94,7 @@ jobs:
         run: |
           pyinstaller --noconfirm --onefile --windowed \
             --add-data "LICENSE.txt:." \
-            --add-data "hilfe.md:." \
+            --add-data "README.md:." \
             --add-data "assets:assets" \
             --name "Classload" \
             --icon=assets/icon.ico \
