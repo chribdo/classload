@@ -13,7 +13,7 @@ from pathlib import Path
 from platformdirs import user_data_dir
 import tempfile
 import tkinter as tk
-import base64
+import base64, threading
 JAMF_URL = ""
 TOKEN = ""
 #ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
@@ -284,10 +284,10 @@ def show_license_dialog(root):
     return result["accepted"]
 
 def show_help(root):
-    """zeigt die hilfe_md.an. Wird über das Menü aufgerufen."""
-    help_text = load_markdown_file(get_resource_path("README.md"))
-    show_markdown_window(root, "Hilfe", help_text)
-
+    readme_path = get_resource_path("README.md")
+    screenshot_path = get_resource_path("screenshot.png")
+    markdown_text = load_markdown_file(readme_path)
+    show_markdown_window(root, "Hilfe", markdown_text, screenshot_path)
 
 def load_markdown_file(filename):
     """Lädt eine Markdown-Datei und gibt den reinen Text zurück."""
@@ -311,14 +311,6 @@ def show_markdown_window(root, title, html_content):
     html_label.pack(fill="both", expand=True, padx=10, pady=10)
 """
 
-def image_to_data_url(path):
-    """Liest ein Bild ein und wandelt es in eine data:-URL um (Base64)."""
-    image_path = Path(path)
-    if not image_path.exists():
-        return None
-    mime = "image/png"  # Falls du JPG hast, ggf. "image/jpeg"
-    b64 = base64.b64encode(image_path.read_bytes()).decode()
-    return f"data:{mime};base64,{b64}"
 
 import markdown
 import webview
@@ -326,24 +318,32 @@ import re
 from pathlib import Path
 import base64
 
-def show_markdown_window(root, title, markdown_text, screenshot_path=None):
-    """Zeigt ein Fenster mit gerendertem Markdown-Inhalt in pywebview an, inkl. Screenshot."""
+def image_to_data_url(path):
+    """Liest ein Bild ein und wandelt es in eine data:-URL um (Base64)."""
+    image_path = Path(path)
+    if not image_path.exists():
+        return None
+    mime = "image/png"  # Falls nötig: "image/jpeg"
+    b64 = base64.b64encode(image_path.read_bytes()).decode()
+    return f"data:{mime};base64,{b64}"
 
-    # Screenshot einbetten per data:-URL
+
+def show_markdown_window(root, title, markdown_text, screenshot_path=None):
+    """Zeigt ein Markdown-Dokument schön formatiert im pywebview-Fenster an – ohne Thread."""
+
+    # Optional Screenshot als data:-URL einbetten
     if screenshot_path and Path(screenshot_path).exists():
         screenshot_data_url = image_to_data_url(screenshot_path)
-
-        # Robust ersetzen: ![Screenshot](irgendwas)
         markdown_text = re.sub(
             r"!\[Screenshot\]\([^)]+\)",
             f'<img src="{screenshot_data_url}" alt="Screenshot" width="500">',
             markdown_text
         )
 
-    # Jetzt Markdown → HTML (nach Bild-Ersatz!)
+    # Markdown → HTML
     html_body = markdown.markdown(markdown_text, extensions=["extra", "nl2br"])
 
-    # Stilvolles HTML-Template
+    # HTML-Seite mit einfachem Stil
     html = f"""
     <html>
     <head>
@@ -383,9 +383,10 @@ def show_markdown_window(root, title, markdown_text, screenshot_path=None):
     </html>
     """
 
-    # Zeige HTML im WebView
+    # WebView-Fenster starten (muss auf dem Hauptthread laufen!)
     webview.create_window(title, html=html)
     webview.start()
+
 
 def show_about():
     """zeigt die Aboutbox"""
