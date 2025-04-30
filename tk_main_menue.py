@@ -7,12 +7,13 @@ import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from ttkbootstrap.scrolled import ScrolledText
 from jamfscripts import *
-import os, sys, markdown
+import os, sys, markdown, webview
 import platform
 from pathlib import Path
 from platformdirs import user_data_dir
 import tempfile
 import tkinter as tk
+import base64
 JAMF_URL = ""
 TOKEN = ""
 #ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
@@ -284,20 +285,20 @@ def show_license_dialog(root):
 
 def show_help(root):
     """zeigt die hilfe_md.an. Wird über das Menü aufgerufen."""
-    help_text = load_markdown_file(get_resource_path("hilfe.md"))
+    help_text = load_markdown_file(get_resource_path("README.md"))
     show_markdown_window(root, "Hilfe", help_text)
 
 
 def load_markdown_file(filename):
-    """öffnet eine Markdown-Datei"""
+    """Lädt eine Markdown-Datei und gibt den reinen Text zurück."""
     if not os.path.exists(filename):
         return f"Datei '{filename}' nicht gefunden."
     with open(filename, "r", encoding="utf-8") as f:
-        return markdown.markdown(f.read())
+        return f.read()
 
-
+"""
 def show_markdown_window(root, title, html_content):
-    """zeigt ein Fenster mit einer HTMl-Datei an. Ursprünglich war die HTNL mal .md, daher der Name"""
+   #zeigt ein Fenster mit einer HTMl-Datei an. Ursprünglich war die HTNL mal .md, daher der Name
     #window = ttk.Toplevel(root, iconphoto=None)
     if sys.platform == "darwin":
       window = ttk.Toplevel(root)
@@ -308,7 +309,83 @@ def show_markdown_window(root, title, html_content):
     window.geometry("600x400")
     html_label = HTMLLabel(window, html=html_content)
     html_label.pack(fill="both", expand=True, padx=10, pady=10)
+"""
 
+def image_to_data_url(path):
+    """Liest ein Bild ein und wandelt es in eine data:-URL um (Base64)."""
+    image_path = Path(path)
+    if not image_path.exists():
+        return None
+    mime = "image/png"  # Falls du JPG hast, ggf. "image/jpeg"
+    b64 = base64.b64encode(image_path.read_bytes()).decode()
+    return f"data:{mime};base64,{b64}"
+
+import markdown
+import webview
+import re
+from pathlib import Path
+import base64
+
+def show_markdown_window(root, title, markdown_text, screenshot_path=None):
+    """Zeigt ein Fenster mit gerendertem Markdown-Inhalt in pywebview an, inkl. Screenshot."""
+
+    # Screenshot einbetten per data:-URL
+    if screenshot_path and Path(screenshot_path).exists():
+        screenshot_data_url = image_to_data_url(screenshot_path)
+
+        # Robust ersetzen: ![Screenshot](irgendwas)
+        markdown_text = re.sub(
+            r"!\[Screenshot\]\([^)]+\)",
+            f'<img src="{screenshot_data_url}" alt="Screenshot" width="500">',
+            markdown_text
+        )
+
+    # Jetzt Markdown → HTML (nach Bild-Ersatz!)
+    html_body = markdown.markdown(markdown_text, extensions=["extra", "nl2br"])
+
+    # Stilvolles HTML-Template
+    html = f"""
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            body {{
+                font-family: sans-serif;
+                padding: 2em;
+                line-height: 1.6;
+                max-width: 800px;
+                margin: auto;
+                background: #f9f9f9;
+            }}
+            img {{
+                max-width: 100%;
+                height: auto;
+                margin: 1em 0;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }}
+            h1, h2, h3 {{
+                margin-top: 1.5em;
+            }}
+            pre {{
+                background: #eee;
+                padding: 0.5em;
+                overflow-x: auto;
+            }}
+            code {{
+                font-family: monospace;
+                background: #f4f4f4;
+                padding: 0.2em 0.4em;
+            }}
+        </style>
+    </head>
+    <body>{html_body}</body>
+    </html>
+    """
+
+    # Zeige HTML im WebView
+    webview.create_window(title, html=html)
+    webview.start()
 
 def show_about():
     """zeigt die Aboutbox"""
