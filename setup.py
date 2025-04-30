@@ -27,7 +27,7 @@ OPTIONS = {
         'CFBundleIconFile': 'icon',
         'LSUIElement': False  # <-- Sichtbarkeit & Dock-Integration
     },
-    'resources': ['LICENSE.txt', 'hilfe.md', 'icon.icns'],
+    'resources': ['LICENSE.txt', 'README.md', 'icon.icns'],
     'iconfile': 'icon.icns',
     'verbose': 1,
 }
@@ -44,7 +44,7 @@ from setuptools import setup
 
 APP = ['tk_main_menue.py']
 DATA_FILES = [
-    ('', ['LICENSE.txt', 'hilfe.md']),
+    ('', ['LICENSE.txt', 'README.md']),
     ('assets', ['assets/icon_small.png']),
 ]
 
