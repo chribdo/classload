@@ -14,7 +14,19 @@ OPTIONS = {
         'ttkbootstrap',
         'PIL.Image',
         'PIL.ImageTk',
-        'jamfscripts'
+        'jamfscripts',
+        'markdown.extensions.extra',
+        'markdown.extensions.nl2br',
+        'markdown.extensions.abbr',
+        'markdown.extensions.attr_list',
+        'markdown.extensions.def_list',
+        'markdown.extensions.fenced_code',
+        'markdown.extensions.footnotes',
+        'markdown.extensions.tables',
+        'markdown.extensions.smart_strong',
+        'markdown.extensions.admonition',
+        'markdown.extensions.md_in_html' ,
+        'webview'  # <- für pywebview (wichtig!)
     ],
     'packages': ['cryptography', 'cffi', 'charset_normalizer'],
     'plist': {
