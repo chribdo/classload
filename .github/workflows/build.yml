@@ -50,7 +50,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install py2app pyobjc-core
+          # Nur macOS-spezifische Pakete direkt hier zusätzlich installieren:
+          pip install py2app pyobjc-core \
+            pyobjc-framework-Cocoa \
+            pyobjc-framework-Quartz \
+            pyobjc-framework-Security \
+            pyobjc-framework-WebKit
 
       - name: Clean previous builds
         run: |
