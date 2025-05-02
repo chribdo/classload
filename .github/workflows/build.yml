@@ -32,14 +32,14 @@ jobs:
           name: Classload-EXE
           path: dist/*.exe
 
-
-
-
   build-macos:
     runs-on: macos-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Install Qt via Homebrew
+        run: brew install qt
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -71,6 +71,7 @@ jobs:
           name: Classload-mac
           path: dist/Classload-mac.zip
 
+
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -82,10 +83,15 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Dependencies
+      - name: Install Qt WebEngine dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-tk
+          sudo apt-get install -y libegl1 libxcomposite1 libxrandr2 libxkbcommon0 libx11-xcb1 libxcb1 \
+            libxcb-glx0 libxcb-keysyms1 libxcb-image0 libxcb-shm0 libxcb-icccm4 libxcb-sync1 libxcb-xfixes0 \
+            libxcb-shape0 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-util1 libglu1-mesa libnss3
+
+      - name: Install Dependencies
+        run: |
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
@@ -93,9 +99,11 @@ jobs:
       - name: Build Executable
         run: |
           pyinstaller --noconfirm --onefile --windowed \
+            --collect-submodules PySide6 \
+            --collect-data PySide6 \
             --add-data "LICENSE.txt:." \
             --add-data "README.md:." \
-            --add-data "screenshot.png;." \
+            --add-data "screenshot.png:." \
             --add-data "assets:assets" \
             --name "Classload" \
             --icon=assets/icon.ico \
@@ -106,5 +114,4 @@ jobs:
         with:
           name: Classload-linux
           path: dist/Classload
-
 
