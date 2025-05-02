@@ -28,8 +28,13 @@ OPTIONS = {
         'markdown.extensions.md_in_html' ,
         'markdown.extensions.sane_lists',
         'webview'  # <- für pywebview (wichtig!)
+        'PySide6.QtWidgets',
+        'PySide6.QtWebEngineWidgets',
+        'PySide6.QtCore',
+        'PySide6.QtGui',
+        'PySide6.QtWebChannel'
     ],
-    'packages': ['cryptography', 'cffi', 'charset_normalizer'],
+    'packages': ['cryptography', 'cffi', 'charset_normalizer', 'PySide6'],
     'plist': {
         'CFBundleName': 'Classload',
         'CFBundleDisplayName': 'Classload',
