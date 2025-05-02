@@ -2,7 +2,7 @@ from setuptools import setup
 
 APP = ['tk_main_menue.py']
 DATA_FILES = [
-    ('', ['LICENSE.txt', 'README.md', 'screenshot.png']),
+    ('', ['LICENSE.txt', 'README.md', 'screenshot.png', 'markdown_viewer.py', 'markdown_viewer_standalone.py']),
     ('assets', ['assets/icon_small.png']),
 ]
 
@@ -26,6 +26,7 @@ OPTIONS = {
         'markdown.extensions.smart_strong',
         'markdown.extensions.admonition',
         'markdown.extensions.md_in_html' ,
+        'markdown.extensions.sane_lists',
         'webview'  # <- für pywebview (wichtig!)
     ],
     'packages': ['cryptography', 'cffi', 'charset_normalizer'],

@@ -2,18 +2,28 @@ from tk_jamf_login import JamfLogin
 from tkinter import messagebox, scrolledtext
 from datetime import timedelta
 from ttkbootstrap.dialogs import *
+from markdown_viewer import start_markdown_viewer
 from tkhtmlview import HTMLLabel
 import ttkbootstrap as ttk
 from ttkbootstrap.dialogs import Messagebox
 from ttkbootstrap.scrolled import ScrolledText
 from jamfscripts import *
+from pathlib import Path
 import os, sys, markdown, webview
 import platform
 from pathlib import Path
 from platformdirs import user_data_dir
 import tempfile
 import tkinter as tk
-import base64, threading
+import sys
+import os
+import subprocess
+import markdown
+from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtCore import QUrl
+import re
+from pathlib import Path
 JAMF_URL = ""
 TOKEN = ""
 #ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
@@ -283,18 +293,7 @@ def show_license_dialog(root):
     dialog.wait_window()
     return result["accepted"]
 
-def show_help(root):
-    readme_path = get_resource_path("README.md")
-    screenshot_path = get_resource_path("screenshot.png")
-    markdown_text = load_markdown_file(readme_path)
-    show_markdown_window(root, "Hilfe", markdown_text, screenshot_path)
 
-def load_markdown_file(filename):
-    """Lädt eine Markdown-Datei und gibt den reinen Text zurück."""
-    if not os.path.exists(filename):
-        return f"Datei '{filename}' nicht gefunden."
-    with open(filename, "r", encoding="utf-8") as f:
-        return f.read()
 
 """
 def show_markdown_window(root, title, html_content):
@@ -318,6 +317,22 @@ import re
 from pathlib import Path
 import base64
 
+import sys
+from pathlib import Path
+import subprocess
+
+def show_help():
+    viewer_script = Path(__file__).parent / "markdown_viewer_standalone.py"
+    readme = Path(get_resource_path("README.md")).resolve()
+    subprocess.Popen([sys.executable, str(viewer_script), str(readme)])
+
+def load_markdown_file(filename):
+    """Lädt eine Markdown-Datei und gibt den reinen Text zurück."""
+    if not os.path.exists(filename):
+        return f"Datei '{filename}' nicht gefunden."
+    with open(filename, "r", encoding="utf-8") as f:
+        return f.read()
+
 def image_to_data_url(path):
     """Liest ein Bild ein und wandelt es in eine data:-URL um (Base64)."""
     image_path = Path(path)
@@ -328,34 +343,37 @@ def image_to_data_url(path):
     return f"data:{mime};base64,{b64}"
 
 
-def show_markdown_window(root, title, markdown_text, screenshot_path=None):
-    """Zeigt ein Markdown-Dokument schön formatiert im pywebview-Fenster an – ohne Thread."""
+def show_markdown_window(title: str, markdown_text: str, screenshot_path: str = None):
+    """Zeigt ein Markdown-Dokument schön formatiert in einem PySide6-Fenster an."""
 
-    # Optional Screenshot als data:-URL einbetten
+    # Falls Screenshot angegeben: Markdown-Bild-Link ersetzen durch direkten Dateipfad
     if screenshot_path and Path(screenshot_path).exists():
-        screenshot_data_url = image_to_data_url(screenshot_path)
+        screenshot_path = os.path.abspath(screenshot_path)
+        escaped_path = screenshot_path.replace("\\", "/")  # wichtig für Windows
+        file_url = f"file:///{escaped_path}" if os.name == "nt" else f"file://{escaped_path}"
         markdown_text = re.sub(
             r"!\[Screenshot\]\([^)]+\)",
-            f'<img src="{screenshot_data_url}" alt="Screenshot" width="500">',
+            f'<img src="{file_url}" alt="Screenshot">',
             markdown_text
         )
 
     # Markdown → HTML
-    html_body = markdown.markdown(markdown_text, extensions=["extra", "nl2br"])
+    html_body = markdown.markdown(markdown_text, extensions=["extra", "sane_lists", "tables", "nl2br"])
 
-    # HTML-Seite mit einfachem Stil
+    # Komplette HTML-Seite mit Stil
     html = f"""
     <html>
     <head>
         <meta charset="utf-8">
         <style>
             body {{
-                font-family: sans-serif;
+                font-family: Arial, sans-serif;
                 padding: 2em;
                 line-height: 1.6;
                 max-width: 800px;
                 margin: auto;
-                background: #f9f9f9;
+                background: #f8f9fa;
+                color: #212529;
             }}
             img {{
                 max-width: 100%;
@@ -365,17 +383,30 @@ def show_markdown_window(root, title, markdown_text, screenshot_path=None):
                 border-radius: 4px;
             }}
             h1, h2, h3 {{
+                color: #0d6efd;
                 margin-top: 1.5em;
             }}
             pre {{
-                background: #eee;
-                padding: 0.5em;
+                background: #333;
+                color: #f8f8f2;
+                padding: 10px;
+                border-radius: 5px;
                 overflow-x: auto;
             }}
             code {{
+                background: #eee;
+                padding: 2px 4px;
+                border-radius: 4px;
                 font-family: monospace;
-                background: #f4f4f4;
-                padding: 0.2em 0.4em;
+            }}
+            table {{
+                border-collapse: collapse;
+                width: 100%;
+                margin: 1em 0;
+            }}
+            table, th, td {{
+                border: 1px solid #ccc;
+                padding: 8px;
             }}
         </style>
     </head>
@@ -383,10 +414,21 @@ def show_markdown_window(root, title, markdown_text, screenshot_path=None):
     </html>
     """
 
-    # WebView-Fenster starten (muss auf dem Hauptthread laufen!)
-    webview.create_window(title, html=html)
-    webview.start()
+    # PySide6 GUI anzeigen
+    app = QApplication.instance() or QApplication(sys.argv)
+    viewer = QMainWindow()
+    viewer.setWindowTitle(title)
+    viewer.resize(900, 700)
 
+    web = QWebEngineView()
+    base_url = QUrl.fromLocalFile(os.getcwd() + os.sep)  # für Bilder aus dem Projektverzeichnis
+    web.setHtml(html, base_url)
+
+    viewer.setCentralWidget(web)
+    viewer.show()
+
+    if not QApplication.instance():
+        sys.exit(app.exec())
 
 def show_about():
     """zeigt die Aboutbox"""
@@ -447,7 +489,7 @@ def main():
     menubar = tk.Menu(root)
     hilfe_menu = tk.Menu(menubar, tearoff=0)
     hilfe_menu.add_command(label="Lizenz anzeigen", command=zeige_lizenz)
-    hilfe_menu.add_command(label="Hilfe anzeigen", command=lambda: show_help(root))
+    hilfe_menu.add_command(label="Hilfe anzeigen", command=lambda: show_help())
 
     if platform.system() == "Darwin":
         apple_menu = tk.Menu(menubar, name="apple", tearoff=0)
