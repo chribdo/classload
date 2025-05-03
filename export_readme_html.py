@@ -87,11 +87,11 @@ def export_html(md_path: str, screenshot_path: str, out_path: str):
     # HTML speichern
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(html, encoding="utf-8")
-    print(f"✅ HTML exportiert nach: {out_path}")
+    print(f"[OK] HTML exportiert nach: {out_path}")
 
 # Einstiegspunkt
 if __name__ == "__main__":
     readme = get_resource_path("README.md")
     screenshot = get_resource_path("screenshot.png")
-    export_html(readme, screenshot, "dist/hilfe.html")
+    export_html(readme, screenshot, "hilfe.html")
 

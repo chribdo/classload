@@ -325,7 +325,7 @@ def image_to_data_url(path):
     return f"data:{mime};base64,{b64}"
 
 def show_help():
-    help_file = get_resource_path("dist/hilfe.html")
+    help_file = get_resource_path("hilfe.html")
     if not os.path.exists(help_file):
         print(f"❌ Hilfe-Datei nicht gefunden: {help_file}")
         return

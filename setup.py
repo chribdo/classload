@@ -82,7 +82,7 @@ OPTIONS = {
         'NSHighResolutionCapable': True,
         'CFBundleIconFile': 'icon',  # nur wenn icon.icns da ist
     },
-    'resources': ['LICENSE.txt', 'README.md'],
+    'resources': ['LICENSE.txt', 'screenshot.png', 'hilfe.html', 'README.md'],
     'verbose': 1,
 }
 
