@@ -171,7 +171,9 @@ def switch_fach(value):
             return "Deutsch"
         case "M":
             return "Mathematik"
-        case "Mu":
+        case "IF":
+            return "Informatik"
+        case "MU":
             return "Musik"
         case "PH":
             return "Physik"
@@ -203,6 +205,10 @@ def switch_fach(value):
             return "Kath. Religion"
         case "ER":
             return "Ev. Religion"
+        case "PP":
+            return "Praktische Philosophie"
+        case "PL":
+            return "Philosophie"
         case _:
             return value
 
