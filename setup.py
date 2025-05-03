@@ -2,7 +2,7 @@ from setuptools import setup
 
 APP = ['tk_main_menue.py']
 DATA_FILES = [
-    ('', ['LICENSE.txt', 'README.md', 'screenshot.png', 'markdown_viewer.py', 'markdown_viewer_standalone.py']),
+    ('', ['LICENSE.txt', 'README.md', 'screenshot.png']),
     ('assets', ['assets/icon_small.png']),
 ]
 
@@ -26,15 +26,9 @@ OPTIONS = {
         'markdown.extensions.smart_strong',
         'markdown.extensions.admonition',
         'markdown.extensions.md_in_html' ,
-        'markdown.extensions.sane_lists',
-        'webview'  # <- für pywebview (wichtig!)
-        'PySide6.QtWidgets',
-        'PySide6.QtWebEngineWidgets',
-        'PySide6.QtCore',
-        'PySide6.QtGui',
-        'PySide6.QtWebChannel'
+        'markdown.extensions.sane_lists'
     ],
-    'packages': ['cryptography', 'cffi', 'charset_normalizer', 'PySide6'],
+    'packages': ['cryptography', 'cffi', 'charset_normalizer'],
     'plist': {
         'CFBundleName': 'Classload',
         'CFBundleDisplayName': 'Classload',

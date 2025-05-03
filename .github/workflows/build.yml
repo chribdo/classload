@@ -23,6 +23,9 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
+      - name: Generate hilfe.html
+        run: python export_readme_html.py
+
       - name: Build EXE
         run: |
           pyinstaller --noconfirm --onefile --windowed --add-data "LICENSE.txt;." --add-data "README.md;." --add-data "screenshot.png;." --add-data "assets;assets" --name "Classload" --icon=assets/icon.ico tk_main_menue.py
@@ -38,9 +41,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Install Qt via Homebrew
-        run: brew install qt
-
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -49,17 +49,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --only-binary=:all: PySide6
           pip install -r requirements.txt
-          pip install py2app pyobjc-core \
-            pyobjc-framework-Cocoa \
-            pyobjc-framework-Quartz \
-            pyobjc-framework-Security \
-            pyobjc-framework-WebKit
+          pip install py2app
 
       - name: Clean previous builds
         run: |
           rm -rf build dist *.spec
+
+      - name: Generate hilfe.html
+        run: python export_readme_html.py
 
       - name: Build macOS .app with py2app
         run: |
@@ -88,24 +86,17 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Qt WebEngine dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libegl1 libxcomposite1 libxrandr2 libxkbcommon0 libx11-xcb1 libxcb1 \
-            libxcb-glx0 libxcb-keysyms1 libxcb-image0 libxcb-shm0 libxcb-icccm4 libxcb-sync1 libxcb-xfixes0 \
-            libxcb-shape0 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-util1 libglu1-mesa libnss3
-
       - name: Install Dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
+      - name: Generate hilfe.html
+        run: python export_readme_html.py
 
       - name: Build Executable
         run: |
           pyinstaller --noconfirm --onefile --windowed \
-            --collect-submodules PySide6 \
-            --collect-data PySide6 \
             --add-data "LICENSE.txt:." \
             --add-data "README.md:." \
             --add-data "screenshot.png:." \

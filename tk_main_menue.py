@@ -1,29 +1,21 @@
 from tk_jamf_login import JamfLogin
 from tkinter import messagebox, scrolledtext
 from datetime import timedelta
-from ttkbootstrap.dialogs import *
-from markdown_viewer import start_markdown_viewer
-from tkhtmlview import HTMLLabel
 import ttkbootstrap as ttk
+from ttkbootstrap.dialogs import *
 from ttkbootstrap.dialogs import Messagebox
 from ttkbootstrap.scrolled import ScrolledText
 from jamfscripts import *
-from pathlib import Path
-import os, sys, markdown, webview
+import os, sys
 import platform
-from pathlib import Path
 from platformdirs import user_data_dir
 import tempfile
 import tkinter as tk
-import sys
-import os
-import subprocess
-import markdown
-from PySide6.QtWidgets import QApplication, QMainWindow
-from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtCore import QUrl
-import re
+import base64
 from pathlib import Path
+import subprocess
+import webbrowser
+
 JAMF_URL = ""
 TOKEN = ""
 #ZUSTIMMUNGSDATEI = os.path.join(os.getcwd(), "zustimmung.json")
@@ -311,16 +303,6 @@ def show_markdown_window(root, title, html_content):
 """
 
 
-import markdown
-import webview
-import re
-from pathlib import Path
-import base64
-
-import sys
-from pathlib import Path
-import subprocess
-
 def show_help():
     viewer_script = Path(__file__).parent / "markdown_viewer_standalone.py"
     readme = Path(get_resource_path("README.md")).resolve()
@@ -342,93 +324,15 @@ def image_to_data_url(path):
     b64 = base64.b64encode(image_path.read_bytes()).decode()
     return f"data:{mime};base64,{b64}"
 
+def show_help():
+    help_file = get_resource_path("dist/hilfe.html")
+    if not os.path.exists(help_file):
+        print(f"❌ Hilfe-Datei nicht gefunden: {help_file}")
+        return
+    url = f"file://{help_file}"
+    print(f"🌐 Öffne Hilfe: {url}")
+    webbrowser.open(url)
 
-def show_markdown_window(title: str, markdown_text: str, screenshot_path: str = None):
-    """Zeigt ein Markdown-Dokument schön formatiert in einem PySide6-Fenster an."""
-
-    # Falls Screenshot angegeben: Markdown-Bild-Link ersetzen durch direkten Dateipfad
-    if screenshot_path and Path(screenshot_path).exists():
-        screenshot_path = os.path.abspath(screenshot_path)
-        escaped_path = screenshot_path.replace("\\", "/")  # wichtig für Windows
-        file_url = f"file:///{escaped_path}" if os.name == "nt" else f"file://{escaped_path}"
-        markdown_text = re.sub(
-            r"!\[Screenshot\]\([^)]+\)",
-            f'<img src="{file_url}" alt="Screenshot">',
-            markdown_text
-        )
-
-    # Markdown → HTML
-    html_body = markdown.markdown(markdown_text, extensions=["extra", "sane_lists", "tables", "nl2br"])
-
-    # Komplette HTML-Seite mit Stil
-    html = f"""
-    <html>
-    <head>
-        <meta charset="utf-8">
-        <style>
-            body {{
-                font-family: Arial, sans-serif;
-                padding: 2em;
-                line-height: 1.6;
-                max-width: 800px;
-                margin: auto;
-                background: #f8f9fa;
-                color: #212529;
-            }}
-            img {{
-                max-width: 100%;
-                height: auto;
-                margin: 1em 0;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-            }}
-            h1, h2, h3 {{
-                color: #0d6efd;
-                margin-top: 1.5em;
-            }}
-            pre {{
-                background: #333;
-                color: #f8f8f2;
-                padding: 10px;
-                border-radius: 5px;
-                overflow-x: auto;
-            }}
-            code {{
-                background: #eee;
-                padding: 2px 4px;
-                border-radius: 4px;
-                font-family: monospace;
-            }}
-            table {{
-                border-collapse: collapse;
-                width: 100%;
-                margin: 1em 0;
-            }}
-            table, th, td {{
-                border: 1px solid #ccc;
-                padding: 8px;
-            }}
-        </style>
-    </head>
-    <body>{html_body}</body>
-    </html>
-    """
-
-    # PySide6 GUI anzeigen
-    app = QApplication.instance() or QApplication(sys.argv)
-    viewer = QMainWindow()
-    viewer.setWindowTitle(title)
-    viewer.resize(900, 700)
-
-    web = QWebEngineView()
-    base_url = QUrl.fromLocalFile(os.getcwd() + os.sep)  # für Bilder aus dem Projektverzeichnis
-    web.setHtml(html, base_url)
-
-    viewer.setCentralWidget(web)
-    viewer.show()
-
-    if not QApplication.instance():
-        sys.exit(app.exec())
 
 def show_about():
     """zeigt die Aboutbox"""

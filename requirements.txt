@@ -26,7 +26,6 @@ platformdirs==4.3.7
 proxy-tools==0.1.0
 Pygments==2.19.1
 python-dotenv==1.1.0
-pywebview==5.4
 requests==2.32.3
 rich==13.9.4
 tkhtmlview==0.3.1

@@ -1,108 +1,77 @@
 import os
+import re
 import markdown
-from PySide6.QtWidgets import QApplication, QMainWindow
-from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtCore import QUrl
-import sys
-from PySide6.QtWidgets import QApplication
+import webview
+import base64
+from pathlib import Path
 
-app = None  # wird später initialisiert
+def image_to_data_url(path: str):
+    """Wandelt ein Bild in eine data:-URL um (für pywebview)."""
+    image_path = Path(path)
+    if not image_path.exists():
+        return None
+    mime = "image/png"
+    b64 = base64.b64encode(image_path.read_bytes()).decode()
+    return f"data:{mime};base64,{b64}"
 
-class MarkdownViewer(QMainWindow):
-    def __init__(self, md_file):
-        super().__init__()
-        self.setWindowTitle("Markdown Viewer")
-        self.resize(900, 700)
-
-        # Markdown lesen und in HTML umwandeln
-        html_content = self.convert_markdown_to_html(md_file)
-
-        # Basispfad für lokale Ressourcen (z. B. Bilder wie screenshot.png)
-        base_path = QUrl.fromLocalFile(os.path.abspath(os.path.dirname(md_file)) + os.sep)
-
-        # WebView erzeugen und HTML laden
-        self.browser = QWebEngineView()
-        self.browser.setHtml(html_content, base_path)
-        self.setCentralWidget(self.browser)
-
-    def convert_markdown_to_html(self, filepath):
-        if not os.path.exists(filepath):
-            return "<h1>Datei nicht gefunden</h1>"
-
-        with open(filepath, "r", encoding="utf-8") as file:
-            md_text = file.read()
-
-        html = markdown.markdown(md_text, extensions=["extra", "tables", "sane_lists"])
-
-        # Optionales Basis-HTML-Template mit CSS
-        return f"""
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <style>
-                body {{
-                    font-family: Arial, sans-serif;
-                    margin: 40px;
-                    line-height: 1.6;
-                    background-color: #f8f9fa;
-                    color: #212529;
-                }}
-                h1, h2, h3 {{
-                    color: #0030ff;
-                }}
-                code {{
-                    background-color: #eee;
-                    padding: 2px 4px;
-                    border-radius: 4px;
-                    font-family: monospace;
-                }}
-                pre {{
-                    background: #333;
-                    color: #f8f8f2;
-                    padding: 10px;
-                    border-radius: 5px;
-                    overflow-x: auto;
-                }}
-                table {{
-                    border-collapse: collapse;
-                    width: 100%;
-                }}
-                table, th, td {{
-                    border: 1px solid #ccc;
-                    padding: 8px;
-                }}
-                ul, ol {{
-                    margin-left: 20px;
-                }}
-                img {{
-                    max-width: 100%;
-                    height: auto;
-                    border: 1px solid #ccc;
-                    margin: 10px 0;
-                }}
-            </style>
-        </head>
-        <body>{html}</body>
-        </html>
-        """
-
-def start_markdown_viewer(readme_path: str):
-    app = QApplication.instance()
-    if app is None:
-        app = QApplication(sys.argv)
-        viewer = MarkdownViewer(readme_path)
-        viewer.show()
-        sys.exit(app.exec())
+def start_markdown_viewer(readme_path: str, screenshot_path: str = None):
+    if not os.path.exists(readme_path):
+        html = "<h1>README nicht gefunden</h1>"
     else:
-        viewer = MarkdownViewer(readme_path)
-        viewer.show()
+        with open(readme_path, "r", encoding="utf-8") as f:
+            md_text = f.read()
 
+        # 🔄 Screenshot in Base64-Daten-URL einbetten
+        if screenshot_path and os.path.exists(screenshot_path):
+            data_url = image_to_data_url(screenshot_path)
+            if data_url:
+                image_tag = f'<img src="{data_url}" alt="Screenshot" style="max-width:100%;border:1px solid #ccc;border-radius:6px;margin-top:1em;">'
+                # Ersetze Markdown-Bild (z. B. ![Screenshot](screenshot.png))
+                md_text = re.sub(r'!\[.*?\]\([^)]+\)', image_tag, md_text)
 
-"""
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    viewer = MarkdownViewer("README.md")  # Pfad ggf. anpassen
-    viewer.show()
-    sys.exit(app.exec())
-    
-"""
+        # Markdown → HTML
+        html = markdown.markdown(md_text, extensions=["extra", "sane_lists", "tables", "nl2br"])
+
+    # HTML-Rahmen mit CSS-Stil
+    html_template = f"""
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                padding: 2em;
+                background-color: #f8f9fa;
+                color: #212529;
+                max-width: 800px;
+                margin: auto;
+            }}
+            h1, h2, h3 {{
+                color: #0d6efd;
+            }}
+            pre {{
+                background: #333;
+                color: #eee;
+                padding: 1em;
+                border-radius: 4px;
+                overflow-x: auto;
+            }}
+            code {{
+                background: #eee;
+                padding: 0.2em 0.4em;
+                border-radius: 4px;
+            }}
+            img {{
+                display: block;
+                margin: 1em auto;
+            }}
+        </style>
+    </head>
+    <body>
+        {html}
+    </body>
+    </html>
+    """
+
+    webview.create_window("Hilfe", html=html_template)
+    webview.start()
