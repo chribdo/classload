@@ -101,7 +101,7 @@ jobs:
             --add-data "README.md:." \
             --add-data "screenshot.png:." \
             --add-data "assets:assets" \
-            --add-data "hilfe.html;." \
+            --add-data "hilfe.html:." \
             --name "Classload" \
             --icon=assets/icon.ico \
             tk_main_menue.py

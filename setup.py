@@ -2,7 +2,7 @@ from setuptools import setup
 
 APP = ['tk_main_menue.py']
 DATA_FILES = [
-    ('', ['LICENSE.txt', 'README.md', 'screenshot.png']),
+    ('', ['LICENSE.txt', 'README.md', 'hilfe.html', 'screenshot.png']),
     ('assets', ['assets/icon_small.png']),
 ]
 
