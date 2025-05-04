@@ -135,6 +135,9 @@ jobs:
         run: |
           export PYTHONPATH=.
           python generate_docs.py
+         
+      - name: Add custom landing page
+        run: cp .github/pages/index.html docs/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
