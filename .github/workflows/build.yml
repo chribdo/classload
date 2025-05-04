@@ -112,3 +112,33 @@ jobs:
           name: Classload-linux
           path: dist/Classload
 
+  docs:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write  # Erforderlich für gh-pages-Deploy
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install pdoc
+        run: |
+          pip install pdoc
+
+      - name: Generate documentation
+        run: |
+          python generate_docs.py  # Dein Skript, das docs in ./docs/ ablegt
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
+
+
