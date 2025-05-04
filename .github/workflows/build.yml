@@ -128,7 +128,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install
+          pip install pdoc
           pip install -r requirements.txt
 
       - name: Generate documentation
