@@ -159,6 +159,7 @@ def pruefe_nutzungsart(root):
         """
         pruefe_testversion(root, verbleibend)
 
+
 def zeige_lizenz():
     """Die Lizenz wird einfach angezeigt. Wird aus dem Menü aufgerufen."""
     if not os.path.exists(LIZENZ):
