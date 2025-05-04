@@ -116,23 +116,24 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     permissions:
-      contents: write  # Erforderlich für gh-pages-Deploy
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Install pdoc
+      - name: Install dependencies
         run: |
-          pip install pdoc
+          pip install pdoc requests  # oder pip install -r requirements.txt
 
       - name: Generate documentation
         run: |
-          python generate_docs.py  # Dein Skript, das docs in ./docs/ ablegt
+          export PYTHONPATH=.
+          python generate_docs.py
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
