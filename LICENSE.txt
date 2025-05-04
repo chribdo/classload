@@ -33,6 +33,6 @@ Diese Software wird „wie sie ist“ bereitgestellt, ohne jegliche Garantie ode
 
 7. Kontakt für Sonderlizenz
 
-Für jegliche Nutzung außerhalb der in Punkt 2 und 3 genannten Zwecke ist eine schriftliche Lizenzvereinbarung erforderlich. Bitte wenden Sie sich hierfür an den Entwickler unter: [E-Mail-Adresse einfügen]
+Für jegliche Nutzung außerhalb der in Punkt 2 und 3 genannten Zwecke ist eine schriftliche Lizenzvereinbarung erforderlich. Bitte wenden Sie sich hierfür an den Entwickler unter: classload[at]gmx-topmail.de
 
 © Christiane Borchel, 2025

@@ -1,20 +1,24 @@
-from tk_jamf_login import JamfLogin
+# Standardbibliothek
+import platform
+import sys
+import tempfile
+import webbrowser
+import datetime
+from pathlib import Path
+
+# Drittanbieter-Bibliotheken
+import tkinter as tk
 from tkinter import messagebox, scrolledtext
-from datetime import timedelta
+
 import ttkbootstrap as ttk
-from ttkbootstrap.dialogs import *
 from ttkbootstrap.dialogs import Messagebox
 from ttkbootstrap.scrolled import ScrolledText
-from jamfscripts import *
-import os, sys
-import platform
-from platformdirs import user_data_dir
-import tempfile
-import tkinter as tk
-import base64
-from pathlib import Path
-import subprocess
-import webbrowser
+
+
+# Eigene Module
+from jamfscripts import *  # besser: gezielte Funktionen importieren
+from tk_jamf_login import JamfLogin
+
 
 JAMF_URL = ""
 TOKEN = ""
@@ -40,7 +44,6 @@ def get_resource_path(filename):
         return str(base_path / filename)
 
 LIZENZ = get_resource_path("LICENSE.txt")
-
 
 def init_dpi_awareness():
     """
@@ -75,15 +78,12 @@ def set_window_icon(widget):
     except Exception as e:
         print(f"⚠️ Icon konnte nicht gesetzt werden: {e}")
 
-
-
 def lade_nutzungsinfo():
     """öffnet die Nutzungsdatei, sofern vorhanden."""
     if os.path.exists(NUTZUNGSDATEI):
         with open(NUTZUNGSDATEI, "r") as f:
             return json.load(f)
     return {}
-
 
 def speichere_nutzungsinfo(info):
     """speichert die Art der Nutzung(privat/gewerblich) in einer.json-Datei"""
@@ -124,7 +124,6 @@ def pruefe_testversion(root, verbleibend):
         root.update_idletasks()
         root.minsize(root.winfo_width(), root.winfo_height())
 
-
 def pruefe_nutzungsart(root):
     """
     Die Nutzungsart wird überprüft.
@@ -138,9 +137,6 @@ def pruefe_nutzungsart(root):
         if not nutzungsart:
             Messagebox.ok(title="Abbruch", message="Nutzungstyp nicht festgelegt. Programm wird beendet.", alert=True)
             sys.exit()
-        if not nutzungsart:
-            Messagebox.ok(title="Abbruch", message="Nutzungstyp nicht festgelegt. Programm wird beendet.", alert=True)
-            sys.exit()
         nutzungsart = nutzungsart.strip().lower()
         info["nutzung"] = nutzungsart
         if nutzungsart == "gewerblich":
@@ -150,7 +146,7 @@ def pruefe_nutzungsart(root):
         JamfLogin(root)
     elif info["nutzung"] == "gewerblich":
         startdatum = datetime.strptime(info["startdatum"], "%Y-%m-%d")
-        verbleibend = (startdatum + timedelta(days=7)) - datetime.today()
+        verbleibend = (startdatum + datetime.timedelta(days=7)) - datetime.today()
         """
         if verbleibend.days < 0:
             Messagebox.ok(title="Testzeitraum abgelaufen",
@@ -162,7 +158,6 @@ def pruefe_nutzungsart(root):
                           message=f"Testversion aktiv. Noch {verbleibend.days + 1} Tage verfügbar.", alert=False)
         """
         pruefe_testversion(root, verbleibend)
-
 
 def zeige_lizenz():
     """Die Lizenz wird einfach angezeigt. Wird aus dem Menü aufgerufen."""
@@ -180,7 +175,6 @@ def zeige_lizenz():
     lizfenster.update_idletasks()
     lizfenster.minsize(lizfenster.winfo_width(), lizfenster.winfo_height())
     textfeld.pack(fill="both", expand=True)
-
 
 def zeige_nutzungsdialog(root):
     """Die Art der Nutzung muss ausgewählt und bestätigt werden. Wird nur bei der Erstnutzung aufgerufen."""
@@ -213,7 +207,6 @@ def zeige_nutzungsdialog(root):
     auswahlfenster.wait_window()
     return auswahl.get()
 
-
 def zustimmung_bereits_erfolgt():
     """prüft, ob die Zustimmung bereits erfolgt ist."""
     if os.path.exists(ZUSTIMMUNGSDATEI):
@@ -226,13 +219,11 @@ def zustimmung_bereits_erfolgt():
             return False
     return False
 
-
 def speichere_zustimmung():
     """speichert die erfolgte Zustimmung in der Zustimmungsdatei (json)"""
     print(f"✅ Schreiben/Lesen von: {ZUSTIMMUNGSDATEI}")
     with open(ZUSTIMMUNGSDATEI, "w") as f:
         json.dump({"zugestimmt": True}, f)
-
 
 def show_license_dialog(root):
     """zeigt den Lizenz-Dialog zu Beginn. Man wird aufgefordert, die Lizenz zu bestötigen."""
@@ -285,46 +276,8 @@ def show_license_dialog(root):
     dialog.wait_window()
     return result["accepted"]
 
-
-
-"""
-def show_markdown_window(root, title, html_content):
-   #zeigt ein Fenster mit einer HTMl-Datei an. Ursprünglich war die HTNL mal .md, daher der Name
-    #window = ttk.Toplevel(root, iconphoto=None)
-    if sys.platform == "darwin":
-      window = ttk.Toplevel(root)
-    else:
-       window = ttk.Toplevel(root, iconphoto=None)
-    #set_window_icon(window)
-    window.title(title)
-    window.geometry("600x400")
-    html_label = HTMLLabel(window, html=html_content)
-    html_label.pack(fill="both", expand=True, padx=10, pady=10)
-"""
-
-
 def show_help():
-    viewer_script = Path(__file__).parent / "markdown_viewer_standalone.py"
-    readme = Path(get_resource_path("README.md")).resolve()
-    subprocess.Popen([sys.executable, str(viewer_script), str(readme)])
-
-def load_markdown_file(filename):
-    """Lädt eine Markdown-Datei und gibt den reinen Text zurück."""
-    if not os.path.exists(filename):
-        return f"Datei '{filename}' nicht gefunden."
-    with open(filename, "r", encoding="utf-8") as f:
-        return f.read()
-
-def image_to_data_url(path):
-    """Liest ein Bild ein und wandelt es in eine data:-URL um (Base64)."""
-    image_path = Path(path)
-    if not image_path.exists():
-        return None
-    mime = "image/png"  # Falls nötig: "image/jpeg"
-    b64 = base64.b64encode(image_path.read_bytes()).decode()
-    return f"data:{mime};base64,{b64}"
-
-def show_help():
+    """zeigt die zu hilfe.html umgewandelte README.md im Browser an."""
     help_file = get_resource_path("hilfe.html")
     if not os.path.exists(help_file):
         print(f"❌ Hilfe-Datei nicht gefunden: {help_file}")
@@ -332,7 +285,6 @@ def show_help():
     url = f"file://{help_file}"
     print(f"🌐 Öffne Hilfe: {url}")
     webbrowser.open(url)
-
 
 def show_about():
     """zeigt die Aboutbox"""
