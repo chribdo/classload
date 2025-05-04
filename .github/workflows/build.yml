@@ -74,7 +74,6 @@ jobs:
           name: Classload-mac
           path: dist/Classload-mac.zip
 
-
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -91,6 +90,7 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
+
       - name: Generate hilfe.html
         run: python export_readme_html.py
 
@@ -106,11 +106,19 @@ jobs:
             --icon=assets/icon.ico \
             tk_main_menue.py
 
-      - name: Upload Linux Executable
+      - name: Pack Executable as tar.gz
+        run: |
+          mkdir -p release
+          cp dist/Classload release/
+          tar -czf Classload-linux.tar.gz -C release Classload
+
+      - name: Upload Linux Release Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Classload-linux
-          path: dist/Classload
+          path: Classload-linux.tar.gz
+
+
 
   docs:
     runs-on: ubuntu-latest

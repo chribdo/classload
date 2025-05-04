@@ -44,11 +44,15 @@ Das Programm startet nach dem Lizenzdialog mit der Eingabe von Benutzername und 
 - Es gibt Versionen für Windows und macOS.
 - Eine Linux-Version ist ebenfalls verfügbar (ungetestet).
 
+## 📘 Dokumentation
+
+👉 [https://chribdo.github.io/classload/](https://chribdo.github.io/classload/tk_main_menue.html)
+
 ## 🧑‍💻 Autorin
 
 Classload wurde entwickelt von Dr. Christiane Borchel, Lehrerin am Reinoldus- und Schiller-Gymnasium in Dortmund. Kontakt: classload[at]gmx-topmail.de.
 
-## 📄 Dank
+## ✨ Dank
 Ich bedanke mich bei der Gruppe der Administrierenden an Dortmunder Gymnasien für den Erfahrungsaustausch, insbesondere bei Manuel Laurenz, unserem lokalen Pionier in Sachen JAMF-API. Natürlich wäre das Projekt ohne Chat-GPT für mich nebenberuflich kaum zu machen gewesen.
 
 ## 📄 Lizenz

@@ -17,6 +17,44 @@ import subprocess
 import webbrowser
 
 
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+      - name: Generate hilfe.html
+        run: python export_readme_html.py
+
+      - name: Build Executable
+        run: |
+          pyinstaller --noconfirm --onefile --windowed \
+            --add-data "LICENSE.txt:." \
+            --add-data "README.md:." \
+            --add-data "screenshot.png:." \
+            --add-data "assets:assets" \
+            --add-data "hilfe.html:." \
+            --name "Classload" \
+            --icon=assets/icon.ico \
+            tk_main_menue.py
+
+      - name: Upload Linux Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: Classload-linux
+          path: dist/Classload
+
+
 
 # import base64
 # import os
