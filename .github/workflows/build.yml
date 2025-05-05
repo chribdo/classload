@@ -161,6 +161,9 @@ jobs:
       - name: Add custom landing page
         run: cp .github/pages/index.html docs/index.html
 
+      - name: Copy icon.png to docs
+        run: cp .github/pages/icon.png docs/icon.png
+
       - name: List contents of docs
         run: |
           echo "📁 Inhalt von docs/:"
