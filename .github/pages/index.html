@@ -4,53 +4,76 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Classload – Projektübersicht</title>
+  <link rel="icon" href="icon.png" />
   <style>
     body {
       font-family: sans-serif;
-      max-width: 800px;
+      max-width: 900px;
       margin: 2rem auto;
       padding: 1rem;
+      background-color: #ffffff;
+      color: #1e3555;
       line-height: 1.6;
     }
-    h1 {
-      text-align: center;
+    header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    header img {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
     }
     .button {
       display: inline-block;
       margin: 0.5rem 0.5rem 1rem 0;
       padding: 0.6rem 1rem;
-      background-color: #0366d6;
+      background-color: #324c7b;
       color: white;
       text-decoration: none;
       border-radius: 6px;
     }
+    a {
+      color: #1e3555;
+    }
     iframe {
       width: 100%;
       height: 600px;
-      border: 1px solid #ccc;
+      border: 1px solid #aaa;
       margin-top: 2rem;
+      background: white;
     }
   </style>
 </head>
 <body>
-  <h1>📦 Classload</h1>
-  <p>Willkommen auf der Projektseite von <strong>Classload</strong> – einer grafischen Anwendung zur Verwaltung von ... (kurz beschreiben).</p>
+  <header>
+    <img src="icon.png" alt="Classload-Logo" />
+    <h1>Classload</h1>
+  </header>
 
-  <h2>📘 Dokumentation</h2>
-  <p>
-    <a class="button" href="./tk_main_menue.html">🔎 Dokumentation anzeigen</a>
+  <p><strong>Classload</strong> hilft bei der Verwaltung von Mobilgeräten, Benutzern, Benutzergruppen und vor allem Klassen mit JAMF. Wenn iServ und Webuntis bereits miteinander Daten austauschen, kann Classroom zu jeder Unterrichtsgruppe eine Classroom-Klasse erstellen.
   </p>
 
+  <h2>📄 Lizenz</h2>
+  <p>Die Nutzung ist ausschließlich für den privaten und schulischen Bereich erlaubt. Die kommerzielle Nutzung oder die Nutzung durch Schulträger ist lediglich im Rahmen einer Testversion gestattet. Genaueres ist in der Datei <a href="https://github.com/chribdo/classload/blob/main/LICENSE.txt">LICENSE.txt</a> geregelt.</p>
+
   <h2>⬇️ Downloads</h2>
-  <p>Die aktuellen Builds findest du in den <a href="https://github.com/chribdo/classload/releases/latest">Releases</a>.</p>
   <ul>
-    <li><a class="button" href="https://github.com/chribdo/classload/releases/latest/download/Classload.exe">💻 Windows (.exe)</a></li>
-    <li><a class="button" href="https://github.com/chribdo/classload/releases/latest/download/Classload.dmg">🍎 macOS (.dmg)</a></li>
-    <li><a class="button" href="https://github.com/chribdo/classload/releases/latest/download/Classload.tar.gz">🐧 Linux (.tar.gz)</a></li>
+    <li><a class="button" href="https://github.com/chribdo/classload/releases/latest/download/classload-0.9.0-win64.exe">💻 Windows (.exe)</a></li>
+    <li><a class="button" href="https://github.com/chribdo/classload/releases/latest/download/classload-0.9.0-macOS.app.zip">🍎 macOS (.dmg)</a></li>
+    <li><a class="button" href="https://github.com/chribdo/classload/releases/latest/download/classload-0.9.0-linux.tar">🐧 Linux (.tar.gz)</a></li>
   </ul>
 
-  <h2>📄  Projektbeschreibung (README)</h2>
-  <p>Die vollständige Projektbeschreibung:</p>
-  <iframe src="readme.html" title="README Vorschau"></iframe>
+  <h2>🧑‍💻 Kontakt</h2>
+  <p>Classload wurde entwickelt von Dr. Christiane Borchel, Lehrerin am Reinoldus- und Schiller-Gymnasium in Dortmund. Kontakt: classload[at]gmx-topmail.de.</p>
+
+  <h2>📄 Projektbeschreibung / Hilfe</h2>
+  <iframe src="hilfe.html"></iframe>
 </body>
 </html>

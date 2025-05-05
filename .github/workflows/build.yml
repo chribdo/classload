@@ -147,6 +147,9 @@ jobs:
       - name: Add custom landing page
         run: cp .github/pages/index.html docs/index.html
 
+      - name: Copy hilfe.html to docs
+        run: cp hilfe.html docs/hilfe.html
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:

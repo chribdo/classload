@@ -17,7 +17,7 @@ Aktuelle Versionen von Classload:
 - 🪟 [Windows (64-bit)](https://github.com/chribdo/classload/releases/download/v0.9.0/classload-0.9.0-win64.exe)
 - 🍎 [macOS](https://github.com/chribdo/classload/releases/download/v0.9.0/classload-0.9.0-macOS.app.zip)
 
-Weitere Versionen sind auf der [Release-Seite](https://github.com/chribdo/classload/releases) zu finden.
+Ein ungetesteter Linux-Build ist auf der [Release-Seite](https://github.com/chribdo/classload/releases) zu finden.
 
 ## 💻 Voraussetzungen
 
