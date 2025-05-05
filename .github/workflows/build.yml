@@ -139,6 +139,9 @@ jobs:
           pip install pdoc
           pip install -r requirements.txt
 
+      - name: Create docs/ directory if missing
+        run: mkdir -p docs
+
       - name: Generate hilfe.html
         run: python export_readme_html.py
 
