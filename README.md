@@ -1,4 +1,6 @@
-# 👩‍🏫 Classload
+# 👩‍🏫 Classload – Schul-iPad-Verwaltung mit JAMF, iServ & Webuntis
+
+> *Automated iPad management for schools using JAMF, with support for iServ and Webuntis where needed*
 
 **Classload** hilft bei der Verwaltung von Mobilgeräten, Benutzern, Benutzergruppen und vor allem Klassen mit JAMF.
 
