@@ -67,8 +67,8 @@ Ich bedanke mich bei der Gruppe der Administrierenden an Dortmunder Gymnasien f�
 
 ## 📄 Lizenz
 
-Die Nutzung ist ausschließlich für den privaten und schulischen Bereich erlaubt.  
-Die kommerzielle Nutzung oder die Nutzung durch Schulträger ist lediglich im Rahmen einer Testversion gestattet. Genaueres ist in der Datei [LICENSE.txt](LICENSE.txt) geregelt.
+Die Nutzung ist ausschließlich für den privaten und schulischen Bereich gestattet.  
+Die kommerzielle Nutzung oder die Nutzung durch Schulträger ist nur im Rahmen einer Testversion erlaubt. Genaueres ist in der Datei [LICENSE.txt](LICENSE.txt) geregelt.
 
 ## 🌐 Website
 
