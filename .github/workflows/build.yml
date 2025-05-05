@@ -162,7 +162,7 @@ jobs:
         run: cp .github/pages/index.html docs/index.html
 
       - name: Copy icon.png to docs
-        run: cp icon.png docs/icon.png
+        run: cp assets/icon.png docs/icon.png
 
       - name: List contents of docs
         run: |
