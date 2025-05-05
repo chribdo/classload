@@ -118,8 +118,6 @@ jobs:
           name: Classload-linux
           path: Classload-linux.tar.gz
 
-
-
   docs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -139,26 +137,26 @@ jobs:
           pip install pdoc
           pip install -r requirements.txt
 
-      - name: Create docs/ directory if missing
-        run: mkdir -p docs
-
       - name: Generate hilfe.html
         run: python export_readme_html.py
 
-      - name: Check if hilfe.html was created
+      - name: Generate documentation
+        run: |
+          export PYTHONPATH=.
+          python generate_docs.py
+
+      - name: Create docs/ directory if missing
+        run: mkdir -p docs
+
+      - name: Copy hilfe.html to docs (after docs generation)
         run: |
           if [ ! -f hilfe.html ]; then
             echo "❌ hilfe.html wurde NICHT erzeugt!"
             ls -al
             exit 1
           fi
-          echo "✅ hilfe.html gefunden – wird kopiert"
+          echo "✅ hilfe.html gefunden – wird jetzt kopiert"
           cp hilfe.html docs/hilfe.html
-
-      - name: Generate documentation
-        run: |
-          export PYTHONPATH=.
-          python generate_docs.py
 
       - name: Add custom landing page
         run: cp .github/pages/index.html docs/index.html
@@ -169,7 +167,7 @@ jobs:
           ls -al docs/
           echo
           echo "🔎 Vorschau auf docs/hilfe.html:"
-          head -n 20 docs/hilfe.html
+          head -n 20 docs/hilfe.html || echo "❌ nicht lesbar"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
