@@ -139,22 +139,19 @@ jobs:
           pip install pdoc
           pip install -r requirements.txt
 
+      - name: Generate hilfe.html
+        run: python export_readme_html.py
+
       - name: Generate documentation
         run: |
           export PYTHONPATH=.
           python generate_docs.py
-         
+
       - name: Add custom landing page
         run: cp .github/pages/index.html docs/index.html
 
       - name: Copy hilfe.html to docs
         run: cp hilfe.html docs/hilfe.html
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
-          publish_branch: gh-pages
 
 
