@@ -150,8 +150,15 @@ jobs:
       - name: Add custom landing page
         run: cp .github/pages/index.html docs/index.html
 
-      - name: Copy hilfe.html to docs
-        run: cp hilfe.html docs/hilfe.html
+      - name: Copy hilfe.html to docs (with check)
+        run: |
+          if [ ! -f hilfe.html ]; then
+            echo "❌ hilfe.html wurde NICHT erzeugt!"
+            ls -al
+            exit 1
+          fi
+          echo "✅ hilfe.html gefunden – wird kopiert"
+          cp hilfe.html docs/hilfe.html
 
 
 
