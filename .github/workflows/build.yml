@@ -159,6 +159,15 @@ jobs:
           fi
           echo "✅ hilfe.html gefunden – wird kopiert"
           cp hilfe.html docs/hilfe.html
+      
+      - name: Check final docs/ contents before deploy
+        run: |
+          echo "📁 Inhalt von docs/:"
+          ls -al docs/
+          echo
+          echo "🔎 Inhalt von docs/hilfe.html:"
+          cat docs/hilfe.html || echo "❌ Datei nicht lesbar"
+
 
 
 
