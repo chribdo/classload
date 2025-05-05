@@ -10,6 +10,21 @@ So schön kann Jamf (mit Classload) organisiert sein:
 - **Zu jedem Unterricht in Webuntis gibt es eine Gruppe in iServ und zu jeder Gruppe in iServ gibt es eine entsprechende Classroom-Klasse und bei Bedarf auch eine statische Mobilgeräte-Gruppe. Classload ermöglicht letzteres, wenn sowohl Webuntis als auch iServ verwendet werden und Unterrichte mit dem Webuntis Connector synchronisieren.**
 - (Bluetooth ändern ist deaktiviert, damit Schüler:innen sich der Classroom-App weniger leicht entziehen können).
 
+## 📦 Download
+
+Aktuelle Versionen von Classload:
+
+- 🪟 [Windows (64-bit)](https://github.com/chribdo/classload/releases/download/v0.9.0/classload-0.9.0-win64.exe)
+- 🍎 [macOS](https://github.com/chribdo/classload/releases/download/v0.9.0/classload-0.9.0-macOS.app.zip)
+
+Weitere Versionen sind auf der [Release-Seite](https://github.com/chribdo/classload/releases) zu finden.
+
+## 💻 Voraussetzungen
+
+* JAMF-Account mit API-Zugriff (Standard bei JAMF-Accounts).
+* Eine Statische Benutzergruppe für alle Lehrkräfte muss in JAMF existieren.
+* Für den Klassen-Upload müssen JAMF und iServ bereits Kursdaten austauschen wie [hier](https://help.untis.at/hc/de/articles/4411822372754-Plattform-Applikation-IServ) und [dort](https://doku.iserv.de/manage/user/webuntis/) beschrieben.
+
 ## 🖼️ Screenshot
 
 ![Screenshot](screenshot.png)
@@ -39,11 +54,6 @@ Das Programm startet nach dem Lizenzdialog mit der Eingabe von Benutzername und 
 * **Klassen löschen**: Löscht alle Klassen der Schule (bzw. der Site), die ein bestimmtes Präfix haben. Wenn z.B. "0525_" als Präfix eingegeben wird, werden genau die Klassen gelöscht, deren Name mit "0525_" beginnt.
 * **Gruppen löschen**: Löscht alle statischen Benutzergruppen der Schule (bzw. der Site), die ein bestimmtes Präfix haben. Wenn als Präfix z.B. "0525_" eingegeben wird, werden genau die Benutzergruppen gelöscht, deren Name mit "0525_" beginnt.
 
-## 💻 Voraussetzungen
-
-- Es gibt Versionen für Windows und macOS.
-- Eine Linux-Version ist ebenfalls verfügbar (ungetestet).
-
 ## 📘 Dokumentation
 
 👉 [https://chribdo.github.io/classload/](https://chribdo.github.io/classload/tk_main_menue.html)
@@ -58,5 +68,4 @@ Ich bedanke mich bei der Gruppe der Administrierenden an Dortmunder Gymnasien f�
 ## 📄 Lizenz
 
 Die Nutzung ist ausschließlich für den privaten und schulischen Bereich erlaubt.  
-Die kommerzielle Nutzung oder die Nutzung durch Schulträger ist lediglich im Rahmen einer Testversion gestattet.  
-Genaueres ist in der Datei [LICENSE.txt](LICENSE.txt) geregelt.
+Die kommerzielle Nutzung oder die Nutzung durch Schulträger ist lediglich im Rahmen einer Testversion gestattet. Genaueres ist in der Datei [LICENSE.txt](LICENSE.txt) geregelt.

@@ -3,7 +3,7 @@ import platform
 import sys
 import tempfile
 import webbrowser
-import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 # Drittanbieter-Bibliotheken
@@ -146,7 +146,7 @@ def pruefe_nutzungsart(root):
         JamfLogin(root)
     elif info["nutzung"] == "gewerblich":
         startdatum = datetime.strptime(info["startdatum"], "%Y-%m-%d")
-        verbleibend = (startdatum + datetime.timedelta(days=7)) - datetime.today()
+        verbleibend = (startdatum + timedelta(days=7)) - datetime.today()
         """
         if verbleibend.days < 0:
             Messagebox.ok(title="Testzeitraum abgelaufen",
