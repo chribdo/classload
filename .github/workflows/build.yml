@@ -142,15 +142,7 @@ jobs:
       - name: Generate hilfe.html
         run: python export_readme_html.py
 
-      - name: Generate documentation
-        run: |
-          export PYTHONPATH=.
-          python generate_docs.py
-
-      - name: Add custom landing page
-        run: cp .github/pages/index.html docs/index.html
-
-      - name: Copy hilfe.html to docs (with check)
+      - name: Check if hilfe.html was created
         run: |
           if [ ! -f hilfe.html ]; then
             echo "❌ hilfe.html wurde NICHT erzeugt!"
@@ -159,14 +151,33 @@ jobs:
           fi
           echo "✅ hilfe.html gefunden – wird kopiert"
           cp hilfe.html docs/hilfe.html
-      
-      - name: Check final docs/ contents before deploy
+
+      - name: Generate documentation
+        run: |
+          export PYTHONPATH=.
+          python generate_docs.py
+
+      - name: Add custom landing page
+        run: cp .github/pages/index.html docs/index.html
+
+      - name: List contents of docs
         run: |
           echo "📁 Inhalt von docs/:"
           ls -al docs/
           echo
-          echo "🔎 Inhalt von docs/hilfe.html:"
-          cat docs/hilfe.html || echo "❌ Datei nicht lesbar"
+          echo "🔎 Vorschau auf docs/hilfe.html:"
+          head -n 20 docs/hilfe.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
+          force_orphan: true
+
+
+
 
 
 
