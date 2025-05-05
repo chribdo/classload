@@ -213,7 +213,25 @@ def switch_fach(value):
             return value
 
 def get_fach(bez):
-    """Hilfsfunktion zur Verbesserung der Lesbarkeit einer Kursbezeichnung"""
+    """Extrahiert das Fachkürzel aus einem komplexen Klassennamen wie '25d_U KU - Haak - 152C'."""
+    try:
+        nach_unterstrich = bez.split("_", 1)[1].strip()  # z. B. 'U KU - Haak - 152C'
+        teile = nach_unterstrich.split()
+        if len(teile) >= 2:
+            fach_kurz = teile[1].split("-")[0].strip()
+            fach_lang = switch_fach(fach_kurz)
+            print(f"[DEBUG] bez: {bez} → fach_kurz: {fach_kurz} → fach_lang: {fach_lang}")
+            return fach_lang
+        else:
+            print(f"[DEBUG] bez: {bez} → Zu wenig Teile nach Unterstrich")
+            return bez
+    except (IndexError, ValueError) as e:
+        print(f"[DEBUG] Fehler bei get_fach({bez}): {e}")
+        return bez
+
+"""
+def get_fach(bez):
+    
     teile = bez.split()
     if (teile[0] == "U"):
         wort = teile[1]
@@ -223,6 +241,7 @@ def get_fach(bez):
         return fach
     else:
         return bez
+"""
 
 def create_class_structure(course_data, site_id, prefix, teacher_data, student_classes, output_file):
     """Die Klassenstruktur wird erstellt mit Lehrkräften und Schülern. Das Ganze wird als json abgespeichert."""
