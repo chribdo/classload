@@ -13,7 +13,7 @@ def create_asset_xml(asset_tag):
     it_n_element.text = asset_tag
     return ET.tostring(top_element, encoding="utf-8").decode("utf-8")
 
-def create_mobile_device_xml(geraetename, benutzername, asset_tag=None, phone=None ):   #### Hier WEITERMACHEN!!!!!!!!!!!!!! Upload einzelner Gruppe
+def create_mobile_device_xml(geraetename, benutzername, asset_tag=None, phone=None ):   #### Upload einzelner Gruppe
     """gibt einen XML-String für ein einzelnes Mobilgerät (für Schüler) zurück"""
     top_element = ET.Element("mobile_device")
 
@@ -24,6 +24,11 @@ def create_mobile_device_xml(geraetename, benutzername, asset_tag=None, phone=No
 
     device_n_element = ET.SubElement(general_element, "device_name")
     device_n_element.text = geraetename
+
+    # >>> EINZIGE ANPASSUNG <<<
+    enforce_element = ET.SubElement(general_element, "enforce_mobile_device_name")
+    enforce_element.text = "true"
+    # <<< EINZIGE ANPASSUNG <<<
 
     n_element = ET.SubElement(general_element, "name")
     n_element.text = geraetename
@@ -68,6 +73,11 @@ def create_teacher_device_xml(geraetename, lehrername, kuerzel):   #### Hier WEI
     device_n_element = ET.SubElement(general_element, "device_name")
     device_n_element.text = geraetename
 
+    # >>> EINZIGE ANPASSUNG <<<
+    enforce_element = ET.SubElement(general_element, "enforce_mobile_device_name")
+    enforce_element.text = "true"
+    # <<< EINZIGE ANPASSUNG <<<
+
     n_element = ET.SubElement(general_element, "name")
     n_element.text = geraetename
 
@@ -90,7 +100,7 @@ def create_teacher_device_xml(geraetename, lehrername, kuerzel):   #### Hier WEI
 
     return ET.tostring(top_element, encoding="utf-8").decode("utf-8")
 
-def upload_device_information_(jamf_url, token, serial, geraetename, benutzername, asset_tag=None, phone=None):
+def upload_device_information(jamf_url, token, serial, geraetename, benutzername, asset_tag=None, phone=None):
     """
     Schueler-Geräte werden gemäß einer csv-Liste aktualisiert.
     Die Geräte erhalten einen neuen Namen und einen neuen Benutzer.
@@ -115,6 +125,7 @@ def upload_device_information_(jamf_url, token, serial, geraetename, benutzernam
     else:
         LOGGER.info(response.status_code)
         LOGGER.error(f"Fehler beim Put: {response.text}")
+
 
 def upload_teacher_device_information_(jamf_url, token, serial, lehrer_name, kuerzel):
     """
@@ -233,7 +244,7 @@ def schueler_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
             name = f"{vorname} {nachname}"
             geraetename = name + get_config_value("POSTFIX")
 
-            upload_device_information_(jamf_url, token, seriennummer, geraetename, name)
+            upload_device_information(jamf_url, token, seriennummer, geraetename, name)
 
 def lehrer_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
     """
