@@ -121,7 +121,7 @@ def update_teacher_group(jamf_url, token, teacher_group_name, teacher_name):
                "Authorization": f"Bearer {token}"
                }
     # print(xml_string)
-    LOGGER.info("Benutzer wird hinzugefügt. Das kann etwas dauern..")
+    LOGGER.info("Benutzer wird der Lehrergruppe hinzugefügt...")
     response = requests.put(url, headers=headers, data=xml_string)
     if response.status_code in (200, 201):
         LOGGER.info("Lehrkraft erfolgreich der Lehrergruppe hinzugefügt!")
@@ -192,8 +192,10 @@ def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_N
         else:
             LOGGER.info("OK gewählt")
 
-
+        i=1
         for class_entry in class_data:
+            LOGGER.info("Gruppe Nr. " + str(i) + " wird erstellt.")
+            i = i + 1
             token = refresh_token(JAMF_URL, token)
             url = f"{JAMF_URL}/JSSResource/usergroups/id/0"
             headers = {

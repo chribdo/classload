@@ -50,9 +50,8 @@ PREFIX = "25b" # Gewünschtes PREFIX für alle Klassennamen. Dient zur Identifik
 # 2.
 #
 # Zum Löschen aller Klassen mit einem bestimmten Präfix
-PREFIX_DEL = "25d"
+PREFIX_DEL = ("25c")
 # loesche_klassen_mit_prefix(JAMF_URL,token, PREFIX_DEL)
-
 
 
 # 3.

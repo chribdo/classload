@@ -355,8 +355,9 @@ def big_merge(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_NAME, CLAS
             "Accept": "application/xml",
             "Authorization": f"Bearer {token}"
         }
-        i=0
+        i=1
         for class_entry in class_data:
+            LOGGER.info("Klasse Nr. " + str(i) + " wird bearbeitet.")
             if (i%40==0):
                 TOKEN= refresh_token(JAMF_URL, TOKEN)
             i=i+1

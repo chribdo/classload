@@ -100,9 +100,9 @@ def create_teacher_device_xml(geraetename, lehrername, kuerzel):   #### Hier WEI
 
     return ET.tostring(top_element, encoding="utf-8").decode("utf-8")
 
-def upload_device_information(jamf_url, token, serial, geraetename, benutzername, asset_tag=None, phone=None):
+def upload_device_information_OLD(jamf_url, token, serial, geraetename, benutzername, asset_tag=None, phone=None):
     """
-    Schueler-Geräte werden gemäß einer csv-Liste aktualisiert.
+    Veraltet: Schueler-Geräte werden gemäß einer csv-Liste aktualisiert.
     Die Geräte erhalten einen neuen Namen und einen neuen Benutzer.
     Die Namen ergeben sich so: "Vorname Name" bzw. "Vorname Name Postfix"
     zum Postfix siehe config.json bzw. Konfigurationsdialog.
@@ -126,16 +126,76 @@ def upload_device_information(jamf_url, token, serial, geraetename, benutzername
         LOGGER.info(response.status_code)
         LOGGER.error(f"Fehler beim Put: {response.text}")
 
+def get_mobile_id_by_serial(jamf_url: str, token: str, serial: str):
+    """gibt bei Erfolg die ID des Mobilgeräts zu einer Seriennummer zurück, sonst None."""
+    h = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
+    url = f"{jamf_url.rstrip('/')}/JSSResource/mobiledevices/serialnumber/{serial.strip()}"
+    r = requests.get(url, headers=h, timeout=15)
+    if not r.ok:
+        print(r.status_code, r.text[:300]); return None
+    try:
+        j = r.json()
+    except ValueError:
+        print("Non-JSON:", r.text[:300]); return None
+
+    md = j.get("mobile_device")
+    if isinstance(md, dict):
+        return md.get("id") or (md.get("general") or {}).get("id")
+
+    lst = (j.get("mobile_devices") or {}).get("mobile_device") or []
+    if lst and isinstance(lst[0], dict):
+        x = lst[0]
+        return x.get("id") or (x.get("general") or {}).get("id")
+
+    print(j)  # Debug: zeig die echte Struktur
+    return None
+
+def upload_device_information(jamf_url: str, token: str, serial: str, geraete_name: str, schueler_name: str, ):
+    """
+    Setzt den Gerätenamen (v2) und aktualisiert Username/Realname im 'location'-Block.
+    'displayName' gibt es im v2-PATCH nicht; die UI verwendet i.d.R. den Realnamen als Anzeige.
+    enforceName wird immer auf True gesetzt.
+    Gibt True zurück, wenn erfolgreich.
+    """
+    base = jamf_url.rstrip("/")
+    device_id = get_mobile_id_by_serial(jamf_url, token, serial)
+    url = f"{base}/api/v2/mobile-devices/{device_id}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "name": geraete_name,
+        "enforceName": True,  # immer aktiv
+        "location": {
+            "username": schueler_name,
+            "realName": schueler_name,
+        },
+    }
+
+    r = requests.patch(url, headers=headers, json=payload)
+    if r.status_code in (200, 204):
+        LOGGER.info("Geräte- und Benutzername erfolgreich aktualisiert")
+    else:
+        LOGGER.error("Fehler bei der Aktualisierung der Geräteinformationen")
+
 
 def upload_teacher_device_information_(jamf_url, token, serial, lehrer_name, kuerzel):
     """
     Ein Lehrer-iPad erhält einen neuen Namen, einen neuen Benutzer mit Name und Kürzel (wird anstelle der Telefonnummer eingesetzt).
     Außerdem wird die Lehrkraft der Lehrkräfte-Benutzergruppe hinzugefügt.
     """
+
+
+    """
+    ################ Veraltet:
     LOGGER.info("Gerätezuordnung gestartet..")
     teacher_postfix=get_config_value("TEACHER_POSTFIX")
     geraetename=lehrer_name+teacher_postfix
     lehrername_postfix = lehrer_name+teacher_postfix
+    
     xml_string = create_teacher_device_xml(geraetename, lehrername_postfix, kuerzel)
     url = f"{jamf_url}/JSSResource/mobiledevices/serialnumber/{serial}"
     headers = {"Content-Type": "application/xml",
@@ -146,6 +206,37 @@ def upload_teacher_device_information_(jamf_url, token, serial, lehrer_name, kue
     #LOGGER.info("Gerät wird aktualisiert. Das kann etwas dauern..")
     response = requests.put(url, headers=headers, data=xml_string)
     #response = requests.get(url, headers=headers)
+    
+    #################################
+    """
+
+    LOGGER.info("Gerätezuordnung gestartet..")
+    teacher_postfix = get_config_value("TEACHER_POSTFIX")
+    geraete_name = lehrer_name + teacher_postfix
+    lehrername_postfix = lehrer_name + teacher_postfix
+    base = jamf_url.rstrip("/")
+    device_id = get_mobile_id_by_serial(jamf_url, token, serial)
+    url = f"{base}/api/v2/mobile-devices/{device_id}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "name": geraete_name,
+        "enforceName": True,  # immer aktiv
+        "location": {
+            "username": lehrername_postfix,
+            "realName": lehrer_name,
+            "phoneNumber": kuerzel,
+            "emailAddress": lehrername_postfix,
+            "position": kuerzel
+        },
+    }
+
+    response = requests.patch(url, headers=headers, json=payload)
+
     if response.status_code in (200, 201):
         print(response.text)
         LOGGER.info("Upload erfolgreich!")
@@ -159,7 +250,7 @@ def upload_teacher_device_information_(jamf_url, token, serial, lehrer_name, kue
             LOGGER.error(f"Lehrkraft konnte der Lehrergruppe nicht hinzugefügt werden: {response.text}")
     else:
         LOGGER.info(response.status_code)
-        LOGGER.error(f"Fehler beim Put: {response.text}")
+        LOGGER.error(f"Fehler beim Patch: {response.text}")
 
 def upload_asset_information(jamf_url, token, serial, asset_tag):
         """Die Asset-Information zu einem einzelnen Mobilgerät wird zu JAMF hochgeladen."""
@@ -207,7 +298,6 @@ def it_nummern_hochladen(jamf_url, token, pfad_zur_csv):
                 seriennummer = seriennummer[1:]
             upload_asset_information(jamf_url, token, seriennummer, it_nummer)
 
-
 def schueler_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
     """
     Schueler-Geräte werden gemäß einer csv-Liste aktualisiert.
@@ -228,6 +318,7 @@ def schueler_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
         LOGGER.info("Die Geräte werden aktualisiert...")
         i = 1
         for zeile in reader:
+            LOGGER.info("Gerät Nr. "+str(i)+ " wird bearbeitet...")
             i+=1
             if (i % 5==0):
                 token=refresh_token(jamf_url, token)
@@ -245,6 +336,7 @@ def schueler_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
             geraetename = name + get_config_value("POSTFIX")
 
             upload_device_information(jamf_url, token, seriennummer, geraetename, name)
+    LOGGER.info("Bearbeitung aller Geräte abgeschlossen.")
 
 def lehrer_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
     """
@@ -264,6 +356,7 @@ def lehrer_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
         LOGGER.info("Die Geräte werden aktualisiert...")
         i = 1
         for zeile in reader:
+            LOGGER.info("Gerät Nr. "+ str(i)+ " wird bearbeitet.")
             i+=1
             if (i % 5==0):
                 token=refresh_token(jamf_url, token)
@@ -280,4 +373,5 @@ def lehrer_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
 
             name = f"{vorname} {nachname}"
             upload_teacher_device_information_(jamf_url, token, seriennummer, name, kuerzel)
+        LOGGER.info("Bearbeitung aller Geräte abgeschlossen.")
 

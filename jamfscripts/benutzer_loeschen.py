@@ -130,7 +130,10 @@ def delete_users_without_devices(JAMF_URL, token):
    teacher_names = {user['username'] for user in teachers['user_group']['users'] if 'username' in user}
    filtered_users = []
    id_list = []
+   i = 1
    for user in users.get("users", []):
+       LOGGER.info("User Nr. "+ str(i) + " gelöscht.")
+       i=i+1
        name = user.get("name")
        user_id = user.get("id")
        if name not in usernames and name not in teacher_names:
