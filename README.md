@@ -16,8 +16,8 @@ So schön kann Jamf (mit Classload) organisiert sein:
 
 Aktuelle Versionen von Classload:
 
-- 🪟 [Windows (64-bit)](https://github.com/chribdo/classload/releases/download/v0.9.0/classload-0.9.0-win64.exe)
-- 🍎 [macOS](https://github.com/chribdo/classload/releases/download/v0.9.0/classload-0.9.0-macOS.app.zip)
+- 🪟 [Windows (64-bit)](https://github.com/chribdo/classload/releases/latest/download/classload-0.9.1-win64.exe)
+- 🍎 [macOS](https://github.com/chribdo/classload/releases/latest/download/classload-0.9.1-macOS.app.zip)
 
 Ein ungetesteter Linux-Build ist auf der [Release-Seite](https://github.com/chribdo/classload/releases) zu finden.
 
@@ -27,6 +27,11 @@ Ein ungetesteter Linux-Build ist auf der [Release-Seite](https://github.com/chri
 * Eine Statische Benutzergruppe für alle Lehrkräfte muss in JAMF existieren.
 * Für den Klassen-Upload müssen JAMF und iServ bereits Kursdaten austauschen wie [hier](https://help.untis.at/hc/de/articles/4411822372754-Plattform-Applikation-IServ) und [dort](https://doku.iserv.de/manage/user/webuntis/) beschrieben.
 * Probleme? Vielleicht werden andere JAMF-API-Versionen mit anderen Endpunkten verwendet.
+
+## 📢 Aktuelles
+September 2025: Aus nachvollziehbaren Gründen ist die Funktion „Klassen löschen” in Jamf für JAMF-Verantwortliche an Dortmunder Schulen derzeit deaktiviert.
+Dadurch ist auch der Button „Klassen löschen” (siehe unten) nicht funktionsfähig. Full Admins vom Systemhaus können aber weiterhin alle Klassen der Site einfach löschen.
+Anschließend können die Klassen neu hochgeladen werden.
 
 ## 🖼️ Screenshot
 
