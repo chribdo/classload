@@ -23,9 +23,10 @@ Ein ungetesteter Linux-Build ist auf der [Release-Seite](https://github.com/chri
 
 ## 💻 Voraussetzungen
 
-* JAMF-Account mit API-Zugriff (Standard bei JAMF-Accounts).
+* JAMF-PRO-Account mit API-Zugriff (Standard bei JAMF-Accounts, wobei die Rechte natürlich unterschiedlich vergeben sein können).
 * Eine Statische Benutzergruppe für alle Lehrkräfte muss in JAMF existieren.
 * Für den Klassen-Upload müssen JAMF und iServ bereits Kursdaten austauschen wie [hier](https://help.untis.at/hc/de/articles/4411822372754-Plattform-Applikation-IServ) und [dort](https://doku.iserv.de/manage/user/webuntis/) beschrieben.
+* Probleme? Vielleicht werden andere JAMF-API-Versionen mit anderen Endpunkten verwendet.
 
 ## 🖼️ Screenshot
 
