@@ -438,7 +438,7 @@ def create_group_with_members_from_csv(jamf_url: str, token: str, group_name: st
     Kein time, kein re.
     """
     clean_name = group_name.strip()
-
+    LOGGER.info("Vorgang gestartet. Bitte etwas Geduld...")
     # Bereits vorhandene Gruppe prüfen – wenn vorhanden, abbrechen
     existing_id = _name_lookup(jamf_url, token, clean_name)
     if existing_id is not None:
