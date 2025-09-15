@@ -16,8 +16,8 @@ So schön kann Jamf (mit Classload) organisiert sein:
 
 Aktuelle Versionen von Classload:
 
-- 🪟 [Windows (64-bit)](https://github.com/chribdo/classload/releases/latest/download/classload-0.9.1-win64.exe)
-- 🍎 [macOS](https://github.com/chribdo/classload/releases/latest/download/classload-0.9.1-macOS.app.zip)
+- 🪟 [Windows (64-bit)](https://github.com/chribdo/classload/releases/latest/download/classload-0.9.2-win64.exe)
+- 🍎 [macOS](https://github.com/chribdo/classload/releases/latest/download/classload-0.9.2-macOS.app.zip)
 
 Ein ungetesteter Linux-Build ist auf der [Release-Seite](https://github.com/chribdo/classload/releases) zu finden.
 
