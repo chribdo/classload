@@ -1,7 +1,7 @@
 import requests
 import xml.etree.ElementTree as ET
 import jamfscripts
-from jamfscripts import get_config_value, refresh_token
+from jamfscripts import get_config_value, refresh_token, get_site_id
 from jamfscripts.logging_config import LOGGER
 import csv
 
@@ -375,3 +375,167 @@ def lehrer_ipads_aktualisieren(jamf_url, token, pfad_zur_csv):
             upload_teacher_device_information_(jamf_url, token, seriennummer, name, kuerzel)
         LOGGER.info("Bearbeitung aller Geräte abgeschlossen.")
 
+
+############### Ab hier alles für den Button Mobilgerätegruppe hochladen ######
+
+
+def simple_quote(s: str) -> str:
+    return (s.replace(" ", "%20")
+             .replace("/", "%2F")
+             .replace("?", "%3F")
+             .replace("#", "%23")
+             .replace("&", "%26"))
+def _name_lookup(jamf_url: str, token: str, group_name: str):
+    headers = {"Accept": "application/xml", "Authorization": f"Bearer {token}", "Cache-Control": "no-cache", "Pragma": "no-cache"}
+    url = f"{jamf_url}/JSSResource/mobiledevicegroups/name/{simple_quote(group_name)}"
+    r = requests.get(url, headers=headers)
+    if r.status_code != 200:
+        return None
+    try:
+        root = ET.fromstring(r.text)
+        el = root.find("./id")
+        return int(el.text) if el is not None and el.text and el.text.isdigit() else None
+    except ET.ParseError:
+        return None
+
+
+
+def _read_serials(csv_path: str) -> list[str]:
+    serials = []
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        for row in csv.reader(f):
+            if not row:
+                continue
+            s = (row[0] or "").strip()
+            if not s or s.lower() in {"serial", "serialnumber", "serial_number", "seriennummer"}:
+                continue
+            if s.startswith("S"):
+                s = s[1:]
+            serials.append(s.upper())
+    return sorted(set(serials))
+
+
+#from xml.sax.saxutils import escape
+
+def xml_escape(s: str) -> str:
+    """Wandelt &, <, >, " und ' in XML-Entities um (ohne Imports)."""
+    return (
+        s.replace("&", "&amp;")
+         .replace("<", "&lt;")
+         .replace(">", "&gt;")
+         .replace('"', "&quot;")
+         .replace("'", "&apos;")
+    )
+
+def create_group_with_members_from_csv(jamf_url: str, token: str, group_name: str, csv_path: str):
+    """
+    Legt die statische Mobile-Device-Gruppe 'group_name' nur dann neu an, wenn sie noch nicht existiert.
+    Falls bereits vorhanden, Ausgabe einer Fehlermeldung und Rückgabe None.
+    Ansonsten werden alle Geräte aus der CSV in EINEM POST mitgeschickt.
+    Rückgabe: neue Gruppen-ID oder None.
+
+    Abhängigkeiten: requests, xml.etree.ElementTree (Standardbibliothek)
+    Kein time, kein re.
+    """
+    clean_name = group_name.strip()
+
+    # Bereits vorhandene Gruppe prüfen – wenn vorhanden, abbrechen
+    existing_id = _name_lookup(jamf_url, token, clean_name)
+    if existing_id is not None:
+        LOGGER.error(f"❌ Gruppe '{clean_name}' existiert bereits (ID {existing_id}). Es wurden keine Änderungen vorgenommen.")
+        return None
+
+    # Serials laden
+    serials = _read_serials(csv_path)
+    if not serials:
+        LOGGER.error("ℹ️ Keine gültigen Seriennummern gefunden.")
+        return None
+
+    # Site ermitteln
+    site_id = get_site_id(jamf_url, token)
+
+    # XML vorbereiten
+    headers = {
+        "Accept": "application/xml",
+        "Content-Type": "application/xml",
+        "Authorization": f"Bearer {token}",
+    }
+    url = f"{jamf_url}/JSSResource/mobiledevicegroups/id/0"
+
+    devices_xml = "\n".join(
+        f"<mobile_device><serial_number>{xml_escape(s)}</serial_number></mobile_device>"
+        for s in serials
+    )
+    xml_body = f"""<mobile_device_group>
+  <name>{xml_escape(clean_name)}</name>
+  <is_smart>false</is_smart>
+  <site><id>{site_id}</id></site>
+  <mobile_devices>
+    {devices_xml}
+  </mobile_devices>
+</mobile_device_group>""".strip()
+
+    # POST (ohne Retry/Delay)
+    r = requests.post(url, headers=headers, data=xml_body.encode("utf-8"))
+
+    if r.status_code in (200, 201):
+        # 1) ID aus Location-Header (ohne regex)
+        loc = r.headers.get("Location") or r.headers.get("location")
+        if loc:
+            gid = _extract_id_from_location(loc)
+            if gid is not None:
+                LOGGER.info(f"✅ Gruppe '{clean_name}' erstellt (ID: {gid}) – Mitglieder direkt gesetzt ({len(serials)}).")
+                return gid
+
+        # 2) Fallback: ID aus Response-XML
+        try:
+            root = ET.fromstring(r.text)
+            el = root.find("./id")
+            if el is not None and el.text and el.text.isdigit():
+                gid = int(el.text)
+                LOGGER.info(f"✅ Gruppe '{clean_name}' erstellt (ID: {gid}) – Mitglieder direkt gesetzt ({len(serials)}).")
+                return gid
+        except ET.ParseError:
+            pass
+
+        LOGGER.error("⚠️ Gruppe erstellt, aber keine ID ermittelbar.")
+        return None
+
+    if r.status_code == 409:
+        # Duplicate Name o.ä. – ohne Retry direkt abbrechen
+        LOGGER.error(f"❌ Gruppe '{clean_name}' konnte nicht erstellt werden (409 Duplicate Name).")
+        return None
+
+    # Andere Fehler
+    LOGGER.error(f"❌ Erstellen fehlgeschlagen ({r.status_code}): {r.text[:400]}")
+    return None
+
+
+def _extract_id_from_location(loc: str):
+    """
+    Extrahiert eine numerische ID aus einem Location-Header rein über String-Operationen.
+    Beispiel: .../mobiledevicegroups/id/123 -> 123
+    """
+    # letzten Pfadteil nehmen
+    tail = loc.rstrip("/").split("/")[-1]
+    # Falls der letzte Teil nicht numerisch ist (z.B. 'id'), noch den vorletzten prüfen
+    candidate_parts = [tail]
+    if tail.lower() == "id" and "/" in loc:
+        candidate_parts.append(loc.rstrip("/").split("/")[-2])
+
+    for part in candidate_parts:
+        # Ziffern am Ende extrahieren (ohne re): rückwärts sammeln
+        digits_rev = []
+        for ch in reversed(part):
+            if ch.isdigit():
+                digits_rev.append(ch)
+            else:
+                # sobald keine Ziffer mehr, stoppen (wir wollen den abschließenden Ziffernblock)
+                if digits_rev:
+                    break
+        if digits_rev:
+            try:
+                return int("".join(reversed(digits_rev)))
+            except ValueError:
+                pass
+    return None

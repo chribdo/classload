@@ -61,7 +61,8 @@ Das Programm startet nach dem Lizenzdialog mit der Eingabe von Benutzername und 
 * **Zu jeder Klasse eine Benutzergruppe erzeugen**: Zu allen bereits existierenden Klassen der Schule (bzw. der Site) wird jeweils eine statische Benutzergruppe angelegt. Dieser Prozess dauert leider extrem lange. Eine Laufzeit von z.B. einer Nacht muss nicht unbedingt ausreichen.
 * **Klassen löschen**: Löscht alle Klassen der Schule (bzw. der Site), die ein bestimmtes Präfix haben. Wenn z.B. "0525_" als Präfix eingegeben wird, werden genau die Klassen gelöscht, deren Name mit "0525_" beginnt.
 * **Gruppen löschen**: Löscht alle statischen Benutzergruppen der Schule (bzw. der Site), die ein bestimmtes Präfix haben. Wenn als Präfix z.B. "0525_" eingegeben wird, werden genau die Benutzergruppen gelöscht, deren Name mit "0525_" beginnt.
-
+* **Mobilgerätegruppe hochladen**: Zunächst kann man einen Namen für die Gruppe festlegen, dann soll man eine CSV-Datei mit einer einzelnen Spalte mit Seriennummern auswählen. Die Geräte mit diesen Seriennummern werden der neuen Mobilgerätegruppe hinzugefügt. Dabei ist es egal, ob den Seriennummern ein "S" vorangestellt ist oder nicht.
+* **Zu bestimmten Klassen eine Benutzergruppe erzeugen**: Es soll eine CSV-Datei (einspaltig) mit Klassennamen ausgewählt werden. Wenn Klassen mit den aufgeführten Namen in JAMF bereits existieren, werden dazu Benutzergruppen mit den entsprechenden Schülerinnen und Schülern angelegt.
 ## 📘 Dokumentation
 
 👉 [https://chribdo.github.io/classload/](https://chribdo.github.io/classload/tk_main_menue.html)

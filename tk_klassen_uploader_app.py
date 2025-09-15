@@ -36,11 +36,16 @@ class KlassenUploaderApp:
                                                   command=self.single_group_upload)
         self.btn_group_upload = ttk.Button(button_frame, text="Zu jeder Klasse eine Benutzergruppe erzeugen",
                                            command=self.group_upload)
-        self.btn_gruppen_loeschen = ttk.Button(button_frame, text="Gruppen löschen", command=self.gruppen_loeschen)
+        self.btn_gruppen_loeschen = ttk.Button(button_frame, text="Benutzergruppen löschen", command=self.gruppen_loeschen)
         self.btn_loeschen = ttk.Button(button_frame, text="Klassen löschen", command=self.klassen_loeschen)
 
         self.btn_del_users = ttk.Button(button_frame, text="Benutzer ohne Mobilgerät löschen",
                                         command=self.delete_users_wo_md)
+        #NEUE BUTTONS
+        self.btn_upload_devices = ttk.Button(button_frame, text="Mobilgerätegruppe hochladen",
+                                        command=self.upload_devices)
+        self.btn_group_upload1 = ttk.Button(button_frame, text="Zu bestimmten Klassen eine Benutzergruppe erzeugen",
+                                           command=self.group_upload1)
 
         self.btn_konfiguration.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.btn_sus_ipads_zuordnen.grid(row=1, column=0, padx=5, pady=5, sticky="ew")
@@ -52,6 +57,9 @@ class KlassenUploaderApp:
         self.btn_loeschen.grid(row=3, column=1, padx=5, pady=5, sticky="ew")
         self.btn_gruppen_loeschen.grid(row=4, column=1, padx=5, pady=5, sticky="ew")
         self.btn_del_users.grid(row=4, column=0, padx=5, pady=5, sticky="ew")
+        self.btn_upload_devices.grid(row=5, column=0, padx=5, pady=5, sticky="ew")
+        self.btn_group_upload1.grid(row=5, column=1, padx=5, pady=5, sticky="ew")
+
 
         # Textfeld für Log-Ausgabe
         self.text_log = scrolledtext.ScrolledText(root, height=20, width=80, state=tk.DISABLED, wrap=tk.WORD)
@@ -512,7 +520,11 @@ class KlassenUploaderApp:
         create_user_groups(self.JAMF_URL, self.TOKEN, dateipfad, SITE_ID, teachergroupname, praefix,
                            OUTPUT_FILE_STUDENTS,
                            OUTPUT_FILE_CLASSES, POSTFIX, self.root)
+    def upload_devices_ausfuehren(self, gruppen_name, dateipfad ):
+       create_group_with_members_from_csv(self.JAMF_URL, self.TOKEN, gruppen_name, dateipfad)
 
+    def group_upload1_ausfuehren(self, dateipfad):
+        create_some_usergroups(self.JAMF_URL, self.TOKEN, dateipfad)
     def update_log(self):
         """Liest die Log-Datei aus und aktualisiert das Log-Textfeld."""
         if os.path.exists(LOG_FILE):
@@ -527,3 +539,79 @@ class KlassenUploaderApp:
 
         # Regelmäßig aktualisieren (alle 1000ms = 1 Sekunde)
         self.root.after(1000, self.update_log)
+
+    #NEUE FUNKTIONEN FÜR NEUE BUTTONS:
+
+    def upload_devices(self):
+        """Upload von Seriennummern zwecks Zuordnung zu einer Mobilgerätegruppe gemäß csv."""
+        # Messagebox.ok(title="Datei auswählen", "Bitte csv mit nur einer Spalte(Seriennummern) auswählen")
+        gruppen_name=""
+        popup = ttk.Toplevel(self.root)
+        popup.title("Namen eingeben")
+        popup.geometry("800x200")
+        ttk.Label(popup,
+                  text="Bitte den gewünschten Namen der Mobilgerätegruppe eingeben").pack(
+            pady=5)
+        class_entry = ttk.Entry(popup)
+        class_entry.pack(pady=5)
+        popup.update_idletasks()
+        popup.minsize(popup.winfo_width(), popup.winfo_height())
+        def on_submit():
+            gruppen_name = class_entry.get()
+            print(gruppen_name);
+            if not gruppen_name:
+                # Messagebox.ok(title="Fehler", "Bitte alles ausfüllen!", alert=True)
+                Messagebox.ok(
+                    title="Alles ausgefüllt?",
+                    message="Bitte alles ausfüllen.",
+                    alert=True,
+                    parent=popup
+
+                )
+                return
+            popup.destroy()
+            antwort = messagebox.askyesno(
+                title="Datei auswählen",
+                message="Bitte csv mit nur einer Spalte(Seriennummern) auswählen",
+                parent=self.root
+            )
+            if not antwort:
+                LOGGER.info("🚫 Abgebrochen durch den Benutzer.")
+                return
+            # antwort = askokcancel("Datei auswählen","CSV auswählen")
+            # Datei auswählen
+
+            dateipfad = filedialog.askopenfilename(title="CSV auswählen",
+                                                   filetypes=(("CSV-Dateien", "*.csv"), ("Alle Dateien", "*.*")))
+            if not dateipfad:
+                LOGGER.error("❌ Kein Dateipfad ausgewählt!")
+                return
+            else:
+                threading.Thread(target=self.upload_devices_ausfuehren, args=(gruppen_name, dateipfad),daemon=True).start()
+
+        ttk.Button(popup, text="Bestätigen", command=on_submit).pack(pady=10)
+
+    def group_upload1(self):
+        """Upload mit Zuordnung der Asset Tags (oder IT_Nummern) zu Seriennummern/Geräten gemäß csv."""
+        # Messagebox.ok(title="Datei auswählen", "Bitte csv mit 2 Spalten auswählen: Asset Tag (IT-Nummer, alert=False), Seriennummer")
+
+        antwort = messagebox.askyesno(
+            title="Datei auswählen",
+            message="Bitte csv mit einer Spalte (Namen der Klassen) auswählen: Daraus werden dann Benutzergruppen erstellt",
+            parent=self.root
+        )
+        if not antwort:
+            LOGGER.info("🚫 Abgebrochen durch den Benutzer.")
+            return
+        # antwort = askokcancel("Datei auswählen","CSV auswählen")
+        # Datei auswählen
+
+        dateipfad = filedialog.askopenfilename(title="CSV auswählen",
+                                               filetypes=(("CSV-Dateien", "*.csv"), ("Alle Dateien", "*.*")))
+        if not dateipfad:
+            LOGGER.error("❌ Kein Dateipfad ausgewählt!")
+            return
+        else:
+            threading.Thread(target=self.group_upload1_ausfuehren, args=(dateipfad,), daemon=True).start()
+
+

@@ -2,6 +2,17 @@ from jamfscripts import get_config_value
 from jamfscripts.big_class_merge import *
 from jamfscripts.authentifizierung import refresh_token
 
+import requests, csv
+"""
+import unicodedata
+def sanitize_classname(name: str) -> str:
+    # Trim & Unicode normalisieren (z. B. bei aus der UI kopierten Namen)
+    s = name.strip()
+    s = s.replace("\u00A0", " ")      # NBSP -> normaler Space
+    s = s.replace("\u200B", "")       # Zero-width space entfernen
+    s = unicodedata.normalize("NFC", s)
+    return s
+"""
 def get_class(jamf_url, token, classname):
     """Holt eine Klasse mit einem bestimmten Namen von JAMF und gibt sie als json zurück."""
     url = f"{jamf_url}/JSSResource/classes/name/{classname}"
@@ -18,6 +29,8 @@ def get_class(jamf_url, token, classname):
         LOGGER.error("Class Daten nicht erhalten")
         return ""
         #raise Exception(f"Fehler beim Abrufen des T
+
+
 
 def group_merge(JAMF_URL, TOKEN, INPUT_FILENAME, OUTPUT_FILE_STUDENTS, CLASS_PREFIX,  postfix):
     """Die Daten von JAMF und iServ werden zusammengeführt"""
@@ -135,6 +148,7 @@ def create_single_user_group(jamf_url, token,  my_classname):
     wird eine korrespondierende statische Benutzergruppe erzeugt.
     """
     myclass = get_class(jamf_url, token, my_classname)
+    #print(myclass)
     if not isinstance(myclass, dict):
         LOGGER.error(f"❌ Abbruch: Klasse '{my_classname}' nicht gefunden/erhalten oder ungültiges Format: {myclass}")
         return
@@ -217,5 +231,19 @@ def create_user_groups(JAMF_URL, TOKEN, INPUT_FILENAME, SITE_ID, TEACHER_GROUP_N
 
         LOGGER.info("Upload abgeschlossen.")
 
+
+def create_some_usergroups(jamf_url, token, csv_path):
+    """
+    Liest eine CSV-Datei ein und ruft für jede Zeile
+    create_single_user_group(...) mit dem Klassennamen auf.
+    """
+    with open(csv_path, newline='', encoding="utf-8") as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            if not row:  # leere Zeilen überspringen
+                continue
+            my_classname = row[0].strip()  # erster Wert in der Zeile
+            if my_classname:               # nur wenn nicht leer
+                create_single_user_group(jamf_url, token, my_classname)
 
 
