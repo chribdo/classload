@@ -54,12 +54,12 @@
 <li>🪟 <a href="https://github.com/chribdo/classload/releases/latest/download/classload-0.9.2-win64.exe">Windows (64-bit)</a></li>
 <li>🍎 <a href="https://github.com/chribdo/classload/releases/latest/download/classload-0.9.2-macOS.app.zip">macOS</a></li>
 </ul>
-<p>Ein ungetesteter Linux-Build ist auf der <a href="https://github.com/chribdo/classload/releases">Release-Seite</a> zu finden.</p>
+<p>Ein ungetesteter Linux-Build ist auf der <a href="https://github.com/chribdo/classload/releases" target="_top" rel="noopener noreferrer">Release-Seite</a> zu finden.</p>
 <h2>💻 Voraussetzungen</h2>
 <ul>
 <li>JAMF-PRO-Account mit API-Zugriff (Standard bei JAMF-Accounts, wobei die Rechte natürlich unterschiedlich vergeben sein können).</li>
 <li>Eine Statische Benutzergruppe für alle Lehrkräfte muss in JAMF existieren.</li>
-<li>Für den Klassen-Upload müssen JAMF und iServ bereits Kursdaten austauschen wie <a href="https://help.untis.at/hc/de/articles/4411822372754-Plattform-Applikation-IServ">hier</a> und <a href="https://doku.iserv.de/manage/user/webuntis/">dort</a> beschrieben.</li>
+<li>Für den Klassen-Upload müssen JAMF und iServ bereits Kursdaten austauschen wie <a href="https://help.untis.at/hc/de/articles/4411822372754-Plattform-Applikation-IServ" target="_top" rel="noopener noreferrer">hier</a> und <a href="https://doku.iserv.de/manage/user/webuntis/" target="_top" rel="noopener noreferrer">dort</a> beschrieben.</li>
 <li>Probleme? Vielleicht werden andere JAMF-API-Versionen mit anderen Endpunkten verwendet.</li>
 </ul>
 <h2>📢 Aktuelles</h2>
@@ -84,7 +84,7 @@ Anschließend können die Klassen neu hochgeladen werden.</p>
 <li><strong>IT-Nummern/Asset-Tags hochladen</strong>: Als Eingabe wird eine csv mit zwei Spalten benötigt: Asset-Tag (=IT-Nummer); Seriennummer. Als Trennzeichen wird ein Semikolon erwartet, Spaltenüberschriften soll es nicht geben, bei der Seriennummer ist egal, ob ein S davor steht oder nicht. Nach diesem Prozess können iPads über den Asset-Tag bzw. die IT-Nummer in JAMF gefunden werden.</li>
 <li><strong>Benutzer ohne Mobilgerät löschen</strong>: Alle Benutzer ohne Mobilgerät, die keine Lehrkräfte sind, werden gelöscht. Das kann praktisch sein, wenn z.B. Benutzer alter Jahrgänge gelöscht werden sollen, die ihre Leih-iPads bereits zurückgegeben haben.</li>
 <li><strong>Klassen-Upload</strong>: Das Herzstück von Classload. <ul>
-<li>Zu jeder Schüler-Gruppe in iServ wird eine entsprechende Classroom-Klasse erzeugt. Wenn Webuntis und iServ Daten austauschen, wird also zu jedem Webuntis-Unterricht eine entsprechende Classroom-Klasse erzeugt. Schüler:innen und Lehrkräfte können automatisch übernommen werden. Mehr zur Verbindung von iServ und Webuntis <a href="https://help.untis.at/hc/de/articles/4411822372754-Plattform-Applikation-IServ">hier</a> oder <a href="https://doku.iserv.de/manage/user/webuntis/">hier</a>. </li>
+<li>Zu jeder Schüler-Gruppe in iServ wird eine entsprechende Classroom-Klasse erzeugt. Wenn Webuntis und iServ Daten austauschen, wird also zu jedem Webuntis-Unterricht eine entsprechende Classroom-Klasse erzeugt. Schüler:innen und Lehrkräfte können automatisch übernommen werden. Mehr zur Verbindung von iServ und Webuntis <a href="https://help.untis.at/hc/de/articles/4411822372754-Plattform-Applikation-IServ" target="_top" rel="noopener noreferrer">hier</a> oder <a href="https://doku.iserv.de/manage/user/webuntis/" target="_top" rel="noopener noreferrer">hier</a>. </li>
 <li>Für den Klassen-Upload geht man wie folgt vor: Zuerst gibt man ein Präfix für die neu zu erstellenden Klassen ein und prüft, ob die Lehrkräfte-Benutzergruppe richtig eingetragen ist. Als Präfix kann man z.B. das aktuelle Datum wählen oder einfach so etwas wie "a_". Das Präfix dient nur dazu, veraltete Klassen später mit einem Klick wieder löschen zu können und sie vom Upload neuerer Klassen zu unterscheiden. </li>
 <li>Dann wird man aufgefordert, eine csv-Datei mit iServ-Schülerdaten auszuwählen. Diese kann man im iServ-Verwaltungsbereich unter Benutzer herunterladen. Dazu wählt man bei Rollen einfach Schüler aus, klickt auf filtern und dann auf exportieren. Zuvor sollte man unter iServ-&gt;Verwaltung-&gt;Benutzer-&gt;WebUntis-&gt;WebUntis Unterrichte nach IServ importieren dafür gesorgt haben, dass die Daten zu den Unterrichten aktuell sind. Diese Daten werden in der csv-Datei mit exportiert und von Classload nach Auswahl der gespeicherten Datei weiterverarbeitet. </li>
 <li>Classload arbeitet eine Weile und dann kann man bestätigen, dass der Klassenupload beginnen kann. Vorher kann man, wenn man möchte, die Klassenstruktur und die zusammengeführten Schülerdaten überprüfen. Vor dem eigentlichen Upload werden die Daten in zwei Dateien geschrieben. Die Pfade zu diesen Dateien können unter Konfiguration eingesehen oder geändert werden. Die Zuordnung der Lehrkräfte zu den Klassen erfolgt über die Lehrer-Kürzel im Namen des Unterrichts bzw. der Classroom-Klasse. Wichtig ist also, dass die Kürzel bei den JAMF-Lehrkräfte-Benutzern mitverwaltet werden und bei der Telefonnummer (sic!) eingetragen sind.</li>
@@ -99,17 +99,17 @@ Anschließend können die Klassen neu hochgeladen werden.</p>
 <li><strong>Zu bestimmten Klassen eine Benutzergruppe erzeugen</strong>: Es soll eine CSV-Datei (einspaltig) mit Klassennamen ausgewählt werden. Wenn Klassen mit den aufgeführten Namen in JAMF bereits existieren, werden dazu Benutzergruppen mit den entsprechenden Schülerinnen und Schülern angelegt.</li>
 </ul>
 <h2>📘 Dokumentation</h2>
-<p>👉 <a href="https://chribdo.github.io/classload/tk_main_menue.html">https://chribdo.github.io/classload/</a></p>
+<p>👉 <a href="https://chribdo.github.io/classload/tk_main_menue.html" target="_top" rel="noopener noreferrer">https://chribdo.github.io/classload/</a></p>
 <h2>🧑‍💻 Autorin</h2>
 <p>Classload wurde entwickelt von Dr. Christiane Borchel, Lehrerin am Reinoldus- und Schiller-Gymnasium in Dortmund. Kontakt: classload[at]gmx-topmail.de.</p>
 <h2>✨ Dank</h2>
 <p>Ich bedanke mich bei der Gruppe der Administrierenden an Dortmunder Gymnasien für den Erfahrungsaustausch, insbesondere bei Manuel Laurenz, unserem lokalen Pionier in Sachen JAMF-API. Natürlich wäre das Projekt ohne Chat-GPT für mich nebenberuflich kaum zu machen gewesen.</p>
 <h2>📄 Lizenz</h2>
 <p>Die Nutzung ist ausschließlich für den privaten und schulischen Bereich gestattet.<br />
-Die kommerzielle Nutzung oder die Nutzung durch Schulträger ist nur im Rahmen einer Testversion erlaubt. Genaueres ist in der Datei <a href="LICENSE.txt">LICENSE.txt</a> geregelt.</p>
+Die kommerzielle Nutzung oder die Nutzung durch Schulträger ist nur im Rahmen einer Testversion erlaubt. Genaueres ist in der Datei <a href="https://github.com/chribdo/classload/blob/main/LICENSE.txt" target="_top" rel="noopener noreferrer">LICENSE.txt</a> geregelt.</p>
 <h2>🌐 Website</h2>
 <ul>
-<li>🔗 <a href="https://chribdo.github.io/classload/">Classload-Website</a> – Die offizielle Projektseite.</li>
+<li>🔗 <a href="https://chribdo.github.io/classload/" target="_top" rel="noopener noreferrer">Classload-Website</a> – Die offizielle Projektseite.</li>
 </ul>
 </body>
 </html>
